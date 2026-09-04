@@ -139,6 +139,16 @@
       border-color: #dc3545 !important;
       color: #721c24;
     }
+
+    .correction-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 8px;
+      color: #856404;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -179,7 +189,7 @@
       <label>到：<select id="test-end"></select></label>
       <label>模式：
         <select id="test-mode" onchange="resetTestArea()">
-          <option value="1">模式 1：看中文發音英文 (1-10分)</option>
+          <option value="1">模式 1：看中文發音英文 (1-10分嚴謹評分)</option>
           <option value="2">模式 2：聽英文選中文 (4選1對錯)</option>
         </select>
       </label>
@@ -199,13 +209,21 @@
       <div id="options-container" class="options-grid" style="display:none;"></div>
 
       <div id="test-result" class="score-display"></div>
-      <button class="btn-action" style="margin-top: 20px;" onclick="nextQuestion()">下一題 ➔</button>
+      
+      <!-- 低於 5 分時顯示的正確發音輔導區 -->
+      <div id="correction-area" class="correction-box" style="display:none;">
+        <div>標準答案：<strong id="correct-word-text"></strong> <span id="correct-phonetic-text" style="color:#e67e22;"></span></div>
+        <button class="btn-action" style="margin-top:8px;" onclick="playCorrectAudio()">🔊 聽正確發音</button>
+      </div>
+
+      <div>
+        <button class="btn-action" style="margin-top: 20px;" onclick="nextQuestion()">下一題 ➔</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// 包含 32 張圖片中 Lesson 1 到 Lesson 72 的完整資料庫
 const lessonsData = {
   1: [
     { word: "family", phonetic: "['fæməli]", meaning: "名. 家庭；家人" },
@@ -1083,12 +1101,14 @@ function loadQuestion() {
     document.getElementById('listen-btn').style.display = 'none';
     document.getElementById('mode1-controls').style.display = 'none';
     document.getElementById('options-container').style.display = 'none';
+    document.getElementById('correction-area').style.display = 'none';
     return;
   }
 
   const q = currentTestPool[currentQIndex];
   const mode = document.getElementById('test-mode').value;
   document.getElementById('test-result').innerText = "";
+  document.getElementById('correction-area').style.display = 'none';
   optionAnswered = false;
 
   if (mode === '1') {
@@ -1163,20 +1183,72 @@ function playTestAudio() {
   speak(q.word);
 }
 
+function playCorrectAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+// 萊文斯坦距離 (Levenshtein Distance) 精確相似度計算
+function getLevenshteinDistance(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
+// 專業嚴謹動態評分算法 (1-10分)
 function evaluateAnswer(userSpeech) {
   const q = currentTestPool[currentQIndex];
   const resultDiv = document.getElementById('test-result');
-  const target = q.word.toLowerCase();
+  const correctionArea = document.getElementById('correction-area');
+  
+  const target = q.word.toLowerCase().trim();
+  const input = userSpeech.toLowerCase().trim();
 
-  if (userSpeech === target) {
+  // 完全匹配直接 10 分
+  if (input === target) {
     resultDiv.style.color = '#28a745';
-    resultDiv.innerText = `得分：10 / 10 分 (完美！標準單詞：${q.word})`;
-  } else if (userSpeech.includes(target) || target.includes(userSpeech)) {
+    resultDiv.innerText = `得分：10 / 10 分 (完美！發音非常標準)`;
+    correctionArea.style.display = 'none';
+    return;
+  }
+
+  // 計算字串距離與相似度百分比
+  const distance = getLevenshteinDistance(input, target);
+  const maxLength = Math.max(input.length, target.length);
+  const similarity = 1 - (distance / maxLength);
+
+  // 轉換為 1-10 分
+  let score = Math.round(similarity * 10);
+  if (score < 1) score = 1;
+
+  if (score >= 8) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：${score} / 10 分 (優秀！發音非常接近)`;
+    correctionArea.style.display = 'none';
+  } else if (score >= 5) {
     resultDiv.style.color = '#e67e22';
-    resultDiv.innerText = `得分：7 / 10 分 (接近！標準單詞：${q.word})`;
+    resultDiv.innerText = `得分：${score} / 10 分 (良好！音節基本正確)`;
+    correctionArea.style.display = 'none';
   } else {
     resultDiv.style.color = '#dc3545';
-    resultDiv.innerText = `得分：3 / 10 分 (再接再厲！標準單詞：${q.word})`;
+    resultDiv.innerText = `得分：${score} / 10 分 (需加強！發音存在較大偏差)`;
+    
+    // 低於 5 分觸發錯題輔導與發音示範
+    document.getElementById('correct-word-text').innerText = q.word;
+    document.getElementById('correct-phonetic-text').innerText = q.phonetic;
+    correctionArea.style.display = 'inline-block';
   }
 }
 
