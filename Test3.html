@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英文單詞學習與語音測試遊戲</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --text: #333;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; color: var(--primary); }
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 10px 25px;
+      border: none;
+      background: #e0e0e0;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 8px 12px;
+      font-size: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .word-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .word-title { font-size: 18px; font-weight: bold; }
+    .phonetic {
+      color: #e67e22;
+      cursor: pointer;
+      display: inline-block;
+      padding: 2px 6px;
+      background: #fef5ec;
+      border-radius: 4px;
+    }
+    .phonetic:hover { background: #fdebd0; }
+
+    .test-card {
+      text-align: center;
+      padding: 30px;
+      background: #fafafa;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .test-prompt { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+    .score-display { font-size: 20px; font-weight: bold; margin-top: 15px; }
+    .rec-status { font-size: 14px; color: #7f8c8d; margin-top: 5px; }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .option-btn {
+      padding: 15px;
+      font-size: 16px;
+      background: #ffffff;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: left;
+    }
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+    .option-btn.correct {
+      background: #d4edda !important;
+      border-color: #28a745 !important;
+      color: #155724;
+    }
+    .option-btn.wrong {
+      background: #f8d7da !important;
+      border-color: #dc3545 !important;
+      color: #721c24;
+    }
+
+    .correction-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 8px;
+      color: #856404;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>英文學習與測試遊戲</h1>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('learn')">📚 學習模式</button>
+    <button class="tab-btn" onclick="switchTab('test')">📝 測試模式</button>
+  </div>
+
+  <div id="learn-panel" class="panel active">
+    <div class="controls">
+      <label>選擇課程：
+        <select id="lesson-select" onchange="renderWords()"></select>
+      </label>
+      <label>口音選擇：
+        <select id="accent-select">
+          <option value="en-GB">🇬🇧 英音 (British)</option>
+          <option value="en-US" selected>🇺🇸 美音 (American)</option>
+        </select>
+      </label>
+      <label>發音語速：
+        <select id="rate-select">
+          <option value="1">1.0x (正常)</option>
+          <option value="0.5">0.5x (慢速)</option>
+          <option value="0.25">0.25x (極慢)</option>
+        </select>
+      </label>
+    </div>
+    <div id="word-container" class="word-grid"></div>
+  </div>
+
+  <div id="test-panel" class="panel">
+    <div class="controls">
+      <label>從：<select id="test-start"></select></label>
+      <label>到：<select id="test-end"></select></label>
+      <label>模式：
+        <select id="test-mode" onchange="resetTestArea()">
+          <option value="1">模式 1：看中文發音英文 (專業高標準評分)</option>
+          <option value="2">模式 2：聽英文選中文 (4選1對錯)</option>
+        </select>
+      </label>
+      <button class="btn-action" onclick="startTest()">開始測試</button>
+    </div>
+
+    <div id="test-area" class="test-card" style="display:none;">
+      <div id="test-prompt" class="test-prompt">---</div>
+      <div id="test-phonetic" style="margin-bottom: 15px;"></div>
+      <button id="listen-btn" class="btn-action" style="display:none; margin-bottom:15px;" onclick="playTestAudio()">🔊 重新播放發音</button>
+
+      <div id="mode1-controls">
+        <button id="mic-btn" class="btn-action" onclick="toggleRecognition()">🎤 開始回答 (錄音)</button>
+        <div id="rec-status" class="rec-status">點擊麥克風按鈕開始作答...</div>
+      </div>
+
+      <div id="options-container" class="options-grid" style="display:none;"></div>
+
+      <div id="test-result" class="score-display"></div>
+      
+      <!-- 低於 5 分時顯示的正確發音輔導區 -->
+      <div id="correction-area" class="correction-box" style="display:none;">
+        <div>標準單詞：<strong id="correct-word-text"></strong> <span id="correct-phonetic-text" style="color:#e67e22;"></span></div>
+        <button class="btn-action" style="margin-top:8px;" onclick="playCorrectAudio()">🔊 點擊收聽正確發音</button>
+      </div>
+
+      <div>
+        <button class="btn-action" style="margin-top: 20px;" onclick="nextQuestion()">下一題 ➔</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const lessonsData = {
+  1: [
+    { word: "family", phonetic: "['fæməli]", meaning: "名. 家庭；家人" },
+    { word: "parent", phonetic: "['peərənt]", meaning: "名. 父親，母親" },
+    { word: "mother", phonetic: "['mʌðə(r)]", meaning: "名. 母親" },
+    { word: "grandmother", phonetic: "['grænmʌðə(r)]", meaning: "名. 祖母" },
+    { word: "father", phonetic: "['fɑːðə(r)]", meaning: "名. 父親" },
+    { word: "grandfather", phonetic: "['grænfɑːðə(r)]", meaning: "名. 祖父" },
+    { word: "mom", phonetic: "[mɒm]", meaning: "名. 媽媽" }
+  ],
+  2: [
+    { word: "dad", phonetic: "[dæd]", meaning: "名. 爸爸" },
+    { word: "bad", phonetic: "[bæd]", meaning: "形. 壞的" },
+    { word: "sad", phonetic: "[sæd]", meaning: "形. 傷心的，難過的" },
+    { word: "mad", phonetic: "[mæd]", meaning: "形. 氣憤的；瘋狂的" }
+  ],
+  3: [
+    { word: "brother", phonetic: "['brʌðə(r)]", meaning: "名. 哥哥；弟弟" },
+    { word: "sister", phonetic: "['sɪstə(r)]", meaning: "名. 姐姐，妹妹" },
+    { word: "cousin", phonetic: "['kʌzn]", meaning: "名. 堂(表)兄弟姐妹" },
+    { word: "baby", phonetic: "['beɪbi]", meaning: "名. 嬰兒；寶貝" },
+    { word: "babysitter", phonetic: "['beɪbisɪtə(r)]", meaning: "名. 代人臨時照顧小孩的人" },
+    { word: "aunt", phonetic: "[ɑːnt]", meaning: "名. 伯母；嬸；姑；姨；舅媽" },
+    { word: "uncle", phonetic: "['ʌŋkl]", meaning: "名. 叔；伯；舅；姑父" }
+  ],
+  4: [
+    { word: "home", phonetic: "[həʊm]", meaning: "名. 家；家鄉 副. 在家" },
+    { word: "hometown", phonetic: "['həʊmtaʊn]", meaning: "名. 家鄉；故鄉" },
+    { word: "house", phonetic: "[haʊs]", meaning: "名. 房屋；房子；住宅" },
+    { word: "mouse", phonetic: "[maʊs]", meaning: "名. 老鼠" },
+    { word: "room", phonetic: "[ruːm]", meaning: "名. 房間" },
+    { word: "bed", phonetic: "[bed]", meaning: "名. 床" },
+    { word: "television", phonetic: "['telɪvɪʒn]", meaning: "名. 電視，電視機" }
+  ],
+  5: [
+    { word: "kitchen", phonetic: "['kɪtʃɪn]", meaning: "名. 廚房" },
+    { word: "table", phonetic: "['teɪbl]", meaning: "名. 桌子；餐桌" },
+    { word: "cup", phonetic: "[kʌp]", meaning: "名. 杯子；一杯(的量)" },
+    { word: "oven", phonetic: "['ʌvn]", meaning: "名. 烤箱，烤爐" },
+    { word: "pan", phonetic: "[pæn]", meaning: "名. 平底鍋，盤子" },
+    { word: "chair", phonetic: "[tʃeə(r)]", meaning: "名. 椅子" },
+    { word: "stair", phonetic: "[steə(r)]", meaning: "名. 樓梯" }
+  ],
+  6: [
+    { word: "bathroom", phonetic: "['bɑːθruːm]", meaning: "名. 浴室；衛生間" },
+    { word: "toilet", phonetic: "['tɔɪlət]", meaning: "名. 廁所，洗手間" },
+    { word: "shower", phonetic: "['ʃaʊə(r)]", meaning: "名. 淋浴(器)；陣雨 動. 淋浴" },
+    { word: "bath", phonetic: "[bɑːθ]", meaning: "名. 洗澡；浴室；澡盆" },
+    { word: "door", phonetic: "[dɔː(r)]", meaning: "名. 門" },
+    { word: "floor", phonetic: "[flɔː(r)]", meaning: "名. 樓層；地板" }
+  ],
+  7: [
+    { word: "cook", phonetic: "[kʊk]", meaning: "動. 烹飪，做飯 名. 廚師" },
+    { word: "book", phonetic: "[bʊk]", meaning: "名. 書" },
+    { word: "look", phonetic: "[lʊk]", meaning: "動. 看，瞧；看上去 名. 看" },
+    { word: "hungry", phonetic: "['hʌŋɡri]", meaning: "形. 餓的，飢餓的" },
+    { word: "angry", phonetic: "['æŋɡri]", meaning: "形. 發怒的，生氣的" },
+    { word: "breakfast", phonetic: "['brekfəst]", meaning: "名. 早餐" },
+    { word: "lunch", phonetic: "[lʌntʃ]", meaning: "名. 午餐，午飯" },
+    { word: "dinner", phonetic: "['dɪnə(r)]", meaning: "名. 晚餐；正餐" }
+  ],
+  8: [
+    { word: "food", phonetic: "[fuːd]", meaning: "名. 食品；食物" },
+    { word: "bread", phonetic: "[bred]", meaning: "名. 麵包" },
+    { word: "egg", phonetic: "[eɡ]", meaning: "名. 蛋；雞蛋" },
+    { word: "dumpling", phonetic: "['dʌmplɪŋ]", meaning: "名. 餃子" },
+    { word: "noodle", phonetic: "['nuːdl]", meaning: "名. 麵條" },
+    { word: "soup", phonetic: "[suːp]", meaning: "名. 湯" },
+    { word: "eat", phonetic: "[iːt]", meaning: "動. 吃，進餐" },
+    { word: "meat", phonetic: "[miːt]", meaning: "名. 肉" },
+    { word: "beat", phonetic: "[biːt]", meaning: "動. 擊打，敲打" }
+  ],
+  9: [
+    { word: "fruit", phonetic: "[fruːt]", meaning: "名. 水果" },
+    { word: "apple", phonetic: "['æpl]", meaning: "名. 蘋果" },
+    { word: "banana", phonetic: "[bə'nɑːnə]", meaning: "名. 香蕉" },
+    { word: "grape", phonetic: "[ɡreɪp]", meaning: "名. 葡萄" },
+    { word: "vegetable", phonetic: "['vedʒtəbl]", meaning: "名. 蔬菜" },
+    { word: "potato", phonetic: "[pə'teɪtəʊ]", meaning: "名. 馬鈴薯，土豆" },
+    { word: "tomato", phonetic: "[tə'mɑːtəʊ]", meaning: "名. 西紅柿" },
+    { word: "bean", phonetic: "[biːn]", meaning: "名. 豆；豆科植物" },
+    { word: "wash", phonetic: "[wɒʃ]", meaning: "動. 洗" },
+    { word: "washroom", phonetic: "['wɒʃruːm]", meaning: "名. 洗手間" }
+  ],
+  10: [
+    { word: "juice", phonetic: "[dʒuːs]", meaning: "名. 果汁" },
+    { word: "milk", phonetic: "[mɪlk]", meaning: "名. 牛奶" },
+    { word: "tea", phonetic: "[tiː]", meaning: "名. 茶；茶葉" },
+    { word: "sea", phonetic: "[siː]", meaning: "名. 海，海洋" },
+    { word: "teapot", phonetic: "['tiːpɒt]", meaning: "名. 茶壺" },
+    { word: "kettle", phonetic: "['ketl]", meaning: "名. (燒水用的)水壺" }
+  ],
+  11: [
+    { word: "drink", phonetic: "[drɪŋk]", meaning: "動. 喝 名. 飲料" },
+    { word: "pink", phonetic: "[pɪŋk]", meaning: "形. 粉紅色的 名. 粉紅色" },
+    { word: "think", phonetic: "[θɪŋk]", meaning: "動. 想；思考；認為" },
+    { word: "water", phonetic: "['wɔːtə(r)]", meaning: "名. 水" },
+    { word: "ice", phonetic: "[aɪs]", meaning: "名. 冰，冰塊" },
+    { word: "steam", phonetic: "[stiːm]", meaning: "名. 水蒸氣" },
+    { word: "ice cream", phonetic: "[,aɪs 'kriːm]", meaning: "名. 冰激凌" },
+    { word: "nice", phonetic: "[naɪs]", meaning: "形. 好的，令人愉快的" },
+    { word: "rice", phonetic: "[raɪs]", meaning: "名. 稻；大米；米飯" },
+    { word: "price", phonetic: "[praɪs]", meaning: "名. 價格，價錢；代價" }
+  ],
+  12: [
+    { word: "candy", phonetic: "['kændi]", meaning: "名. 糖果" },
+    { word: "sweet", phonetic: "[swiːt]", meaning: "名. 糖果；親愛的人 形. 甜的；可愛的" },
+    { word: "cake", phonetic: "[keɪk]", meaning: "名. 蛋糕" },
+    { word: "lake", phonetic: "[leɪk]", meaning: "名. 湖，湖泊" },
+    { word: "make", phonetic: "[meɪk]", meaning: "動. 使，讓；做；整理(床鋪等)" },
+    { word: "wake", phonetic: "[weɪk]", meaning: "動. 醒；叫醒" },
+    { word: "take", phonetic: "[teɪk]", meaning: "動. 拿；取；乘坐；拍攝" },
+    { word: "bring", phonetic: "[brɪŋ]", meaning: "動. 帶來" }
+  ],
+  13: [
+    { word: "school", phonetic: "[skuːl]", meaning: "名. 學校；上學" },
+    { word: "library", phonetic: "['laɪbrəri]", meaning: "名. 圖書館，圖書室" },
+    { word: "desk", phonetic: "[desk]", meaning: "名. 書桌" },
+    { word: "computer", phonetic: "[kəm'pjuːtə(r)]", meaning: "名. 電腦" },
+    { word: "Internet", phonetic: "['ɪntənet]", meaning: "名. 互聯網" },
+    { word: "student", phonetic: "['stjuːdnt]", meaning: "名. 學生" },
+    { word: "pupil", phonetic: "['pjuːpl]", meaning: "名. (小)學生" }
+  ],
+  14: [
+    { word: "pen", phonetic: "[pen]", meaning: "名. 鋼筆" },
+    { word: "pencil", phonetic: "['pensl]", meaning: "名. 鉛筆" },
+    { word: "ruler", phonetic: "['ruːlə(r)]", meaning: "名. 尺子，直尺" },
+    { word: "paper", phonetic: "['peɪpə(r)]", meaning: "名. 紙" },
+    { word: "scissors", phonetic: "['sɪzəz]", meaning: "名. [pl.]剪刀" },
+    { word: "blackboard", phonetic: "['blækbɔːd]", meaning: "名. 黑板" },
+    { word: "black", phonetic: "[blæk]", meaning: "形. 黑色的" },
+    { word: "schoolbag", phonetic: "['skuːlbæɡ]", meaning: "名. 書包" },
+    { word: "bag", phonetic: "[bæɡ]", meaning: "名. 袋子" }
+  ],
+  15: [
+    { word: "card", phonetic: "[kɑːd]", meaning: "名. 卡片；撲克牌" },
+    { word: "hard", phonetic: "[hɑːd]", meaning: "形. 難的；硬的 副. 努力地；費勁地" },
+    { word: "game", phonetic: "[ɡeɪm]", meaning: "名. 遊戲；運動；比賽" },
+    { word: "name", phonetic: "[neɪm]", meaning: "名. 名字" },
+    { word: "play", phonetic: "[pleɪ]", meaning: "動. 玩耍；參加(比賽或運動)；彈奏" },
+    { word: "playground", phonetic: "['pleɪɡraʊnd]", meaning: "名. 操場；遊樂場" },
+    { word: "say", phonetic: "[seɪ]", meaning: "動. 說；念，朗誦" },
+    { word: "pay", phonetic: "[peɪ]", meaning: "動. 付錢，支付 名. 工資" },
+    { word: "lay", phonetic: "[leɪ]", meaning: "動. 放置，放下" },
+    { word: "way", phonetic: "[weɪ]", meaning: "名. 道路；方法" },
+    { word: "stay", phonetic: "[steɪ]", meaning: "動. 逗留，暫住；保持" }
+  ],
+  16: [
+    { word: "class", phonetic: "[klɑːs]", meaning: "名. 課；班級" },
+    { word: "classroom", phonetic: "['klɑːsruːm]", meaning: "名. 教室" },
+    { word: "glass", phonetic: "[ɡlɑːs]", meaning: "名. 玻璃；玻璃杯" },
+    { word: "grass", phonetic: "[ɡrɑːs]", meaning: "名. 草；草地" },
+    { word: "lesson", phonetic: "['lesn]", meaning: "名. 課；功課；教訓" },
+    { word: "read", phonetic: "[riːd]", meaning: "動. 讀" },
+    { word: "write", phonetic: "[raɪt]", meaning: "動. 寫" }
+  ],
+  17: [
+    { word: "learn", phonetic: "[lɜːn]", meaning: "動. 學；學習；學會" },
+    { word: "study", phonetic: "['stʌdi]", meaning: "名/動. 學習；研究" },
+    { word: "ask", phonetic: "[ɑːsk]", meaning: "動. 問；要求" },
+    { word: "task", phonetic: "[tɑːsk]", meaning: "名. 任務，工作" },
+    { word: "answer", phonetic: "['ɑːnsə(r)]", meaning: "名. 回答，答案 動. 回答" },
+    { word: "question", phonetic: "['kwestʃən]", meaning: "名. 問題" }
+  ],
+  18: [
+    { word: "sit", phonetic: "[sɪt]", meaning: "動. 坐" },
+    { word: "stand", phonetic: "[stænd]", meaning: "動. 站，站立" },
+    { word: "word", phonetic: "[wɜːd]", meaning: "名. 單詞；字" },
+    { word: "world", phonetic: "[wɜːld]", meaning: "名. 世界" },
+    { word: "easy", phonetic: "['iːzi]", meaning: "形. 簡單的" },
+    { word: "difficult", phonetic: "['dɪfɪkəlt]", meaning: "形. 困難的" }
+  ],
+  19: [
+    { word: "body", phonetic: "['bɒdi]", meaning: "名. 身體；軀幹；主體" },
+    { word: "head", phonetic: "[hed]", meaning: "名. 頭；頭部" },
+    { word: "arm", phonetic: "[ɑːm]", meaning: "名. 胳膊 動. 武裝" },
+    { word: "hand", phonetic: "[hænd]", meaning: "名. 手" },
+    { word: "waist", phonetic: "[weɪst]", meaning: "名. 腰，腰部" },
+    { word: "leg", phonetic: "[leɡ]", meaning: "名. 腿" },
+    { word: "foot", phonetic: "[fʊt]", meaning: "名. 足，腳；英尺" }
+  ],
+  20: [
+    { word: "face", phonetic: "[feɪs]", meaning: "名. 臉；面孔" },
+    { word: "place", phonetic: "[pleɪs]", meaning: "名. 地方，地點，場所" },
+    { word: "space", phonetic: "[speɪs]", meaning: "名. 太空；空間，空隙" },
+    { word: "cheek", phonetic: "[tʃiːk]", meaning: "名. 面頰，臉蛋" },
+    { word: "jaw", phonetic: "[dʒɔː]", meaning: "名. 下巴" },
+    { word: "eye", phonetic: "[aɪ]", meaning: "名. 眼睛" },
+    { word: "blind", phonetic: "[blaɪnd]", meaning: "形. 失明的 名. 窗簾" }
+  ],
+  21: [
+    { word: "ear", phonetic: "[ɪə(r)]", meaning: "名. 耳朵" },
+    { word: "dear", phonetic: "[dɪə(r)]", meaning: "形. 親愛的；貴的 名. 親愛的人" },
+    { word: "hear", phonetic: "[hɪə(r)]", meaning: "動. 聽見，聽到" },
+    { word: "near", phonetic: "[nɪə(r)]", meaning: "介. 在……附近；接近 形/副. 近的" },
+    { word: "year", phonetic: "[jɪə(r)]", meaning: "名. 年；年齡" },
+    { word: "clear", phonetic: "[klɪə(r)]", meaning: "形. 清楚的；清澈的 副. 清楚地" },
+    { word: "mouth", phonetic: "[maʊθ]", meaning: "名. 嘴；口" },
+    { word: "month", phonetic: "[mʌnθ]", meaning: "名. 月" },
+    { word: "nose", phonetic: "[nəʊz]", meaning: "名. 鼻子" },
+    { word: "rose", phonetic: "[rəʊz]", meaning: "名. 玫瑰" }
+  ],
+  22: [
+    { word: "sport", phonetic: "[spɔːt]", meaning: "名. 體育運動" },
+    { word: "swim", phonetic: "[swɪm]", meaning: "名/動. 游泳" },
+    { word: "surf", phonetic: "[sɜːf]", meaning: "動. 衝浪" },
+    { word: "ski", phonetic: "[skiː]", meaning: "名. 滑雪板 動. 滑雪" },
+    { word: "ping-pong", phonetic: "['pɪŋ pɒŋ]", meaning: "名. 乒乓球運動" }
+  ],
+  23: [
+    { word: "exercise", phonetic: "['eksəsaɪz]", meaning: "動/名. 運動；鍛鍊；練習" },
+    { word: "run", phonetic: "[rʌn]", meaning: "動. 跑，奔跑" },
+    { word: "jump", phonetic: "[dʒʌmp]", meaning: "動/名. 跳；跳躍" },
+    { word: "keep", phonetic: "[kiːp]", meaning: "動. 保持；使處於(……狀態)；保存" },
+    { word: "sheep", phonetic: "[ʃiːp]", meaning: "名. 羊，綿羊" },
+    { word: "sweep", phonetic: "[swiːp]", meaning: "動/名. 打掃" }
+  ],
+  24: [
+    { word: "ball", phonetic: "[bɔːl]", meaning: "名. 球" },
+    { word: "basketball", phonetic: "['bɑːskɪtbɔːl]", meaning: "名. 籃球" },
+    { word: "football", phonetic: "['fʊtbɔːl]", meaning: "名. 足球" },
+    { word: "soccer", phonetic: "['sɒkə(r)]", meaning: "名. 足球" },
+    { word: "favourite", phonetic: "['feɪvərɪt]", meaning: "形. 最喜歡的；喜愛的" },
+    { word: "favour", phonetic: "['feɪvə(r)]", meaning: "名. 幫助；恩惠；支持" },
+    { word: "win", phonetic: "[wɪn]", meaning: "動. 獲勝，贏" },
+    { word: "lose", phonetic: "[luːz]", meaning: "動. 輸掉，遺失" }
+  ],
+  25: [
+    { word: "hospital", phonetic: "['hɒspɪtl]", meaning: "名. 醫院" },
+    { word: "hurt", phonetic: "[hɜːt]", meaning: "動. 受傷；傷害" },
+    { word: "healthy", phonetic: "['helθi]", meaning: "形. 健康的，健壯的" },
+    { word: "health", phonetic: "[helθ]", meaning: "名. 健康" },
+    { word: "heal", phonetic: "[hiːl]", meaning: "動. 治癒，癒合" },
+    { word: "feel", phonetic: "[fiːl]", meaning: "動. 感受到，覺得" },
+    { word: "feeling", phonetic: "['fiːlɪŋ]", meaning: "名. 感覺；想法，看法" },
+    { word: "tired", phonetic: "['taɪəd]", meaning: "形. 疲倦的" }
+  ],
+  26: [
+    { word: "fine", phonetic: "[faɪn]", meaning: "形. 好的；晴朗的；健康的" },
+    { word: "OK", phonetic: "[,əʊ 'keɪ]", meaning: "感. 對，好，行" },
+    { word: "ill", phonetic: "[ɪl]", meaning: "形. 生病的；不舒服" },
+    { word: "hill", phonetic: "[hɪl]", meaning: "名. 小山" },
+    { word: "fill", phonetic: "[fɪl]", meaning: "動. 裝滿；使充滿(感情)" },
+    { word: "kill", phonetic: "[kɪl]", meaning: "動. 殺死；扼殺；終止" },
+    { word: "till", phonetic: "[tɪl]", meaning: "介/連. 直到(……為止)" },
+    { word: "still", phonetic: "[stɪl]", meaning: "副. 還，仍然；然而" }
+  ],
+  27: [
+    { word: "have", phonetic: "[hæv]", meaning: "動. 有；做；進行；從事" },
+    { word: "behave", phonetic: "[bɪ'heɪv]", meaning: "動. 表現；舉止得體" },
+    { word: "sorry", phonetic: "['sɒri]", meaning: "感. 對不起，很抱歉 形. 抱歉的；難過的" },
+    { word: "worry", phonetic: "['wʌri]", meaning: "動. 擔心；著急" },
+    { word: "hurry", phonetic: "['hʌri]", meaning: "動. 趕快；趕緊" }
+  ],
+  28: [
+    { word: "season", phonetic: "['siːzn]", meaning: "名. 季；季節" },
+    { word: "spring", phonetic: "[sprɪŋ]", meaning: "名. 春天，春季" },
+    { word: "summer", phonetic: "['sʌmə(r)]", meaning: "名. 夏天，夏季" },
+    { word: "autumn", phonetic: "['ɔːtəm]", meaning: "名. 秋天，秋季" },
+    { word: "fall", phonetic: "[fɔːl]", meaning: "名. 秋天 動. 落下，跌落" },
+    { word: "winter", phonetic: "['wɪntə(r)]", meaning: "名. 冬天，冬季" },
+    { word: "colour", phonetic: "['kʌlə(r)]", meaning: "名. 顏色 動. 給……塗顏色" },
+    { word: "red", phonetic: "[red]", meaning: "名. 紅色 形. 紅的，紅色的" },
+    { word: "orange", phonetic: "['ɒrɪndʒ]", meaning: "名. 橙子；橘黃色 形. 橙色的，橘黃色的" },
+    { word: "yellow", phonetic: "['jeləʊ]", meaning: "名. 黃色 形. 黃的，黃色的" },
+    { word: "brown", phonetic: "[braʊn]", meaning: "名. 棕色，褐色 形. 棕色的，褐色的" },
+    { word: "green", phonetic: "[ɡriːn]", meaning: "名. 綠色 形. 綠色的；未成熟的，生的" },
+    { word: "blue", phonetic: "[bluː]", meaning: "名. 藍色 形. 藍色的" },
+    { word: "purple", phonetic: "['pɜːpl]", meaning: "名. 紫色 形. 紫色的" },
+    { word: "white", phonetic: "[waɪt]", meaning: "名. 白色 形. 白的，白色的" }
+  ],
+  29: [
+    { word: "weather", phonetic: "['weðə(r)]", meaning: "名. 天氣；氣象" },
+    { word: "rainy", phonetic: "['reɪni]", meaning: "形. 下雨的，多雨的" },
+    { word: "cloudy", phonetic: "['klaʊdi]", meaning: "形. 多雲的" },
+    { word: "windy", phonetic: "['wɪndi]", meaning: "形. 多風的；風大的" },
+    { word: "sunny", phonetic: "['sʌni]", meaning: "形. 陽光充足的；晴朗的" },
+    { word: "umbrella", phonetic: "[ʌm'brelə]", meaning: "名. 傘" },
+    { word: "rain", phonetic: "[reɪn]", meaning: "名. 雨 動. 下雨" },
+    { word: "sun", phonetic: "[sʌn]", meaning: "名. 太陽" }
+  ],
+  30: [
+    { word: "cool", phonetic: "[kuːl]", meaning: "形. 涼的，涼爽的" },
+    { word: "pool", phonetic: "[puːl]", meaning: "名. 游泳池" },
+    { word: "tool", phonetic: "[tuːl]", meaning: "名. 工具" },
+    { word: "warm", phonetic: "[wɔːm]", meaning: "形. 暖和的" },
+    { word: "cold", phonetic: "[kəʊld]", meaning: "名. 感冒 形. 冷的" },
+    { word: "hot", phonetic: "[hɒt]", meaning: "形. 熱的；辣的" },
+    { word: "air", phonetic: "[eə(r)]", meaning: "名. 天空；空氣" },
+    { word: "hair", phonetic: "[heə(r)]", meaning: "名. 頭髮" },
+    { word: "pair", phonetic: "[peə(r)]", meaning: "名. 雙；對；副" },
+    { word: "fair", phonetic: "[feə(r)]", meaning: "形. 公平的；晴朗的 名. 博覽會" }
+  ],
+  31: [
+    { word: "zoo", phonetic: "[zuː]", meaning: "名. 動物園" },
+    { word: "kangaroo", phonetic: "[,kæŋɡə'ruː]", meaning: "名. 袋鼠" },
+    { word: "too", phonetic: "[tuː]", meaning: "副. 太；過於；也，還" },
+    { word: "to", phonetic: "[tuː]", meaning: "介. 向，朝，到，往" },
+    { word: "animal", phonetic: "['ænɪml]", meaning: "名. 動物" },
+    { word: "elephant", phonetic: "['elɪfənt]", meaning: "名. 大象" },
+    { word: "tiger", phonetic: "['taɪɡə(r)]", meaning: "名. 老虎" },
+    { word: "lion", phonetic: "['laɪən]", meaning: "名. 獅子" }
+  ],
+  32: [
+    { word: "panda", phonetic: "['pændə]", meaning: "名. 熊貓" },
+    { word: "bear", phonetic: "[beə(r)]", meaning: "名. 熊 動. 忍受" },
+    { word: "monkey", phonetic: "['mʌŋki]", meaning: "名. 猴子" },
+    { word: "camel", phonetic: "['kæml]", meaning: "名. 駱駝" },
+    { word: "deer", phonetic: "[dɪə(r)]", meaning: "名. 鹿(單複數同形)" },
+    { word: "horse", phonetic: "[hɔːs]", meaning: "名. 馬" },
+    { word: "worse", phonetic: "[wɜːs]", meaning: "形. 更差；更糟糕；更壞" }
+  ],
+  33: [
+    { word: "tail", phonetic: "[teɪl]", meaning: "名. 尾巴" },
+    { word: "fail", phonetic: "[feɪl]", meaning: "動. 不合格；失敗" },
+    { word: "sail", phonetic: "[seɪl]", meaning: "動. 航行；起航 名. 帆" },
+    { word: "fish", phonetic: "[fɪʃ]", meaning: "名. 魚" },
+    { word: "wish", phonetic: "[wɪʃ]", meaning: "動/名. 希望；祝願" },
+    { word: "bee", phonetic: "[biː]", meaning: "名. 蜜蜂" },
+    { word: "tree", phonetic: "[triː]", meaning: "名. 樹" },
+    { word: "free", phonetic: "[friː]", meaning: "形. 空閒的；免費的" },
+    { word: "be", phonetic: "[biː]", meaning: "動. 是；在" }
+  ],
+  34: [
+    { word: "pet", phonetic: "[pet]", meaning: "名. 寵物" },
+    { word: "get", phonetic: "[ɡet]", meaning: "動. 獲得；收到；變得；到達" },
+    { word: "let", phonetic: "[let]", meaning: "動. 讓，允許" },
+    { word: "cat", phonetic: "[kæt]", meaning: "名. 貓" },
+    { word: "fat", phonetic: "[fæt]", meaning: "形. 胖的，肥胖的 名. 脂肪" },
+    { word: "bat", phonetic: "[bæt]", meaning: "名. 蝙蝠；球拍" },
+    { word: "dog", phonetic: "[dɒɡ]", meaning: "名. 狗" },
+    { word: "jog", phonetic: "[dʒɒɡ]", meaning: "動. 慢跑" },
+    { word: "fog", phonetic: "[fɒɡ]", meaning: "名. 霧" },
+    { word: "frog", phonetic: "[frɒɡ]", meaning: "名. 青蛙" }
+  ],
+  35: [
+    { word: "chicken", phonetic: "['tʃɪkɪn]", meaning: "名. 雞；雞肉" },
+    { word: "hen", phonetic: "[hen]", meaning: "名. 母雞" },
+    { word: "duck", phonetic: "[dʌk]", meaning: "名. 鴨；鴨肉" },
+    { word: "luck", phonetic: "[lʌk]", meaning: "名. 好運，幸運" },
+    { word: "lucky", phonetic: "['lʌki]", meaning: "形. 幸運的" },
+    { word: "bird", phonetic: "[bɜːd]", meaning: "名. 鳥" },
+    { word: "third", phonetic: "[θɜːd]", meaning: "序. 第三" }
+  ],
+  36: [
+    { word: "pig", phonetic: "[pɪɡ]", meaning: "名. 豬" },
+    { word: "big", phonetic: "[bɪɡ]", meaning: "形. 大的" },
+    { word: "dig", phonetic: "[dɪɡ]", meaning: "動. 挖" },
+    { word: "cattle", phonetic: "['kætl]", meaning: "名. 牛(總稱)" },
+    { word: "cow", phonetic: "[kaʊ]", meaning: "名. 奶牛；母牛" },
+    { word: "lamb", phonetic: "[læm]", meaning: "名. 羔羊；羔羊肉" },
+    { word: "goat", phonetic: "[ɡəʊt]", meaning: "名. 山羊" }
+  ],
+  37: [
+    { word: "bus", phonetic: "[bʌs]", meaning: "名. 公共汽車" },
+    { word: "taxi", phonetic: "['tæksi]", meaning: "名. 出租車" },
+    { word: "boat", phonetic: "[bəʊt]", meaning: "名. 小船" },
+    { word: "ship", phonetic: "[ʃɪp]", meaning: "名. (大)船；艦" },
+    { word: "plane", phonetic: "[pleɪn]", meaning: "名. 飛機" },
+    { word: "train", phonetic: "[treɪn]", meaning: "名. 火車" },
+    { word: "car", phonetic: "[kɑː(r)]", meaning: "名. 汽車" },
+    { word: "far", phonetic: "[fɑː(r)]", meaning: "形. 遠的；遙遠的 副. 遙遠地" },
+    { word: "star", phonetic: "[stɑː(r)]", meaning: "名. 星星；星形；明星 動. 主演" },
+    { word: "bike", phonetic: "[baɪk]", meaning: "名. 自行車" },
+    { word: "like", phonetic: "[laɪk]", meaning: "動. 喜愛，喜歡 介. 如同；像" }
+  ],
+  38: [
+    { word: "walk", phonetic: "[wɔːk]", meaning: "動/名. 走路，步行" },
+    { word: "talk", phonetic: "[tɔːk]", meaning: "動/名. 交談；談話" },
+    { word: "slow", phonetic: "[sləʊ]", meaning: "形. 慢的，緩慢的" },
+    { word: "throw", phonetic: "[θrəʊ]", meaning: "動. 投，扔，拋" },
+    { word: "fast", phonetic: "[fɑːst]", meaning: "形. 快的；迅速的 副. 快速地" },
+    { word: "early", phonetic: "['ɜːli]", meaning: "形. 早的 副. 提早" },
+    { word: "late", phonetic: "[leɪt]", meaning: "形. 遲到的；晚的 副. 晚，遲" }
+  ],
+  39: [
+    { word: "map", phonetic: "[mæp]", meaning: "名. 地圖" },
+    { word: "cap", phonetic: "[kæp]", meaning: "名. 帽子" },
+    { word: "street", phonetic: "[striːt]", meaning: "名. 大街，街道" },
+    { word: "meet", phonetic: "[miːt]", meaning: "動. 遇見；相遇" },
+    { word: "meeting", phonetic: "['miːtɪŋ]", meaning: "名. 會議；運動會" },
+    { word: "stop", phonetic: "[stɒp]", meaning: "動. (使)停下，停止 名. (公共汽車、火車)站" },
+    { word: "wait", phonetic: "[weɪt]", meaning: "動. 等候；等待" },
+    { word: "move", phonetic: "[muːv]", meaning: "動. 移動；搬家" }
+  ],
+  40: [
+    { word: "in", phonetic: "[ɪn]", meaning: "介. 進入；在……內" },
+    { word: "at", phonetic: "[æt]", meaning: "介. 在" },
+    { word: "on", phonetic: "[ɒn]", meaning: "介. 在……上面" },
+    { word: "under", phonetic: "['ʌndə(r)]", meaning: "介. 在……下面" },
+    { word: "behind", phonetic: "[bɪ'haɪnd]", meaning: "介. 在……後面 副. 在後面" },
+    { word: "beside", phonetic: "[bɪ'saɪd]", meaning: "介. 在……旁邊" },
+    { word: "between", phonetic: "[bɪ'twiːn]", meaning: "介. 在……之間" },
+    { word: "among", phonetic: "[ə'mʌŋ]", meaning: "介. 在……之中，在……之間" }
+  ],
+  41: [
+    { word: "before", phonetic: "[bɪ'fɔː(r)]", meaning: "介. 在……前面 副. 在前面" },
+    { word: "after", phonetic: "['ɑːftə(r)]", meaning: "介. 在……後面；在……身後" },
+    { word: "back", phonetic: "[bæk]", meaning: "名. 後背；後面 副. 向後；回原處" },
+    { word: "front", phonetic: "[frʌnt]", meaning: "名. 前面" },
+    { word: "next", phonetic: "[nekst]", meaning: "形. 緊接著的；下次的" },
+    { word: "text", phonetic: "[tekst]", meaning: "名. 文本；課文" },
+    { word: "middle", phonetic: "['mɪdl]", meaning: "形. 中間的 名. 中間" },
+    { word: "riddle", phonetic: "['rɪdl]", meaning: "名. 謎語" }
+  ],
+  42: [
+    { word: "up", phonetic: "[ʌp]", meaning: "副. 向上；在上面" },
+    { word: "down", phonetic: "[daʊn]", meaning: "副. 向下，朝下，在下面" },
+    { word: "turn", phonetic: "[tɜːn]", meaning: "名. 轉彎；輪到的機會 動. 變成；轉彎" },
+    { word: "turn up", phonetic: "[tɜːn ʌp]", meaning: "調高；開大" },
+    { word: "turn down", phonetic: "[tɜːn daʊn]", meaning: "調低；關小" },
+    { word: "upon", phonetic: "[ə'pɒn]", meaning: "介. 在……上面" },
+    { word: "here", phonetic: "[hɪə(r)]", meaning: "副. 在在這裡" },
+    { word: "there", phonetic: "[ðeə(r)]", meaning: "副. 在那裡" },
+    { word: "by", phonetic: "[baɪ]", meaning: "介. 在……旁邊" },
+    { word: "cry", phonetic: "[kraɪ]", meaning: "動/名. 哭泣；叫喊" },
+    { word: "try", phonetic: "[traɪ]", meaning: "名/動. 嘗試；試圖" },
+    { word: "fly", phonetic: "[flaɪ]", meaning: "動. 飛；放(風箏、飛機模型等)" }
+  ],
+  43: [
+    { word: "a/an", phonetic: "[ə]/[æn]", meaning: "冠. 一(個)" },
+    { word: "the", phonetic: "[ðə]", meaning: "冠. 這；那" },
+    { word: "one", phonetic: "[wʌn]", meaning: "數/一 形. 唯一的；一個的；某個的" },
+    { word: "only", phonetic: "['əʊnli]", meaning: "代. 一個(人或物)；任何人(泛指) 形. 唯一的，僅有的 副. 只，僅僅" },
+    { word: "some", phonetic: "[sʌm]", meaning: "代/形. 一些；若干" },
+    { word: "somewhere", phonetic: "['sʌmweə(r)]", meaning: "副. 在某處，到某處" },
+    { word: "someday", phonetic: "['sʌmdeɪ]", meaning: "副. 將來某一天，有朝一日" },
+    { word: "somewhat", phonetic: "['sʌmwɒt]", meaning: "副. 有點兒，稍微" },
+    { word: "sometime", phonetic: "['sʌmtaɪm]", meaning: "副. 某個時候" },
+    { word: "sometimes", phonetic: "['sʌmtaɪmz]", meaning: "副. 有時" },
+    { word: "any", phonetic: "['eni]", meaning: "形. 任何的代任何一個" },
+    { word: "anyway", phonetic: "['eniweɪ]", meaning: "副. 而且；反正" },
+    { word: "anywhere", phonetic: "['eniweə(r)]", meaning: "副. 在(或往)什麼地方，在(或往)任何地方" }
+  ],
+  44: [
+    { word: "little", phonetic: "['lɪtl]", meaning: "限. 少量的；形. 小的；幼小的" },
+    { word: "many", phonetic: "['meni]", meaning: "形. 許多的 限/代. 許多" },
+    { word: "much", phonetic: "[mʌtʃ]", meaning: "副. 非常 限/代. 許多" },
+    { word: "never", phonetic: "['nevə(r)]", meaning: "副. 決不，從不" },
+    { word: "ever", phonetic: "['evə(r)]", meaning: "副. 曾經" },
+    { word: "clever", phonetic: "['klevə(r)]", meaning: "形. 聰明的" },
+    { word: "about", phonetic: "[ə'baʊt]", meaning: "副. 大約 介. 關於" },
+    { word: "out", phonetic: "[aʊt]", meaning: "副. 在外 介. 從……里出去；離開" },
+    { word: "shout", phonetic: "[ʃaʊt]", meaning: "動. 呼喊，呼叫 名. 呼喊，喊叫聲" }
+  ],
+  45: [
+    { word: "over", phonetic: "['əʊvə(r)]", meaning: "副. 大於，多於 介. 在……上面" },
+    { word: "cover", phonetic: "['kʌvə(r)]", meaning: "動. 覆蓋 名. 封面" },
+    { word: "lover", phonetic: "['lʌvə(r)]", meaning: "名. 愛好者" },
+    { word: "again", phonetic: "[ə'ɡen]", meaning: "副. 又，再一次" },
+    { word: "gain", phonetic: "[ɡeɪn]", meaning: "動. 獲得；贏得" },
+    { word: "last", phonetic: "[lɑːst]", meaning: "形. 最後的；最近的；上一個的" },
+    { word: "past", phonetic: "[pɑːst]", meaning: "形. 過去的 副. 過 介. 超過；晚於" },
+    { word: "often", phonetic: "['ɒfn]", meaning: "副. 時常，常常" },
+    { word: "always", phonetic: "['ɔːlweɪz]", meaning: "副. 總是" }
+  ],
+  46: [
+    { word: "email", phonetic: "['iːmeɪl]", meaning: "名. 電子郵件 動. 發電子郵件" },
+    { word: "mail", phonetic: "[meɪl]", meaning: "動. 郵寄" },
+    { word: "letter", phonetic: "['letə(r)]", meaning: "名. 信函；字母" },
+    { word: "better", phonetic: "['betə(r)]", meaning: "形. 較好的，更好的" },
+    { word: "phone", phonetic: "[fəʊn]", meaning: "名. 電話；電話機" },
+    { word: "telephone", phonetic: "['telɪfəʊn]", meaning: "名. 電話；電話機 動. 打電話給" },
+    { word: "speak", phonetic: "[spiːk]", meaning: "動. 說話，講話；談話，交談" }
+  ],
+  47: [
+    { word: "come", phonetic: "[kʌm]", meaning: "動. 來；來到" },
+    { word: "become", phonetic: "[bɪ'kʌm]", meaning: "動. 變成，成為；開始變得" },
+    { word: "welcome", phonetic: "['welkəm]", meaning: "動. 歡迎" },
+    { word: "hello", phonetic: "[hə'ləʊ]", meaning: "感. 餵，你好" },
+    { word: "hi", phonetic: "[haɪ]", meaning: "感. 餵，嗨" },
+    { word: "goodbye", phonetic: "[,ɡʊd'baɪ]", meaning: "感/名. 再見，再會" },
+    { word: "yes", phonetic: "[jes]", meaning: "感. 是；是的" },
+    { word: "no", phonetic: "[nəʊ]", meaning: "副. 不，不是 形. 沒有" }
+  ],
+  48: [
+    { word: "best", phonetic: "[best]", meaning: "形. 最好的，最出色的，最優秀的" },
+    { word: "nest", phonetic: "[nest]", meaning: "名. 鳥巢" },
+    { word: "good", phonetic: "[ɡʊd]", meaning: "形. 好；好的" },
+    { word: "great", phonetic: "[ɡreɪt]", meaning: "形. 極好的，優秀的" },
+    { word: "help", phonetic: "[help]", meaning: "名/動. 幫助" },
+    { word: "thank", phonetic: "[θæŋk]", meaning: "動. 謝謝，感謝" },
+    { word: "please", phonetic: "[pliːz]", meaning: "感. 請(禮貌用語)" },
+    { word: "careful", phonetic: "['keəfl]", meaning: "形. 小心的" },
+    { word: "beautiful", phonetic: "['bjuːtɪfl]", meaning: "形. 美麗的" },
+    { word: "wonderful", phonetic: "['wʌndəfl]", meaning: "形. 精彩的；奇妙的" },
+    { word: "helpful", phonetic: "['helpfl]", meaning: "形. 有幫助的，有用的；樂於助人的" }
+  ],
+  49: [
+    { word: "do", phonetic: "[duː]", meaning: "動/助. 做" },
+    { word: "chore", phonetic: "[tʃɔː(r)]", meaning: "名. 家務" },
+    { word: "clean", phonetic: "[kliːn]", meaning: "動. 清掃，弄乾淨 形. 乾淨的" },
+    { word: "tidy", phonetic: "['taɪdi]", meaning: "形. 整潔的，整齊的 動. 整理，收拾" },
+    { word: "dirty", phonetic: "['dɜːti]", meaning: "形. 骯髒的" },
+    { word: "open", phonetic: "['əʊpən]", meaning: "形. 開著的 動. 打開" },
+    { word: "close", phonetic: "[kləʊz]", meaning: "動. 關閉 形. 近的" }
+  ],
+  50: [
+    { word: "box", phonetic: "[bɒks]", meaning: "名. 盒子；箱子" },
+    { word: "fox", phonetic: "[fɒks]", meaning: "名. 狐狸" },
+    { word: "basket", phonetic: "['bɑːskɪt]", meaning: "名. 籃，簍，筐" },
+    { word: "heavy", phonetic: "['hevi]", meaning: "形. 重的；大量的；猛烈的" },
+    { word: "light", phonetic: "[laɪt]", meaning: "名. 燈，光線 形. 輕的；淺色的" }
+  ],
+  51: [
+    { word: "city", phonetic: "['sɪti]", meaning: "名. 城市" },
+    { word: "pity", phonetic: "['pɪti]", meaning: "名. 遺憾" },
+    { word: "safe", phonetic: "[seɪf]", meaning: "形. 安全的" },
+    { word: "cafe", phonetic: "['kæfeɪ]", meaning: "名. 咖啡館；小餐館" },
+    { word: "fire", phonetic: "['faɪə(r)]", meaning: "名. 火" },
+    { word: "firework", phonetic: "['faɪəwɜːk]", meaning: "名. 煙火，煙花" },
+    { word: "quiet", phonetic: "['kwaɪət]", meaning: "形. 安靜的" },
+    { word: "quite", phonetic: "[kwaɪt]", meaning: "副. 相當；十分" }
+  ],
+  52: [
+    { word: "listen", phonetic: "['lɪsn]", meaning: "動. 聽，收聽" },
+    { word: "list", phonetic: "[lɪst]", meaning: "名. 列表；清單" },
+    { word: "ten", phonetic: "[ten]", meaning: "數. 十" },
+    { word: "share", phonetic: "[ʃeə(r)]", meaning: "動. 分享" },
+    { word: "wear", phonetic: "[weə(r)]", meaning: "動. 穿(衣服、鞋)，戴" }
+  ],
+  53: [
+    { word: "sing", phonetic: "[sɪŋ]", meaning: "動. 唱歌" },
+    { word: "singer", phonetic: "['sɪŋə(r)]", meaning: "名. 歌手" },
+    { word: "song", phonetic: "[sɒŋ]", meaning: "名. 歌，歌曲" },
+    { word: "dance", phonetic: "[dɑːns]", meaning: "動. 跳舞 名. 舞蹈" },
+    { word: "dancer", phonetic: "['dɑːnsə(r)]", meaning: "名. 舞蹈家" },
+    { word: "ballet", phonetic: "['bæleɪ]", meaning: "名. 芭蕾舞，芭蕾舞劇" },
+    { word: "piano", phonetic: "[pi'ænəʊ]", meaning: "名. 鋼琴" },
+    { word: "guitar", phonetic: "[ɡɪ'tɑː(r)]", meaning: "名. 吉他" },
+    { word: "violin", phonetic: "[,vaɪə'lɪn]", meaning: "名. 小提琴" }
+  ],
+  54: [
+    { word: "go", phonetic: "[ɡəʊ]", meaning: "動. 去；走" },
+    { word: "ago", phonetic: "[ə'ɡəʊ]", meaning: "副. 以前" },
+    { word: "draw", phonetic: "[drɔː]", meaning: "動. 畫；繪畫" },
+    { word: "paw", phonetic: "[pɔː]", meaning: "名. (動物的)爪；(人的)手" },
+    { word: "toy", phonetic: "[tɔɪ]", meaning: "名. 玩具" },
+    { word: "doll", phonetic: "[dɒl]", meaning: "名. 玩偶；玩具娃娃" },
+    { word: "balloon", phonetic: "[bə'luːn]", meaning: "名. 氣球" },
+    { word: "kite", phonetic: "[kaɪt]", meaning: "名. 風箏" },
+    { word: "robot", phonetic: "['rəʊbɒt]", meaning: "名. 機器人" },
+    { word: "love", phonetic: "[lʌv]", meaning: "名. 喜愛，關愛 動. 關愛；喜歡" },
+    { word: "lovely", phonetic: "['lʌvli]", meaning: "形. 可愛的" }
+  ],
+  55: [
+    { word: "day", phonetic: "[deɪ]", meaning: "名. 一天；一日" },
+    { word: "birthday", phonetic: "['bɜːθdeɪ]", meaning: "名. 生日" },
+    { word: "holiday", phonetic: "['hɒlədeɪ]", meaning: "名. 假日；假期；節日" },
+    { word: "today", phonetic: "[tə'deɪ]", meaning: "副/名. 今天，今日" },
+    { word: "yesterday", phonetic: "['jestədeɪ]", meaning: "副/名. 昨天" },
+    { word: "week", phonetic: "[wiːk]", meaning: "名. 星期" },
+    { word: "weekend", phonetic: "[,wiːk'end]", meaning: "名. 週末 形. 週末的" }
+  ],
+  56: [
+    { word: "watch", phonetic: "[wɒtʃ]", meaning: "名. 手錶 動. 看；注視" },
+    { word: "catch", phonetic: "[kætʃ]", meaning: "動. 抓住；趕上" },
+    { word: "tomorrow", phonetic: "[tə'mɒrəʊ]", meaning: "副/名. 明天" },
+    { word: "borrow", phonetic: "['bɒrəʊ]", meaning: "動. 借" },
+    { word: "time", phonetic: "[taɪm]", meaning: "名. 時間，鐘點；一段時間；某段日子" },
+    { word: "hour", phonetic: "['aʊə(r)]", meaning: "名. 小時" },
+    { word: "minute", phonetic: "['mɪnɪt]", meaning: "名. 分鐘；片刻" },
+    { word: "quarter", phonetic: "['kwɔːtə(r)]", meaning: "名. 一刻鐘；四分之一" },
+    { word: "clock", phonetic: "[klɒk]", meaning: "名. 鐘表，時鐘" },
+    { word: "o'clock", phonetic: "[ə'klɒk]", meaning: "副. ……點鐘" },
+    { word: "sock", phonetic: "[sɒk]", meaning: "名. 短襪" },
+    { word: "rock", phonetic: "[rɒk]", meaning: "名. 岩石" },
+    { word: "knock", phonetic: "[nɒk]", meaning: "動/名. 敲，打；碰撞，撞擊" }
+  ],
+  57: [
+    { word: "morning", phonetic: "['mɔːnɪŋ]", meaning: "名. 早晨，上午" },
+    { word: "evening", phonetic: "['iːvnɪŋ]", meaning: "名. 晚上，傍晚" },
+    { word: "noon", phonetic: "[nuːn]", meaning: "名. 正午，中午" },
+    { word: "afternoon", phonetic: "[,ɑːftə'nuːn]", meaning: "名. 下午" },
+    { word: "soon", phonetic: "[suːn]", meaning: "副. 不久，即刻；早，快" },
+    { word: "now", phonetic: "[naʊ]", meaning: "副/名. 現在；此刻" },
+    { word: "know", phonetic: "[nəʊ]", meaning: "動. 知道，了解" },
+    { word: "snow", phonetic: "[snəʊ]", meaning: "名. 雪 動. 下雪" }
+  ],
+  58: [
+    { word: "Mr", phonetic: "['mɪstə(r)]", meaning: "縮. 先生" },
+    { word: "Mrs", phonetic: "['mɪsɪz]", meaning: "縮. 太太，夫人" },
+    { word: "Ms", phonetic: "[mɪz]", meaning: "縮. 女士(用於女子的姓氏或姓名年前，不指明婚否)" },
+    { word: "Miss", phonetic: "[mɪs]", meaning: "名. 小姐，女士(用於未婚女子姓氏或姓名年前，以示禮貌)" },
+    { word: "kid", phonetic: "[kɪd]", meaning: "名. (口語)小孩，孩子" },
+    { word: "child", phonetic: "[tʃaɪld]", meaning: "名. 兒童，小孩" }
+  ],
+  59: [
+    { word: "boy", phonetic: "[bɔɪ]", meaning: "名. 男孩" },
+    { word: "girl", phonetic: "[ɡɜːl]", meaning: "名. 女孩" },
+    { word: "age", phonetic: "[eɪdʒ]", meaning: "名. 年齡" },
+    { word: "page", phonetic: "[peɪdʒ]", meaning: "名. (書刊或紙張的)頁，面，張" },
+    { word: "kind", phonetic: "[kaɪnd]", meaning: "形. 親切的，和藹的 名. 種類" },
+    { word: "find", phonetic: "[faɪnd]", meaning: "動. 發現，找到" }
+  ],
+  60: [
+    { word: "young", phonetic: "[jʌŋ]", meaning: "形. 年輕的，幼小的" },
+    { word: "cute", phonetic: "[kjuːt]", meaning: "形. 可愛的" },
+    { word: "strong", phonetic: "[strɒŋ]", meaning: "形. 強壯的，健壯的；有力的" },
+    { word: "thin", phonetic: "[θɪn]", meaning: "形. 瘦的；薄的" },
+    { word: "famous", phonetic: "['feɪməs]", meaning: "形. 著名的，出名的" },
+    { word: "brave", phonetic: "[breɪv]", meaning: "形. 勇敢的" },
+    { word: "rich", phonetic: "[rɪtʃ]", meaning: "形. 富有的；富饒的" },
+    { word: "poor", phonetic: "[pɔː(r)]", meaning: "形. 貧困的；可憐的" },
+    { word: "China", phonetic: "['tʃaɪnə]", meaning: "名. 中國 形. 中國的" },
+    { word: "Chinese", phonetic: "[,tʃaɪ'niːz]", meaning: "名. 中國話；中國人 形. 中國的，中國人的" }
+  ],
+  61: [
+    { word: "job", phonetic: "[dʒɒb]", meaning: "名. 工作；職業" },
+    { word: "doctor", phonetic: "['dɒktə(r)]", meaning: "名. 醫生" },
+    { word: "nurse", phonetic: "[nɜːs]", meaning: "名. 護士" },
+    { word: "astronaut", phonetic: "['æstrənɔːt]", meaning: "名. 宇航員" },
+    { word: "police", phonetic: "[pə'liːs]", meaning: "名. 警察" },
+    { word: "pilot", phonetic: "['paɪlət]", meaning: "名. 飛行員" },
+    { word: "teacher", phonetic: "['tiːtʃə(r)]", meaning: "名. 老師，教師" }
+  ],
+  62: [
+    { word: "farm", phonetic: "[fɑːm]", meaning: "名. 農場" },
+    { word: "farmer", phonetic: "['fɑːmə(r)]", meaning: "名. 農民" },
+    { word: "work", phonetic: "[wɜːk]", meaning: "動/名. 工作" },
+    { word: "worker", phonetic: "['wɜːkə(r)]", meaning: "名. 工人" },
+    { word: "people", phonetic: "['piːpl]", meaning: "名. 人們" },
+    { word: "man", phonetic: "[mæn]", meaning: "名. 男人" },
+    { word: "woman", phonetic: "['wʊmən]", meaning: "名. 女人" }
+  ],
+  63: [
+    { word: "right", phonetic: "[raɪt]", meaning: "形. 正確的，合適的；右邊的 名. 正確；右邊" },
+    { word: "left", phonetic: "[left]", meaning: "形. 左邊的" },
+    { word: "wrong", phonetic: "[rɒŋ]", meaning: "形. 錯誤的" },
+    { word: "night", phonetic: "[naɪt]", meaning: "名. 夜，夜晚" },
+    { word: "fight", phonetic: "[faɪt]", meaning: "動. 打架 名. 打；爭吵" },
+    { word: "busy", phonetic: "['bɪzi]", meaning: "形. 忙碌的" },
+    { word: "business", phonetic: "['bɪznəs]", meaning: "名. 生意" }
+  ],
+  64: [
+    { word: "what", phonetic: "[wɒt]", meaning: "限/代. 什麼；多少" },
+    { word: "whatever", phonetic: "[wɒt'evə(r)]", meaning: "形/代. 無論什麼" },
+    { word: "which", phonetic: "[wɪtʃ]", meaning: "限/代. 哪一個；哪一些" },
+    { word: "when", phonetic: "[wen]", meaning: "副. 什麼時候；何時" },
+    { word: "whenever", phonetic: "[wen'evə(r)]", meaning: "連. 無論何時" },
+    { word: "then", phonetic: "[ðen]", meaning: "副. 接下來，然後；那時" }
+  ],
+  65: [
+    { word: "where", phonetic: "[weə(r)]", meaning: "副. 在哪裡；到哪裡" },
+    { word: "elsewhere", phonetic: "[,els'weə(r)]", meaning: "副. 在別處，向別處" },
+    { word: "nowhere", phonetic: "['nəʊweə(r)]", meaning: "副. 任何地方都不；無處" },
+    { word: "who", phonetic: "[huː]", meaning: "代. 誰，什麼人" },
+    { word: "whose", phonetic: "[huːz]", meaning: "限/代. 誰的" },
+    { word: "whom", phonetic: "[huːm]", meaning: "代. 誰，什麼人" },
+    { word: "why", phonetic: "[waɪ]", meaning: "副. 為什麼，為何" },
+    { word: "because", phonetic: "[bɪ'kɒz]", meaning: "連. 因為" },
+    { word: "reason", phonetic: "['riːzn]", meaning: "名. 原因；理由" }
+  ],
+  66: [
+    { word: "how", phonetic: "[haʊ]", meaning: "副. 怎樣，如何" },
+    { word: "anyhow", phonetic: "['enihaʊ]", meaning: "副. 無論如何，不管怎樣" },
+    { word: "somehow", phonetic: "['sʌmhaʊ]", meaning: "副. 以某種方式；不知為什麼" },
+    { word: "this", phonetic: "[ðɪs]", meaning: "限/代. 這，這個" },
+    { word: "that", phonetic: "[ðæt]", meaning: "限/代. 那，那個" },
+    { word: "these", phonetic: "[ðiːz]", meaning: "限/代. 這些" },
+    { word: "those", phonetic: "[ðəʊz]", meaning: "限/代. 那些" }
+  ],
+  67: [
+    { word: "you", phonetic: "[juː]", meaning: "代. 你；您；你們" },
+    { word: "your", phonetic: "[jɔː(r)]", meaning: "限. 你的；您的；你們的" },
+    { word: "I", phonetic: "[aɪ]", meaning: "代. 我" },
+    { word: "me", phonetic: "[miː]", meaning: "代. 我" },
+    { word: "my", phonetic: "[maɪ]", meaning: "限. 我的" },
+    { word: "we", phonetic: "[wiː]", meaning: "代. 我們；咱們" },
+    { word: "us", phonetic: "[ʌs]", meaning: "代. 我們" },
+    { word: "our", phonetic: "['aʊə(r)]", meaning: "限. 我們的" }
+  ],
+  68: [
+    { word: "he", phonetic: "[hiː]", meaning: "代. 他" },
+    { word: "him", phonetic: "[hɪm]", meaning: "代. 他" },
+    { word: "his", phonetic: "[hɪz]", meaning: "限. 他的" },
+    { word: "she", phonetic: "[ʃiː]", meaning: "代. 她" },
+    { word: "her", phonetic: "[hɜː(r)]", meaning: "代. 她 限. 她的" }
+  ],
+  69: [
+    { word: "it", phonetic: "[ɪt]", meaning: "代. 它" },
+    { word: "its", phonetic: "[ɪts]", meaning: "限. (指事物、動物或嬰兒)它的" },
+    { word: "bit", phonetic: "[bɪt]", meaning: "名. 小片；小部分" },
+    { word: "fit", phonetic: "[fɪt]", meaning: "動. 合適，合身 形. 健康的" },
+    { word: "hit", phonetic: "[hɪt]", meaning: "動/名. 打；擊中" },
+    { word: "they", phonetic: "[ðeɪ]", meaning: "代. 他們；她們；它們" },
+    { word: "them", phonetic: "[ðəm]", meaning: "代. 他們；她們；它們" },
+    { word: "their", phonetic: "[ðeə(r)]", meaning: "限. 他們的；她們的；它們的" }
+  ],
+  70: [
+    { word: "and", phonetic: "[ænd]", meaning: "連. 和" },
+    { word: "band", phonetic: "[bænd]", meaning: "名. 樂隊" },
+    { word: "or", phonetic: "[ɔː(r)]", meaning: "連. 或；還是；不然" },
+    { word: "for", phonetic: "[fɔː(r)]", meaning: "介. 給；對；為" },
+    { word: "not", phonetic: "[nɒt]", meaning: "副. 不" },
+    { word: "lot", phonetic: "[lɒt]", meaning: "代. 大量；許多" },
+    { word: "so", phonetic: "[səʊ]", meaning: "副. 很，非常 連. 因此；所以" },
+    { word: "also", phonetic: "['ɔːlsəʊ]", meaning: "副. 也，還" },
+    { word: "with", phonetic: "[wɪð]", meaning: "介. 和……一起；同；用" },
+    { word: "without", phonetic: "[wɪ'ðaʊt]", meaning: "介. 沒有，無" }
+  ],
+  71: [
+    { word: "should", phonetic: "[ʃʊd]", meaning: "情. 應當，應該" },
+    { word: "would", phonetic: "[wʊd]", meaning: "情. 將，願意" },
+    { word: "could", phonetic: "[kʊd]", meaning: "情. 能，可以(can的過去式)" },
+    { word: "can", phonetic: "[kæn]", meaning: "情. 能，會" },
+    { word: "must", phonetic: "[mʌst]", meaning: "情. 必須，應當" },
+    { word: "may", phonetic: "[meɪ]", meaning: "情. 也許，可能" },
+    { word: "might", phonetic: "[maɪt]", meaning: "情. 也許，可能(may的過去式)" },
+    { word: "will", phonetic: "[wɪl]", meaning: "情. 將，會，要" },
+    { word: "shall", phonetic: "[ʃæl]", meaning: "情. 將(要)，會；應該" }
+  ],
+  72: [
+    { word: "of", phonetic: "[əv]", meaning: "介. 屬於：……的；由……制成的" },
+    { word: "off", phonetic: "[ɒf]", meaning: "副. 切斷 介. 從(某處)落下；離開" },
+    { word: "all", phonetic: "[ɔːl]", meaning: "限. 全部的" },
+    { word: "call", phonetic: "[kɔːl]", meaning: "動. 打電話；稱呼" },
+    { word: "tall", phonetic: "[tɔːl]", meaning: "形. 高的，高大的" },
+    { word: "wall", phonetic: "[wɔːl]", meaning: "名. 牆" },
+    { word: "small", phonetic: "[smɔːl]", meaning: "形. 小的；少的" }
+  ]
+};
+
+let allWordsPool = [];
+let currentTestPool = [];
+let currentQIndex = 0;
+let isListening = false;
+let recognition = null;
+let optionAnswered = false;
+let cachedVoices = [];
+
+function loadVoices() {
+  if ('speechSynthesis' in window) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+}
+
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+window.onload = () => {
+  const lessonSelect = document.getElementById('lesson-select');
+  const startSelect = document.getElementById('test-start');
+  const endSelect = document.getElementById('test-end');
+
+  Object.keys(lessonsData).forEach(l => {
+    lessonSelect.add(new Option(`第 ${l} 課`, l));
+    startSelect.add(new Option(`第 ${l} 課`, l));
+    endSelect.add(new Option(`第 ${l} 課`, l));
+  });
+
+  Object.values(lessonsData).forEach(arr => {
+    allWordsPool.push(...arr);
+  });
+
+  renderWords();
+  initSpeechRecognition();
+};
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  if(tab === 'learn') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('learn-panel').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('test-panel').classList.add('active');
+  }
+}
+
+function resetTestArea() {
+  document.getElementById('test-area').style.display = 'none';
+}
+
+function getBestVoice(targetLang) {
+  if (!cachedVoices || cachedVoices.length === 0) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+  let voice = cachedVoices.find(v => v.lang.replace('_', '-') === targetLang);
+  if (!voice) {
+    const langPrefix = targetLang.split('-')[0];
+    voice = cachedVoices.find(v => v.lang.startsWith(langPrefix) && v.lang.includes(targetLang.split('-')[1]));
+  }
+  return voice || null;
+}
+
+// 專業修復：針對英音極慢語速的邊界修正與強迫重繪
+function speak(text) {
+  if (!('speechSynthesis' in window)) {
+    alert("您的瀏覽器不支援語音合成功能");
+    return;
+  }
+  window.speechSynthesis.cancel(); // 清空佇列，確保語音不堆疊
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  const accent = document.getElementById('accent-select').value || 'en-US';
+  let rate = parseFloat(document.getElementById('rate-select').value || 1);
+  
+  // 針對 en-GB 語音包在低語速下的保護鎖定進行參數修正
+  if (accent === 'en-GB' && rate === 0.25) {
+    rate = 0.18; // 調微至 0.18 以凸顯 0.5x 與 0.25x 之間的差異
+  }
+
+  utterance.lang = accent;
+  utterance.rate = rate;
+
+  const matchedVoice = getBestVoice(accent);
+  if (matchedVoice) {
+    utterance.voice = matchedVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function renderWords() {
+  const lesson = document.getElementById('lesson-select').value;
+  const container = document.getElementById('word-container');
+  container.innerHTML = '';
+
+  const list = lessonsData[lesson] || [];
+  if(list.length === 0) {
+    container.innerHTML = '<p>該課程暫無數據</p>';
+    return;
+  }
+
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerHTML = `
+      <div class="word-title">${item.word} 
+        <button onclick="speak('${item.word}')" style="border:none;background:none;cursor:pointer;">🔊</button>
+      </div>
+      <div>音標：<span class="phonetic" onclick="speak('${item.word}')">${item.phonetic}</span></div>
+      <div>釋義：${item.meaning}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function initSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('rec-status').innerText = "您的瀏覽器不支援語音識別功能 (建議使用 Chrome)";
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim().toLowerCase();
+    document.getElementById('rec-status').innerText = `識別結果: "${transcript}"`;
+    evaluateAnswer(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    document.getElementById('rec-status').innerText = `識別失敗: ${event.error}`;
+    isListening = false;
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic-btn').innerText = "🎤 開始回答 (錄音)";
+  };
+}
+
+function toggleRecognition() {
+  if (!recognition) return;
+  const accent = document.getElementById('accent-select').value;
+  recognition.lang = accent;
+
+  if (isListening) {
+    recognition.stop();
+  } else {
+    recognition.start();
+    isListening = true;
+    document.getElementById('mic-btn').innerText = "🛑 正在聆聽中...";
+    document.getElementById('rec-status').innerText = "請說出英文單詞...";
+  }
+}
+
+function startTest() {
+  const start = parseInt(document.getElementById('test-start').value);
+  const end = parseInt(document.getElementById('test-end').value);
+  
+  currentTestPool = [];
+  for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+    if (lessonsData[i]) {
+      currentTestPool.push(...lessonsData[i]);
+    }
+  }
+
+  if (currentTestPool.length === 0) {
+    alert("選擇的課程範圍內沒有可測試的單詞！");
+    return;
+  }
+
+  currentTestPool.sort(() => Math.random() - 0.5);
+  currentQIndex = 0;
+  document.getElementById('test-area').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (currentQIndex >= currentTestPool.length) {
+    document.getElementById('test-prompt').innerText = "🎉 測試完成！";
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('test-result').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('correction-area').style.display = 'none';
+    return;
+  }
+
+  const q = currentTestPool[currentQIndex];
+  const mode = document.getElementById('test-mode').value;
+  document.getElementById('test-result').innerText = "";
+  document.getElementById('correction-area').style.display = 'none';
+  optionAnswered = false;
+
+  if (mode === '1') {
+    document.getElementById('test-prompt').innerText = q.meaning;
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'block';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('rec-status').innerText = "點擊麥克風按鈕開始作答...";
+  } else {
+    document.getElementById('test-prompt').innerText = "🎧 請聽發音選擇正確中文釋義";
+    document.getElementById('test-phonetic').innerText = q.phonetic;
+    document.getElementById('listen-btn').style.display = 'inline-block';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'grid';
+
+    generateOptions(q);
+    playTestAudio();
+  }
+}
+
+function generateOptions(correctQ) {
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  let options = [correctQ];
+  let poolToDistract = allWordsPool.length >= 4 ? allWordsPool : currentTestPool;
+  let candidates = poolToDistract.filter(item => item.word !== correctQ.word);
+  candidates.sort(() => Math.random() - 0.5);
+
+  for(let i = 0; i < Math.min(3, candidates.length); i++) {
+    options.push(candidates[i]);
+  }
+
+  options.sort(() => Math.random() - 0.5);
+
+  options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt.meaning}`;
+    btn.onclick = () => checkOption(btn, opt.word === correctQ.word, correctQ.meaning);
+    container.appendChild(btn);
+  });
+}
+
+function checkOption(selectedBtn, isCorrect, correctMeaning) {
+  if (optionAnswered) return;
+  optionAnswered = true;
+
+  const resultDiv = document.getElementById('test-result');
+  const allBtns = document.querySelectorAll('.option-btn');
+
+  if (isCorrect) {
+    selectedBtn.classList.add('correct');
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = '結果：✅ 回答正確！';
+  } else {
+    selectedBtn.classList.add('wrong');
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `結果：❌ 回答錯誤！(正確答案：${correctMeaning})`;
+    
+    allBtns.forEach(btn => {
+      if (btn.innerText.includes(correctMeaning)) {
+        btn.classList.add('correct');
+      }
+    });
+  }
+}
+
+function playTestAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+function playCorrectAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+function getLevenshteinDistance(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
+function evaluateAnswer(userSpeech) {
+  const q = currentTestPool[currentQIndex];
+  const resultDiv = document.getElementById('test-result');
+  const correctionArea = document.getElementById('correction-area');
+  
+  const target = q.word.toLowerCase().trim();
+  const input = userSpeech.toLowerCase().trim();
+
+  if (input === target) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：10 / 10 分 (完美！發音非常標準)`;
+    correctionArea.style.display = 'none';
+    return;
+  }
+
+  const distance = getLevenshteinDistance(input, target);
+  const maxLength = Math.max(input.length, target.length);
+  const similarity = 1 - (distance / maxLength);
+
+  let score = 1;
+
+  if (similarity >= 0.95) {
+    score = 9;
+  } else if (similarity >= 0.85) {
+    score = 8;
+  } else if (similarity >= 0.75) {
+    score = 6;
+  } else if (similarity >= 0.60) {
+    score = 4;
+  } else if (similarity >= 0.40) {
+    score = 2;
+  } else {
+    score = 1;
+  }
+
+  if (input.length > 0 && target.length > 0) {
+    if (input[0] !== target[0]) {
+      score = Math.min(score, 3);
+    }
+  }
+
+  if (score >= 6) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：${score} / 10 分 (發音基本合格)`;
+    correctionArea.style.display = 'none';
+  } else {
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `得分：${score} / 10 分 (不合格！發音偏差較大)`;
+    
+    document.getElementById('correct-word-text').innerText = q.word;
+    document.getElementById('correct-phonetic-text').innerText = q.phonetic;
+    correctionArea.style.display = 'inline-block';
+  }
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  loadQuestion();
+}
+</script>
+</body>
+</html>
