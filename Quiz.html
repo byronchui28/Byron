@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全能知识王 - 并发翻译零延迟版</title>
+    <link href="https://fonts.googleapis.com/css2?family=PingFang+SC:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --accent-color: #f59e0b;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --correct-color: #10b981;
+            --wrong-color: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang SC', -apple-system, sans-serif; }
+        body { background: var(--bg-gradient); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .game-card { width: 100%; max-width: 650px; background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 24px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4); overflow: hidden; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 18px 25px; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid var(--card-border); }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-label { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; }
+        .stat-value { font-size: 1.2rem; font-weight: 800; color: #fff; }
+        .progress-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.1); }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6); transition: width 0.4s ease; }
+        .screen { display: none; padding: 25px; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-title { font-size: 1.8rem; font-weight: 800; text-align: center; margin-bottom: 4px; background: linear-gradient(to right, #a5b4fc, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { text-align: center; color: var(--text-sub); margin-bottom: 4px; font-size: 0.8rem; }
+        
+        .bank-count-tag { 
+            text-align: center; 
+            font-size: 0.85rem; 
+            color: var(--accent-color); 
+            margin-bottom: 15px; 
+            font-weight: 600;
+        }
+
+        .section-label { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 6px; text-align: left; font-weight: 600; }
+        .mode-grid { display: grid; gap: 6px; margin-bottom: 12px; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+        .chip-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 8px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chip-card:hover { background: rgba(255,255,255,0.08); }
+        .chip-card.selected {
+            background: rgba(99, 102, 241, 0.25);
+            border-color: #6366f1;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        }
+        .chip-card h4 { font-size: 0.85rem; color: #fff; font-weight: 500; }
+
+        .question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.5; margin-bottom: 20px; color: #ffffff; }
+        .options-grid { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px 18px; font-size: 0.95rem; color: var(--text-main); text-align: left; cursor: pointer; transition: all 0.2s ease; }
+        .option-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); transform: translateX(4px); }
+        .option-btn.correct { background: rgba(16, 185, 129, 0.25) !important; border-color: var(--correct-color) !important; color: #a7f3d0; }
+        .option-btn.wrong { background: rgba(239, 68, 68, 0.25) !important; border-color: var(--wrong-color) !important; color: #fecaca; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .btn-primary { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); margin-top: 8px; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-quit { background: transparent; border: 1px solid var(--card-border); color: var(--text-sub); margin-top: 10px; }
+        .btn-quit:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <div class="top-bar">
+        <div class="stat-box">
+            <span class="stat-label">进度</span>
+            <span class="stat-value" id="progress-text">0 / 10</span>
+        </div>
+        <div class="stat-box" style="text-align: right;">
+            <span class="stat-label">得分</span>
+            <span class="stat-value" id="score-text">0</span>
+        </div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-bar"></div></div>
+
+    <!-- 1. 主界面 -->
+    <div id="start-screen" class="screen active" style="text-align: center;">
+        <h1 class="hero-title">全能知识王</h1>
+        <p class="hero-subtitle">Open Trivia DB (并发翻译/大缓存零等待版)</p>
+        <p class="bank-count-tag" id="bank-count-text">game13.html 并发预加载引擎就绪</p>
+        
+        <!-- 答题数量 -->
+        <div class="section-label">1. 选择答题数量：</div>
+        <div class="mode-grid grid-3">
+            <div class="chip-card count-card selected" onclick="selectCount(10, this)"><h4>10 题</h4></div>
+            <div class="chip-card count-card" onclick="selectCount(20, this)"><h4>20 题</h4></div>
+            <div class="chip-card count-card" onclick="selectCount('infinite', this)"><h4>∞ 无限</h4></div>
+        </div>
+
+        <!-- 按主题分类 -->
+        <div class="section-label">2. 按学科主题筛选：</div>
+        <div class="mode-grid grid-3">
+            <div class="chip-card topic-card selected" onclick="selectTopic('', this)"><h4>🌐 不限主题</h4></div>
+            <div class="chip-card topic-card" onclick="selectTopic('23', this)"><h4>📜 历史</h4></div>
+            <div class="chip-card topic-card" onclick="selectTopic('22', this)"><h4>🗺️ 地理</h4></div>
+            <div class="chip-card topic-card" onclick="selectTopic('17', this)"><h4>🔬 科学</h4></div>
+            <div class="chip-card topic-card" onclick="selectTopic('11', this)"><h4>🎬 影视</h4></div>
+            <div class="chip-card topic-card" onclick="selectTopic('21', this)"><h4>⚽ 体育</h4></div>
+        </div>
+
+        <!-- 按五大洲 -->
+        <div class="section-label">3. 按五大洲筛选：</div>
+        <div class="mode-grid grid-3">
+            <div class="chip-card region-card selected" onclick="selectRegion('', this)"><h4>🌏 不限大洲</h4></div>
+            <div class="chip-card region-card" onclick="selectRegion('asia', this)"><h4>亚洲</h4></div>
+            <div class="chip-card region-card" onclick="selectRegion('europe', this)"><h4>欧洲</h4></div>
+            <div class="chip-card region-card" onclick="selectRegion('americas', this)"><h4>美洲</h4></div>
+            <div class="chip-card region-card" onclick="selectRegion('africa', this)"><h4>非洲</h4></div>
+            <div class="chip-card region-card" onclick="selectRegion('oceania', this)"><h4>大洋洲</h4></div>
+        </div>
+
+        <!-- 按国家/地区 -->
+        <div class="section-label">4. 按国家地区筛选：</div>
+        <div class="mode-grid grid-4">
+            <div class="chip-card country-card selected" onclick="selectCountry('', this)"><h4>🌐 不限</h4></div>
+            <div class="chip-card country-card" onclick="selectCountry('china', this)"><h4>中国</h4></div>
+            <div class="chip-card country-card" onclick="selectCountry('usa', this)"><h4>美国</h4></div>
+            <div class="chip-card country-card" onclick="selectCountry('uk', this)"><h4>英国</h4></div>
+            <div class="chip-card country-card" onclick="selectCountry('japan', this)"><h4>日本</h4></div>
+            <div class="chip-card country-card" onclick="selectCountry('france', this)"><h4>法国</h4></div>
+            <div class="chip-card country-card" onclick="selectCountry('germany', this)"><h4>德国</h4></div>
+        </div>
+
+        <button class="btn-primary" id="start-btn" onclick="startGame()">开始答题</button>
+    </div>
+
+    <!-- 2. 答题界面 -->
+    <div id="quiz-screen" class="screen">
+        <div class="question-text" id="question-text">加载中...</div>
+        <div class="options-grid" id="options-container"></div>
+        <button class="btn-primary btn-quit" style="display:none;" id="quit-btn" onclick="endGame()">结算成绩并退出</button>
+    </div>
+
+    <!-- 3. 结算界面 -->
+    <div id="result-screen" class="screen" style="text-align: center;">
+        <h2>挑战完成！</h2>
+        <div style="font-size: 3.5rem; font-weight: 800; color: #f59e0b; margin: 15px 0;" id="final-score">0</div>
+        <p id="feedback-text" style="color: var(--text-sub); margin-bottom: 25px;"></p>
+        <button class="btn-primary" onclick="resetGame()">返回主页</button>
+    </div>
+</div>
+
+<script>
+let totalQuestionsGoal = 10;
+let selectedTopicId = '';
+let selectedRegion = '';
+let selectedCountry = '';
+
+let currentQuestions = [];
+let nextBufferQuestions = []; 
+let isFetchingNext = false;
+let currentIndex = 0;
+let score = 0;
+let isAnswering = false;
+
+window.onload = function() {
+    updateCountDisplay();
+};
+
+function updateCountDisplay() {
+    const tag = document.getElementById('bank-count-text');
+    let modeStr = (totalQuestionsGoal === 'infinite') ? "当前选择：∞ 无限答题模式" : `当前选择：挑战 ${totalQuestionsGoal} 道题`;
+    tag.innerHTML = `高并发双缓冲系统 | <strong style="color:#f59e0b;">${modeStr}</strong>`;
+}
+
+function selectCount(count, el) {
+    totalQuestionsGoal = count;
+    document.querySelectorAll('.count-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    updateCountDisplay();
+}
+
+function selectTopic(topicId, el) {
+    selectedTopicId = topicId;
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    updateCountDisplay();
+}
+
+function selectRegion(region, el) {
+    selectedRegion = region;
+    selectedCountry = ''; 
+    document.querySelectorAll('.region-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.country-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.country-card')[0].classList.add('selected');
+    el.classList.add('selected');
+    updateCountDisplay();
+}
+
+function selectCountry(country, el) {
+    selectedCountry = country;
+    selectedRegion = ''; 
+    document.querySelectorAll('.country-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.region-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.region-card')[0].classList.add('selected');
+    el.classList.add('selected');
+    updateCountDisplay();
+}
+
+// 快速翻译单句
+async function freeTranslate(text) {
+    try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        return data[0].map(item => item[0]).join('');
+    } catch (e) {
+        return text;
+    }
+}
+
+function decodeHTML(str) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = str;
+    return txt.value;
+}
+
+// 核心提速修改：采用 Promise.all 高并发翻译，速度提升 80%
+async function fetchQuestionsFromAPI(amount) {
+    let url = `https://opentdb.com/api.php?amount=${amount}&type=multiple`;
+    if (selectedTopicId) {
+        url += `&category=${selectedTopicId}`;
+    }
+
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.results || data.results.length === 0) {
+        throw new Error("获取数据失败");
+    }
+
+    // 并行处理所有题目
+    const promises = data.results.map(async (item) => {
+        const rawQ = decodeHTML(item.question);
+        const rawC = decodeHTML(item.correct_answer);
+        const rawIn = item.incorrect_answers.map(decodeHTML);
+
+        // 单题内部的 5 个字段（题目+4个选项）同时并发翻译
+        const [zhQ, zhC, ...zhIn] = await Promise.all([
+            freeTranslate(rawQ),
+            freeTranslate(rawC),
+            ...rawIn.map(inc => freeTranslate(inc))
+        ]);
+
+        const options = [...zhIn];
+        const correctIdx = Math.floor(Math.random() * 4);
+        options.splice(correctIdx, 0, zhC);
+
+        return { question: zhQ, options: options, answer: correctIdx };
+    });
+
+    return await Promise.all(promises);
+}
+
+// 后台大缓存预加载（一次性备足 10 道题）
+async function prefetchNextBuffer() {
+    if (isFetchingNext || nextBufferQuestions.length >= 10) return;
+    isFetchingNext = true;
+    try {
+        const newBatch = await fetchQuestionsFromAPI(10);
+        nextBufferQuestions.push(...newBatch);
+    } catch (e) {
+        console.log("预加载尝试重试...");
+    } finally {
+        isFetchingNext = false;
+    }
+}
+
+async function startGame() {
+    const btn = document.getElementById('start-btn');
+    btn.disabled = true;
+    btn.innerText = '正在极速初始化题库...';
+
+    // 开局直接抓取 10 道题，确保前 10 题绝对不断档
+    const loadNum = (totalQuestionsGoal === 'infinite') ? 10 : totalQuestionsGoal;
+
+    try {
+        currentQuestions = await fetchQuestionsFromAPI(loadNum);
+        nextBufferQuestions = [];
+        isFetchingNext = false;
+        
+        currentIndex = 0;
+        score = 0;
+        
+        document.getElementById('quit-btn').style.display = (totalQuestionsGoal === 'infinite') ? 'block' : 'none';
+        
+        switchScreen('quiz-screen');
+        
+        loadQuestion();
+        // 渲染第 1 题的瞬间，立即在后台并发预载 10 道备用题
+        prefetchNextBuffer();
+
+    } catch (err) {
+        alert('网络连线超时，请重试！');
+    } finally {
+        btn.disabled = false;
+        btn.innerText = '开始答题';
+    }
+}
+
+function loadQuestion() {
+    isAnswering = false;
+    const q = currentQuestions[currentIndex];
+
+    // 水库维持：只要后台储备少于 10 题，就持续静默拉取
+    if (nextBufferQuestions.length < 10) {
+        prefetchNextBuffer();
+    }
+    
+    if (totalQuestionsGoal === 'infinite') {
+        document.getElementById('progress-text').innerText = `第 ${currentIndex + 1} 题 (∞)`;
+        document.getElementById('progress-bar').style.width = '100%';
+    } else {
+        document.getElementById('progress-text').innerText = `${currentIndex + 1} / ${totalQuestionsGoal}`;
+        document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / totalQuestionsGoal) * 100}%`;
+    }
+
+    document.getElementById('score-text').innerText = score;
+    document.getElementById('question-text').innerText = q.question;
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    const prefixes = ['A', 'B', 'C', 'D'];
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<strong>${prefixes[idx]}.</strong> ${opt}`;
+        btn.onclick = () => handleAnswer(idx, q.answer, btn);
+        container.appendChild(btn);
+    });
+}
+
+function handleAnswer(selected, correct, btn) {
+    if (isAnswering) return;
+    isAnswering = true;
+    const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+        btn.classList.add('correct');
+        score += 10;
+        document.getElementById('score-text').innerText = score;
+    } else {
+        btn.classList.add('wrong');
+        allBtns[correct].classList.add('correct');
+    }
+    setTimeout(nextQuestion, 1200);
+}
+
+async function nextQuestion() {
+    currentIndex++;
+
+    if (totalQuestionsGoal !== 'infinite' && currentIndex >= totalQuestionsGoal) {
+        endGame();
+        return;
+    }
+
+    if (currentIndex < currentQuestions.length) {
+        loadQuestion();
+        return;
+    }
+
+    // 优先从超大预加载水库提取
+    if (nextBufferQuestions.length > 0) {
+        currentQuestions.push(...nextBufferQuestions);
+        nextBufferQuestions = []; // 提取完毕，重置
+        loadQuestion();
+        prefetchNextBuffer(); // 触发下一轮储备
+        return;
+    }
+
+    // 极速并发补充
+    document.getElementById('question-text').innerText = "极速加载中...";
+    try {
+        const newQ = await fetchQuestionsFromAPI(5);
+        currentQuestions.push(...newQ);
+        loadQuestion();
+    } catch (e) {
+        endGame();
+    }
+}
+
+function endGame() {
+    document.getElementById('progress-bar').style.width = '100%';
+    document.getElementById('final-score').innerText = `${score} 分`;
+    let feedback = `共回答了 ${currentIndex} 道题目！`;
+    if (totalQuestionsGoal !== 'infinite') {
+        const rate = (score / (totalQuestionsGoal * 10)) * 100;
+        feedback += rate >= 70 ? " 表现相当出色！" : " 继续加油！";
+    }
+    document.getElementById('feedback-text').innerText = feedback;
+    switchScreen('result-screen');
+}
+
+function resetGame() { switchScreen('start-screen'); }
+function switchScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

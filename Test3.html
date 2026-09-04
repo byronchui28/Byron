@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>英文單詞學習與專業語音測試遊戲</title>
-  <!-- 引入微軟 Azure Speech SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk/distbrowser/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>
+  <title>英文單詞學習與語音測試遊戲</title>
   <style>
     :root {
       --primary: #4a90e2;
@@ -29,16 +27,6 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     h1 { text-align: center; color: var(--primary); }
-    .status-bar {
-      background: #eef5fc;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      border: 1px solid #b8daff;
-      text-align: center;
-      font-weight: bold;
-      color: #155724;
-    }
     .nav-tabs {
       display: flex;
       justify-content: center;
@@ -118,8 +106,8 @@
       margin-top: 20px;
     }
     .test-prompt { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
-    .score-display { font-size: 22px; font-weight: bold; margin-top: 15px; }
-    .rec-status { font-size: 14px; color: #7f8c8d; margin-top: 8px; }
+    .score-display { font-size: 20px; font-weight: bold; margin-top: 15px; }
+    .rec-status { font-size: 14px; color: #7f8c8d; margin-top: 5px; }
 
     .options-grid {
       display: grid;
@@ -166,11 +154,7 @@
 <body>
 
 <div class="container">
-  <h1>英文學習與專業語音測試遊戲</h1>
-
-  <div class="status-bar">
-    ⚡ 提示：已自動配置微軟 Azure 音素級高精度語音評測 API
-  </div>
+  <h1>英文學習與測試遊戲</h1>
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('learn')">📚 學習模式</button>
@@ -205,7 +189,7 @@
       <label>到：<select id="test-end"></select></label>
       <label>模式：
         <select id="test-mode" onchange="resetTestArea()">
-          <option value="1">模式 1：看中文發音英文 (Azure 音素級專業評分)</option>
+          <option value="1">模式 1：看中文發音英文 (專業高標準評分)</option>
           <option value="2">模式 2：聽英文選中文 (4選1對錯)</option>
         </select>
       </label>
@@ -218,18 +202,18 @@
       <button id="listen-btn" class="btn-action" style="display:none; margin-bottom:15px;" onclick="playTestAudio()">🔊 重新播放發音</button>
 
       <div id="mode1-controls">
-        <button id="mic-btn" class="btn-action" onclick="startAzureAssessment()">🎤 開始回答 (錄音評測)</button>
-        <div id="rec-status" class="rec-status">點擊按鈕後請清楚朗讀目標單詞...</div>
+        <button id="mic-btn" class="btn-action" onclick="toggleRecognition()">🎤 開始回答 (錄音)</button>
+        <div id="rec-status" class="rec-status">點擊麥克風按鈕開始作答...</div>
       </div>
 
       <div id="options-container" class="options-grid" style="display:none;"></div>
 
       <div id="test-result" class="score-display"></div>
       
-      <!-- 得分低於 5 分時顯示的正確發音輔導區 -->
+      <!-- 低於 5 分時顯示的正確發音輔導區 -->
       <div id="correction-area" class="correction-box" style="display:none;">
-        <div>標準答案：<strong id="correct-word-text"></strong> <span id="correct-phonetic-text" style="color:#e67e22;"></span></div>
-        <button class="btn-action" style="margin-top:8px;" onclick="playCorrectAudio()">🔊 聽正確發音</button>
+        <div>標準單詞：<strong id="correct-word-text"></strong> <span id="correct-phonetic-text" style="color:#e67e22;"></span></div>
+        <button class="btn-action" style="margin-top:8px;" onclick="playCorrectAudio()">🔊 點擊收聽正確發音</button>
       </div>
 
       <div>
@@ -240,10 +224,6 @@
 </div>
 
 <script>
-// 您提供並內建的微軟 Azure Key 與 區域配置
-const AZURE_SPEECH_KEY = "2fbTVaK2EXLhzpKyjq7R8er1RJ9z7duDDoIhlfCyG35YqO4O6nfkJQQJ99CIACYeBjFXJ3w3AAAYACOGhcj4";
-const AZURE_REGION = "eastus";
-
 const lessonsData = {
   1: [
     { word: "family", phonetic: "['fæməli]", meaning: "名. 家庭；家人" },
@@ -577,7 +557,7 @@ const lessonsData = {
     { word: "dog", phonetic: "[dɒɡ]", meaning: "名. 狗" },
     { word: "jog", phonetic: "[dʒɒɡ]", meaning: "動. 慢跑" },
     { word: "fog", phonetic: "[fɒɡ]", meaning: "名. 霧" },
-    { word: "frog", phonetic: "[frɒɡ]", meaning: "名. 青湧" }
+    { word: "frog", phonetic: "[frɒɡ]", meaning: "名. 青蛙" }
   ],
   35: [
     { word: "chicken", phonetic: "['tʃɪkɪn]", meaning: "名. 雞；雞肉" },
@@ -970,6 +950,8 @@ const lessonsData = {
 let allWordsPool = [];
 let currentTestPool = [];
 let currentQIndex = 0;
+let isListening = false;
+let recognition = null;
 let optionAnswered = false;
 
 window.onload = () => {
@@ -988,6 +970,7 @@ window.onload = () => {
   });
 
   renderWords();
+  initSpeechRecognition();
 };
 
 function switchTab(tab) {
@@ -1046,61 +1029,46 @@ function renderWords() {
   });
 }
 
-// 核心：微軟 Azure 音素級評測 API 調用
-function startAzureAssessment() {
-  const q = currentTestPool[currentQIndex];
-  const targetWord = q.word;
-  const statusDiv = document.getElementById('rec-status');
-  const resultDiv = document.getElementById('test-result');
-  const correctionArea = document.getElementById('correction-area');
+function initSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('rec-status').innerText = "您的瀏覽器不支援語音識別功能 (建議使用 Chrome)";
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
-  statusDiv.innerText = "🛑 正在錄音並進行微軟聲學音素分析，請朗讀單詞...";
-  resultDiv.innerText = "";
-  correctionArea.style.display = "none";
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim().toLowerCase();
+    document.getElementById('rec-status').innerText = `識別結果: "${transcript}"`;
+    evaluateAnswer(transcript);
+  };
 
-  // 配置 Azure Speech SDK
-  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(AZURE_SPEECH_KEY, AZURE_REGION);
-  speechConfig.speechRecognitionLanguage = document.getElementById('accent-select').value || "en-US";
-  const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-  const recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+  recognition.onerror = (event) => {
+    document.getElementById('rec-status').innerText = `識別失敗: ${event.error}`;
+    isListening = false;
+  };
 
-  // 啟用微軟專業發音評估 (Pronunciation Assessment)
-  const pronConfig = new SpeechSDK.PronunciationAssessmentConfig(
-    targetWord,
-    SpeechSDK.PronunciationAssessmentGradingSystem.HundredMark,
-    SpeechSDK.PronunciationAssessmentGranularity.Phoneme,
-    true
-  );
-  pronConfig.applyTo(recognizer);
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic-btn').innerText = "🎤 開始回答 (錄音)";
+  };
+}
 
-  recognizer.recognizeOnceAsync(result => {
-    statusDiv.innerText = "分析完成！";
-    const pronResult = SpeechSDK.PronunciationAssessmentResult.fromResult(result);
-    
-    // 取得微軟音素準確度分數 (0-100分)
-    const accuracyScore = pronResult.accuracyScore || 0;
-    // 轉換為 1-10 分
-    const finalScore = Math.max(1, Math.round(accuracyScore / 10));
+function toggleRecognition() {
+  if (!recognition) return;
+  const accent = document.getElementById('accent-select').value;
+  recognition.lang = accent;
 
-    if (finalScore >= 6) {
-      resultDiv.style.color = "#28a745";
-      resultDiv.innerText = `得分：${finalScore} / 10 分 (Azure音素原分:${accuracyScore}) - 發音標準！`;
-      correctionArea.style.display = "none";
-    } else {
-      resultDiv.style.color = "#dc3545";
-      resultDiv.innerText = `得分：${finalScore} / 10 分 (Azure音素原分:${accuracyScore}) - 發音不合格！`;
-      
-      // 得分低於 5 分顯示正確發音輔導區
-      document.getElementById('correct-word-text').innerText = q.word;
-      document.getElementById('correct-phonetic-text').innerText = q.phonetic;
-      correctionArea.style.display = "inline-block";
-    }
-
-    recognizer.close();
-  }, err => {
-    statusDiv.innerText = "評測失敗: " + err;
-    recognizer.close();
-  });
+  if (isListening) {
+    recognition.stop();
+  } else {
+    recognition.start();
+    isListening = true;
+    document.getElementById('mic-btn').innerText = "🛑 正在聆聽中...";
+    document.getElementById('rec-status').innerText = "請說出英文單詞...";
+  }
 }
 
 function startTest() {
@@ -1149,7 +1117,7 @@ function loadQuestion() {
     document.getElementById('listen-btn').style.display = 'none';
     document.getElementById('mode1-controls').style.display = 'block';
     document.getElementById('options-container').style.display = 'none';
-    document.getElementById('rec-status').innerText = "點擊按鈕後請清楚朗讀目標單詞...";
+    document.getElementById('rec-status').innerText = "點擊麥克風按鈕開始作答...";
   } else {
     document.getElementById('test-prompt').innerText = "🎧 請聽發音選擇正確中文釋義";
     document.getElementById('test-phonetic').innerText = q.phonetic;
@@ -1218,6 +1186,87 @@ function playTestAudio() {
 function playCorrectAudio() {
   const q = currentTestPool[currentQIndex];
   speak(q.word);
+}
+
+// 萊文斯坦距離 (Levenshtein Distance)
+function getLevenshteinDistance(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
+// 專業嚴謹評分演算法（高標準階梯扣分）
+function evaluateAnswer(userSpeech) {
+  const q = currentTestPool[currentQIndex];
+  const resultDiv = document.getElementById('test-result');
+  const correctionArea = document.getElementById('correction-area');
+  
+  const target = q.word.toLowerCase().trim();
+  const input = userSpeech.toLowerCase().trim();
+
+  // 1. 完全正確 -> 10 分
+  if (input === target) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：10 / 10 分 (完美！發音非常標準)`;
+    correctionArea.style.display = 'none';
+    return;
+  }
+
+  // 計算基本相似度
+  const distance = getLevenshteinDistance(input, target);
+  const maxLength = Math.max(input.length, target.length);
+  const similarity = 1 - (distance / maxLength);
+
+  let score = 1;
+
+  // 2. 嚴格階梯判定
+  if (similarity >= 0.95) {
+    score = 9; // 近乎完美（僅極細微尾音）
+  } else if (similarity >= 0.85) {
+    score = 8; // 優秀（例如單複數或微小口音偏差）
+  } else if (similarity >= 0.75) {
+    score = 6; // 及格（主幹音素正確，有些許瑕疵）
+  } else if (similarity >= 0.60) {
+    score = 4; // 判定不合格（例如 parent 讀成 pardon）
+  } else if (similarity >= 0.40) {
+    score = 2; // 較差
+  } else {
+    score = 1; // 嚴重不匹配
+  }
+
+  // 3. 關鍵音素懲罰：若首字母或結尾字母嚴重偏離，進一步壓低得分
+  if (input.length > 0 && target.length > 0) {
+    if (input[0] !== target[0]) {
+      score = Math.min(score, 3); // 首字母都不對，直接不及格
+    }
+  }
+
+  // 4. 展示結果與輔導
+  if (score >= 6) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：${score} / 10 分 (發音基本合格)`;
+    correctionArea.style.display = 'none';
+  } else {
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `得分：${score} / 10 分 (不合格！發音偏差較大)`;
+    
+    // 得分低於 5 分，顯示正確發音示範區
+    document.getElementById('correct-word-text').innerText = q.word;
+    document.getElementById('correct-phonetic-text').innerText = q.phonetic;
+    correctionArea.style.display = 'inline-block';
+  }
 }
 
 function nextQuestion() {
