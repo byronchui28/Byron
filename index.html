@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>我的游戏合集 · 大厅</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{min-height:100vh;background:radial-gradient(circle at 50% 10%,#1a1a2e,#050508);font-family:"Microsoft YaHei",sans-serif;color:#eee;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+  h1{font-size:34px;letter-spacing:8px;margin-bottom:6px;background:linear-gradient(90deg,#7ecbff,#ffe27a,#ff8ac0);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:#7787a8;margin-bottom:36px;font-size:14px;letter-spacing:2px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;max-width:1060px;width:100%}
+  a.card{display:block;text-decoration:none;color:#eee;background:#141c2e;border:1.5px solid #2c3e63;border-radius:16px;padding:26px 24px;transition:transform .18s,border-color .18s,box-shadow .18s}
+  a.card:hover{transform:translateY(-5px);border-color:#ffd76a;box-shadow:0 14px 40px rgba(255,215,106,.15)}
+  .ico{font-size:42px;margin-bottom:12px}
+  .card h2{font-size:19px;margin-bottom:8px}
+  .card p{font-size:12.5px;color:#93a3c4;line-height:1.65}
+  .tag{display:inline-block;margin-top:12px;font-size:11px;padding:3px 10px;border-radius:9px;background:#1d2740;color:#7ecbff}
+  .hot{background:#3a2a14;color:#ffd76a}
+  footer{margin-top:44px;color:#555e78;font-size:12px}
+</style>
+</head>
+<body>
+<h1>我 的 游 戏 合 集</h1>
+<div class="sub">共 5 款 · 点击卡片即玩</div>
+
+<div class="grid">
+  <a class="card" href="打砖块PRO.html">
+    <div class="ico">🧱</div>
+    <h2>专业打砖块</h2>
+    <p>无限关卡砖阵 · 连击计分 · 四种掉落道具（加宽/三球/慢速/加命）· 粒子特效</p>
+    <span class="tag">鼠标 / 方向键 · P暂停</span>
+  </a>
+  <a class="card" href="弹珠台PRO.html">
+    <div class="ico">🎱</div>
+    <h2>专业弹珠台</h2>
+    <p>真实重力物理 · 双挡板角速度击球 · 反弹器/弹弓/圆靶 · 三灯倍率 ×5 · 球体救援</p>
+    <span class="tag hot">← → 挡板 · 空格蓄力发射</span>
+  </a>
+  <a class="card" href="八球台球PRO.html">
+    <div class="ico">🎯</div>
+    <h2>八球台球 · 专业版</h2>
+    <p>标准八球规则 · 高低杆与左右塞 · 犯规自由球 · 力度条与幽灵球辅助</p>
+    <span class="tag hot">双人轮流 · 自由球摆放</span>
+  </a>
+  <a class="card" href="斯诺克英式PRO.html">
+    <div class="ico">🏆</div>
+    <h2>斯诺克 · 英式台球</h2>
+    <p>红彩交替 · D区开球 · 罚分规则 · 超分判定 · 单杆最高统计 · AI 对手</p>
+    <span class="tag hot">对战 / 练习双模式</span>
+  </a>
+  <a class="card" href="休闲台球经典版.html">
+    <div class="ico">💫</div>
+    <h2>休闲台球 · 经典版</h2>
+    <p>轻松上手的迷你台球，适合快速来一局</p>
+    <span class="tag">休闲向</span>
+  </a>
+</div>
+
+<footer>全部游戏为单文件 HTML，双击即可离线游玩 · 高分记录保存在浏览器本地</footer>
+</body>
+</html>

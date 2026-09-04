@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRO 八球台球</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;user-select:none}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;background:radial-gradient(circle at 50% 20%,#2c2c38,#0b0b12);font-family:"Microsoft YaHei",sans-serif;color:#eee;overflow:hidden}
+  #header{display:flex;align-items:stretch;gap:14px;width:min(96vw,1100px)}
+  .pcard{flex:1;background:#151a26;border:2px solid #262d3d;border-radius:12px;padding:7px 13px;transition:border-color .25s,box-shadow .25s;position:relative}
+  .pcard.active{border-color:#ffd76a;box-shadow:0 0 16px rgba(255,215,106,.3)}
+  .pcard.active::before{content:'▸';position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:#ffd76a;font-size:15px}
+  .pcard h3{font-size:15px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+  .pgroup{font-size:11.5px;padding:2px 9px;border-radius:10px;background:#232a3a;color:#9fb0c8}
+  .pgroup.solid{background:#3a2f14;color:#ffd76a}
+  .pgroup.stripe{background:#14243a;color:#7fc4ff}
+  .minis{display:flex;gap:4px;flex-wrap:wrap;min-height:14px}
+  .mb{width:13px;height:13px;border-radius:50%;border:1.5px solid #fff}
+  .mb.dim{opacity:.16}
+  #center{display:flex;flex-direction:column;justify-content:center;gap:3px;text-align:center;min-width:210px}
+  #center h1{font-size:21px;letter-spacing:5px;color:#f0d59a;text-shadow:0 2px 8px #000}
+  #status{min-height:20px;font-size:13.5px;color:#ffd76a;line-height:1.3}
+  #wrap{position:relative}
+  canvas#cv{display:block;width:min(96vw,1100px);border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.65);cursor:crosshair;touch-action:none}
+  .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,6,12,.66);backdrop-filter:blur(4px);border-radius:12px;z-index:9}
+  .card{background:#171d2c;border:1px solid #39445f;border-radius:16px;padding:34px 50px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .card h2{color:#ffd76a;font-size:27px;letter-spacing:6px;margin-bottom:14px}
+  .card p{font-size:14.5px;color:#bcc7dd;margin-bottom:8px;line-height:1.7}
+  .card .small{font-size:12px;color:#78829a;margin-top:10px}
+  button{background:linear-gradient(#3d6ea5,#264971);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:14.5px;cursor:pointer;font-family:inherit;margin:4px}
+  button:hover{filter:brightness(1.25)}
+  button.mini{padding:5px 12px;font-size:12.5px;background:#232a3a;border:1px solid #39445f}
+  button.mini.off{opacity:.45}
+  #controls{display:flex;align-items:center;gap:10px;width:min(96vw,1100px)}
+  #meterWrap{flex:1;height:11px;background:#191d28;border-radius:6px;overflow:hidden;border:1px solid #262d3d}
+  #mf{height:100%;width:0%;background:linear-gradient(90deg,#43a047,#ffc107,#e53935)}
+  #pw{font-size:12px;color:#9fb0c8;width:44px}
+  #hint{font-size:12px;color:#778;text-align:center;line-height:1.55}
+  #spinBox{position:absolute;right:12px;bottom:12px;width:88px;height:88px;border-radius:50%;background:rgba(8,12,18,.78);border:2px solid #46506a;cursor:pointer;touch-action:none;z-index:5}
+  #spinDot{position:absolute;width:15px;height:15px;border-radius:50%;background:#ff5555;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(255,80,80,.8);pointer-events:none}
+  #spinLabel{position:absolute;right:108px;bottom:46px;font-size:11px;color:#7fa; text-align:right;line-height:1.5;pointer-events:none;text-shadow:0 1px 3px #000}
+  .radioRow{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+  .radioRow label{border:1.5px solid #39445f;border-radius:10px;padding:10px 20px;cursor:pointer;font-size:15px;color:#aeb9cf}
+  .radioRow input{display:none}
+  .radioRow input:checked+span{color:#ffd76a;font-weight:bold}
+  .radioRow label:has(input:checked){border-color:#ffd76a;background:#2a2416}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="pcard" id="p0"><h3><span id="n0">玩家 1</span><span class="pgroup" id="g0">待定</span></h3><div class="minis" id="m0"></div></div>
+  <div id="center"><h1>PRO 八球</h1><div id="status">选择模式开始游戏</div></div>
+  <div class="pcard" id="p1"><h3><span id="n1">玩家 2</span><span class="pgroup" id="g1">待定</span></h3><div class="minis" id="m1"></div></div>
+</div>
+
+<div id="wrap">
+  <canvas id="cv"></canvas>
+
+  <div id="spinBox"><div id="spinDot"></div></div>
+  <div id="spinLabel">高杆<br>左塞 · 右塞<br>低杆<br><span style="color:#667">双击复位</span></div>
+
+  <div class="overlay" id="menu"><div class="card">
+    <h2>PRO 八球台球</h2>
+    <div class="radioRow">
+      <label><input type="radio" name="gm" value="vs" checked><span>⚔ 双人对战</span></label>
+      <label><input type="radio" name="gm" value="practice"><span>🎯 单人练习</span></label>
+    </div>
+    <p style="font-size:13px;color:#8892a8">对战：随机分全色 / 花色，清组后打 8 号获胜<br>犯规换自由球 · 非法开球重新摆球 · 8 号误进判负</p>
+    <button onclick="startFromMenu()">开始游戏</button>
+  </div></div>
+
+  <div class="overlay" id="over"><div class="card">
+    <h2 id="winTxt"></h2>
+    <p id="whyTxt"></p>
+    <button onclick="restart()">再来一局</button>
+    <button class="mini" onclick="showMenu()">主菜单</button>
+  </div></div>
+
+  <div class="overlay" id="rulesOv"><div class="card" style="max-width:520px">
+    <h2 style="font-size:20px">规则说明</h2>
+    <p style="text-align:left;font-size:13px">
+      · 开球后首个合法进球决定分组（全色 1-7 / 花色 9-15）<br>
+      · 必须先清完己方组，再合法打进 8 号球获胜<br>
+      · 犯规行为：母球落袋 / 空杆 / 首碰对方球或错触 8 号 / 触球后无球吃库且未进球<br>
+      · 犯规后对方获得自由球，可将母球置于台上任意位置<br>
+      · 提前进 8 号、或打进 8 号同时犯规 → 直接判负<br>
+      · 开球须 ≥4 颗球吃库或有进球，否则重新摆球换人开球<br>
+      · 开球时 8 号入袋 → 取出重置到置球点，继续比赛
+    </p>
+    <button onclick="document.getElementById('rulesOv').style.display='none'">知道了</button>
+  </div></div>
+</div>
+
+<div id="controls">
+  <button class="mini" onclick="restart()">重新开始</button>
+  <button class="mini" onclick="showMenu()">主菜单</button>
+  <button class="mini" onclick="toggleRules()">规则</button>
+  <button class="mini" id="sndBtn" onclick="toggleSound()">声音：开</button>
+  <button class="mini" id="gdBtn" onclick="toggleGuides()">辅助线：开</button>
+  <div id="meterWrap"><div id="mf"></div></div>
+  <span id="pw">0%</span>
+</div>
+<p id="hint">移动鼠标瞄准（←/→ 微调，Shift 更精细）· 按住拖拽蓄力，松开出杆 · 右下圆盘设置高低杆与左右塞</p>
+
+<script>
+'use strict';
+const W=1100,H=640,R=12,PR=23,JAW_R=5;
+const T={x:90,y:90,w:920,h:460};
+const FOOT={x:T.x+T.w*.72,y:T.y+T.h/2};
+const HEAD={x:T.x+T.w*.25,y:T.y+T.h/2};
+const PK=[
+  {x:T.x,y:T.y,jaws:[[T.x+PR-4,T.y],[T.x,T.y+PR-4]]},
+  {x:T.x+T.w/2,y:T.y-3,jaws:[[T.x+T.w/2-PR+4,T.y],[T.x+T.w/2+PR-4,T.y]]},
+  {x:T.x+T.w,y:T.y,jaws:[[T.x+T.w-PR+4,T.y],[T.x+T.w,T.y+PR-4]]},
+  {x:T.x,y:T.y+T.h,jaws:[[T.x+PR-4,T.y+T.h],[T.x,T.y+T.h-PR+4]]},
+  {x:T.x+T.w/2,y:T.y+T.h+3,jaws:[[T.x+T.w/2-PR+4,T.y+T.h],[T.x+T.w/2+PR-4,T.y+T.h]]},
+  {x:T.x+T.w,y:T.y+T.h,jaws:[[T.x+T.w-PR+4,T.y+T.h],[T.x+T.w,T.y+T.h-PR+4]]}
+];
+const COL={1:'#f6c33a',2:'#2058c0',3:'#d1342f',4:'#6a2c91',5:'#ec7014',6:'#1d7a43',7:'#8c2f39',8:'#161616'};
+const colOf=n=>n<=8?COL[n]:COL[n-8];
+const grpOf=n=>n===8?'eight':n<=7?'solid':'stripe';
+const gname=g=>g==='solid'?'全色球':g==='stripe'?'花色球':'八号球';
+
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const DPR=Math.min(window.devicePixelRatio||1,2);
+cv.width=W*DPR;cv.height=H*DPR;cv.style.height='auto';cv.style.aspectRatio=W+'/'+H;
+ctx.setTransform(DPR,0,0,DPR,0,0);
+
+let balls=[],cue=null;
+let mode='vs',players,isOpen,turn,phase='MENU',shot=null;
+let shots=[0,0],fouls=0,breaker=0,isBreak=true,startT=0,soundOn=true;
+let aimAng=Math.PI,charging=false,chargeDir={x:-1,y:0},power=0;
+let spin={x:0,y:0},mouse={x:0,y:0,in:false},ghost={x:0,y:0,ok:false};
+let guidesOn=true;
+
+const $=id=>document.getElementById(id);
+
+function mkCue(){return{n:0,x:HEAD.x,y:HEAD.y,vx:0,vy:0,in:false,roll:0,bandA:0,followPending:false,fvx:0,fvy:0,spinX:0,spinY:0};}
+
+function rack(){
+  balls=[];cue=mkCue();balls.push(cue);
+  const order=[1,2,9,3,8,10,4,14,7,11,12,6,15,13,5];
+  const dx=Math.sqrt(3)*R+.5,dy=2*R+.5;let k=0;
+  for(let r=0;r<5;r++)for(let c=0;c<=r;c++)
+    balls.push({n:order[k++],x:FOOT.x+r*dx,y:FOOT.y+(c-r/2)*dy,vx:0,vy:0,in:false,roll:0,bandA:Math.PI/2});
+}
+
+function newGame(){
+  rack();
+  players=[{name:'玩家 1',group:null},{name:'玩家 2',group:null}];
+  isOpen=true;turn=breaker;shots=[0,0];fouls=0;isBreak=true;
+  phase='AIM';aimAng=0;setAimFromMouse();
+  $('over').style.display='none';$('menu').style.display='none';
+  $('p1').style.display=mode==='practice'?'none':'flex';
+  $('n0').textContent=mode==='practice'?'单人练习':'玩家 1';
+  resetSpin();updPanels();startT=performance.now();
+  statusMsg((mode==='practice'?'练习开始！':players[turn].name+' 开球')+'　祝好运','gold');
+}
+
+function cur(){return players[turn];}
+function oppP(){return players[1-turn];}
+const remain=g=>balls.filter(b=>!b.in&&grpOf(b.n)===g).length;
+
+let AC=null;
+function tone(f,dur,type,g){
+  if(!soundOn)return;
+  try{
+    if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
+    const o=AC.createOscillator(),v=AC.createGain();
+    o.type=type;o.frequency.value=f;
+    v.gain.setValueAtTime(g,AC.currentTime);
+    v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+dur);
+    o.connect(v).connect(AC.destination);o.start();o.stop(AC.currentTime+dur);
+  }catch(e){}
+}
+let lastSnd=0;
+function snd(f,d,t,g){const n=performance.now();if(n-lastSnd<24)return;lastSnd=n;tone(f,d,t,g);}
+
+function statusMsg(t,cls){
+  const e=$('status');e.textContent=t;
+  e.style.color=cls==='bad'?'#ff7070':cls==='good'?'#8fe08f':'#ffd76a';
+}
+
+function updPanels(){
+  if(mode==='practice'){
+    $('g0').textContent='清除全部彩球';$('g0').className='pgroup stripe';
+    const m=$('m0');m.innerHTML='';
+    for(const n of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]){
+      const b=balls.find(x=>x.n===n),d=document.createElement('div');
+      d.className='mb'+(b.in?' dim':'');
+      d.style.background=n>8?`linear-gradient(transparent 30%,${colOf(n)} 30%,${colOf(n)} 70%,transparent 70%)`:colOf(n);
+      m.appendChild(d);
+    }
+    return;
+  }
+  for(let i=0;i<2;i++){
+    const p=players[i];
+    $('p'+i).classList.toggle('active',i===turn&&phase!=='OVER'&&phase!=='MENU');
+    const ge=$('g'+i);
+    if(p.group){ge.textContent=gname(p.group)+' '+remain(p.group)+' 剩';ge.className='pgroup '+p.group;}
+    else{ge.textContent=isOpen?'待定':'—';ge.className='pgroup';}
+    const m=$('m'+i);m.innerHTML='';
+    (p.group==='stripe'?[9,10,11,12,13,14,15]:p.group==='solid'?[1,2,3,4,5,6,7]:[]).forEach(n=>{
+      const b=balls.find(x=>x.n===n),d=document.createElement('div');
+      d.className='mb'+(b.in?' dim':'');
+      d.style.background=n>8?`linear-gradient(transparent 30%,${colOf(n)} 30%,${colOf(n)} 70%,transparent 70%)`:colOf(n);
+      m.appendChild(d);
+    });
+  }
+}
+
+function potBall(b){
+  b.in=true;b.vx=b.vy=0;
+  shot.potted.push(b.n);
+  snd(500,.12,'sine',.09);setTimeout(()=>tone(310,.16,'sine',.07),75);
+  updPanels();
+}
+
+function respotEight(){
+  const e=balls.find(b=>b.n===8);e.in=false;e.vx=e.vy=0;
+  let x=FOOT.x;while(balls.some(o=>o!==e&&!o.in&&Math.hypot(o.x-x,o.y-e.y)<2*R+1)&&x<T.x+T.w-R)x+=R;
+  e.x=x;e.y=FOOT.y;
+}
+
+function physStep(dt){
+  if(phase==='RUN'){window.__pc=(window.__pc||0)+1;window.__pdt=dt;}
+  if(phase!=='RUN')return;
+  for(const b of balls){
+    if(b.in)continue;
+    b.x+=b.vx*dt;b.y+=b.vy*dt;
+    const sp=Math.hypot(b.vx,b.vy);
+    if(sp>0){
+      const k=sp>150?1.05:.6,f=Math.exp(-k*dt);
+      b.vx*=f;b.vy*=f;
+      b.roll+=sp*dt/R;
+      if(Math.hypot(b.vx,b.vy)<6)b.vx=b.vy=0;
+    }
+    if(b.n===0)b.spinX*=Math.exp(-.35*dt);
+    for(const p of PK){
+      if(Math.hypot(b.x-p.x,b.y-p.y)<PR){
+          if(b.n===0){b.in=true;shot.cuePot=true;snd(380,.2,'sine',.1);}
+          else{
+            potBall(b);
+            if(isBreak&&b.n===8){respotEight();shot.potted=shot.potted.filter(n=>n!==8);shot.respot8=true;statusMsg('开球 8 号入袋，已重置至置球点');}
+          }
+        break;
+      }
+    }
+    if(b.in)continue;
+    for(const p of PK)for(const j of p.jaws){
+      const dx=b.x-j[0],dy=b.y-j[1],d=Math.hypot(dx,dy),min=R+JAW_R;
+      if(d>0&&d<min){
+        const nx=dx/d,ny=dy/d;
+        b.x=j[0]+nx*min;b.y=j[1]+ny*min;
+        const vn=b.vx*nx+b.vy*ny;
+        if(vn<0){b.vx-=vn*nx*1.55;b.vy-=vn*ny*1.55;snd(200,.03,'triangle',.03);}
+      }
+    }
+    const eng=b.n===0?cue.spinX:0;
+    if(b.x-R<T.x&&b.vx<0){b.x=T.x+R;b.vy+=eng*b.vx*.22;b.vx*=-.76;b.vy*=.985;if(b.n===0){cue.spinX*=.5;}if(shot.first){shot.rail=true;shot.railSet.add(b.n);}snd(145,.04,'triangle',.03);}
+    if(b.x+R>T.x+T.w&&b.vx>0){b.x=T.x+T.w-R;b.vy+=eng*b.vx*.22;b.vx*=-.76;b.vy*=.985;if(b.n===0){cue.spinX*=.5;}if(shot.first){shot.rail=true;shot.railSet.add(b.n);}snd(145,.04,'triangle',.03);}
+    if(b.y-R<T.y&&b.vy<0){b.y=T.y+R;b.vx-=eng*b.vy*.22;b.vy*=-.76;b.vx*=.985;if(b.n===0){cue.spinX*=.5;}if(shot.first){shot.rail=true;shot.railSet.add(b.n);}snd(145,.04,'triangle',.03);}
+    if(b.y+R>T.y+T.h&&b.vy>0){b.y=T.y+T.h-R;b.vx-=eng*b.vy*.22;b.vy*=-.76;b.vx*=.985;if(b.n===0){cue.spinX*=.5;}if(shot.first){shot.rail=true;shot.railSet.add(b.n);}snd(145,.04,'triangle',.03);}
+    if(b.x<T.x||b.x>T.x+T.w||b.y<T.y||b.y>T.y+T.h){
+      b.x=Math.min(Math.max(b.x,T.x),T.x+T.w);
+      b.y=Math.min(Math.max(b.y,T.y),T.y+T.h);
+    }
+  }
+  for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){
+    const a=balls[i],b=balls[j];
+    if(a.in||b.in)continue;
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+    if(d>0&&d<2*R){
+      const nx=dx/d,ny=dy/d,ov=(2*R-d)/2;
+      a.x-=nx*ov;a.y-=ny*ov;b.x+=nx*ov;b.y+=ny*ov;
+      const rv=(a.vx-b.vx)*nx+(a.vy-b.vy)*ny;
+      if(rv>0){
+        const jm=rv*.965;
+        a.vx-=jm*nx;a.vy-=jm*ny;b.vx+=jm*nx;b.vy+=jm*ny;
+        if(a.n===0||b.n===0){
+          const cb=a.n===0?a:b,ob=a.n===0?b:a;
+          if(!shot.first){
+            shot.first=ob.n;
+            if(cb.followPending){
+              const amt=cb.spinY*Math.min(360,rv*.45);
+              cb.vx+=cb.fvx*amt;cb.vy+=cb.fvy*amt;
+              cb.followPending=false;
+            }
+          }
+          if(ob.bandA!==undefined)ob.bandA=Math.atan2(ob.vy,ob.vx)+Math.PI/2;
+        }
+        snd(Math.min(750,230+rv*.42),.05,'triangle',Math.min(.09,rv/9000));
+      }
+    }
+  }
+}
+
+function shoot(){
+  const sp=220+Math.pow(power,1.12)*1580;
+  cue.vx=chargeDir.x*sp;cue.vy=chargeDir.y*sp;
+  cue.fvx=chargeDir.x;cue.fvy=chargeDir.y;
+  cue.spinY=-spin.y;cue.spinX=spin.x;cue.followPending=true;
+  shots[turn]++;
+  shot={first:null,potted:[],rail:false,railSet:new Set(),cuePot:false,
+        remMine:cur().group?remain(cur().group):null,wasOpen:isOpen};
+  phase='RUN';
+  snd(185,.07,'square',.05);
+}
+
+function resolveShot(){
+  if(mode==='practice'){
+    if(shot.potted.includes(8)){
+      const win=!balls.some(b=>!b.in&&b.n>=1&&b.n<=15)&&!shot.cuePot;
+      return endPractice(win);
+    }
+    if(shot.cuePot){
+      let x=HEAD.x;while(balls.some(o=>o!==cue&&!o.in&&Math.hypot(o.x-x,o.y-HEAD.y)<2*R+2)&&x<T.x+T.w-R)x+=R;
+      cue.in=false;cue.x=x;cue.y=HEAD.y;cue.vx=cue.vy=0;
+      statusMsg('母球落袋，已放回头点','bad');fouls++;
+    }
+    phase='AIM';updPanels();return;
+  }
+
+  const me=cur();
+  const eight=shot.potted.includes(8);
+  let foul=null;
+  if(shot.cuePot)foul='母球落袋';
+  else if(shot.first===null)foul='空杆未触球';
+  else if(shot.wasOpen){if(shot.first===8)foul='开放局首碰 8 号';}
+  else{
+    const must8=shot.remMine===0,fg=grpOf(shot.first);
+    if(must8){if(fg!=='eight')foul='应先击打 8 号';}
+    else if(fg!==me.group)foul='首碰非己方球';
+  }
+  const scored=shot.potted.some(n=>n>0);
+  if(!foul&&!scored&&!shot.rail)foul='触球后无球吃库';
+
+  if(isBreak){
+    const legalBreak=scored||shot.respot8||shot.railSet.size>=4;
+    if(!legalBreak){
+      breaker=1-turn;turn=breaker;
+      statusMsg(`非法开球（需≥4颗球吃库或有进球），${cur().name} 重新开球`,'bad');
+      newGameKeepBreaker();
+      return;
+    }
+    isBreak=false;
+  }
+
+  if(eight){
+    const cleared=me.group&&shot.remMine===0&&!shot.wasOpen;
+    if(cleared&&!foul)return gameOver(turn,'合法打进 8 号，漂亮！');
+    return gameOver(1-turn,foul?`${me.name} 打进 8 号但犯规（${foul}）`:`${me.name} 提前打进 8 号`);
+  }
+
+  let msg='';
+  if(shot.wasOpen&&!foul){
+    const fp=shot.potted.find(n=>n>0);
+    if(fp!==undefined){
+      me.group=grpOf(fp);oppP().group=me.group==='solid'?'stripe':'solid';
+      isOpen=false;msg=`${me.name} 分得${gname(me.group)}！`;
+    }
+  }
+  const goodPot=!foul&&(isOpen||shot.potted.some(n=>n>0&&grpOf(n)===me.group));
+
+  if(foul){
+    if(shot.cuePot){cue.in=true;}
+    fouls++;turn=1-turn;phase='PLACE';
+    statusMsg(`犯规：${foul}！${cur().name} 获得自由球（点击放置母球）`,'bad');
+  }else if(goodPot){
+    phase='AIM';
+    statusMsg(msg+' 好球，继续击球','good');
+  }else{
+    turn=1-turn;phase='AIM';
+    statusMsg('未进球，轮到 '+cur().name);
+  }
+  cue.spinY=0;cue.spinX=0;resetSpin();
+  updPanels();
+}
+
+function newGameKeepBreaker(){
+  rack();
+  players=[{name:'玩家 1',group:null},{name:'玩家 2',group:null}];
+  isOpen=true;shots=[0,0];fouls=0;isBreak=true;phase='AIM';
+  cue.in=false;
+  $('over').style.display='none';
+  resetSpin();updPanels();
+  startT=performance.now();
+}
+
+function endPractice(win){
+  phase='OVER';
+  const secs=Math.round((performance.now()-startT)/1000);
+  $('winTxt').textContent=win?'挑战成功！':'挑战失败';
+  $('whyTxt').textContent=`用时 ${Math.floor(secs/60)}分${secs%60}秒 · 共 ${shots[0]} 杆 · ${fouls} 次失误`;
+  $('over').style.display='flex';
+}
+
+function gameOver(winner,why){
+  phase='OVER';
+  const secs=Math.round((performance.now()-startT)/1000);
+  $('winTxt').textContent=players[winner].name+' 获胜！';
+  $('whyTxt').textContent=why+` · 总杆数 ${shots[0]+shots[1]} · 犯规 ${fouls} 次 · 用时 ${Math.floor(secs/60)}分${secs%60}秒`;
+  $('over').style.display='flex';
+  updPanels();
+}
+
+function castRay(x,y,dx,dy){
+  let best={t:1e9,type:'wall',nx:0,ny:0,ball:null};
+  for(const b of balls){
+    if(b===cue||b.in)continue;
+    const ex=b.x-x,ey=b.y-y,pj=ex*dx+ey*dy;
+    if(pj<=0)continue;
+    const per2=ex*ex+ey*ey-pj*pj,rr=4*R*R;
+    if(per2>=rr)continue;
+    const t=pj-Math.sqrt(rr-per2);
+    if(t>0&&t<best.t)best={t,type:'ball',ball:b,nx:0,ny:0};
+  }
+  const ws=[];
+  if(dx<-1e-9)ws.push({t:(T.x+R-x)/dx,nx:-1,ny:0});
+  if(dx>1e-9)ws.push({t:(T.x+T.w-R-x)/dx,nx:1,ny:0});
+  if(dy<-1e-9)ws.push({t:(T.y+R-y)/dy,nx:0,ny:-1});
+  if(dy>1e-9)ws.push({t:(T.y+T.h-R-y)/dy,nx:0,ny:1});
+  for(const w of ws)if(w.t>0&&w.t<best.t)best={t:w.t,type:'wall',nx:w.nx,ny:w.ny,ball:null};
+  return best;
+}
+
+function pos(e){
+  const r=cv.getBoundingClientRect();
+  return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};
+}
+function setAimFromMouse(){
+  if(!mouse.in)return;
+  aimAng=Math.atan2(mouse.y-cue.y,mouse.x-cue.x);
+}
+function aimDir(){return{x:Math.cos(aimAng),y:Math.sin(aimAng)};}
+
+function validPlace(x,y){
+  if(x<T.x+R||x>T.x+T.w-R||y<T.y+R||y>T.y+T.h-R)return false;
+  return !balls.some(b=>b!==cue&&!b.in&&Math.hypot(b.x-x,b.y-y)<2*R+1);
+}
+
+cv.addEventListener('pointermove',e=>{
+  const p=pos(e);mouse=p;mouse.in=true;
+  if(phase==='PLACE'){
+    ghost={x:p.x,y:p.y,ok:validPlace(p.x,p.y)};
+  }else if(phase==='AIM'&&!charging){
+    setAimFromMouse();
+  }else if(phase==='AIM'&&charging){
+    const dx=p.x-cue.x,dy=p.y-cue.y,d=Math.hypot(dx,dy)||1;
+    const proj=-(dx*chargeDir.x+dy*chargeDir.y);
+    power=Math.min(Math.max(proj/230,0),1);
+    $('mf').style.width=power*100+'%';
+    $('pw').textContent=Math.round(power*100)+'%';
+  }
+});
+cv.addEventListener('pointerleave',()=>mouse.in=false);
+cv.addEventListener('pointerdown',e=>{
+  const p=pos(e);
+  if(phase==='PLACE'){
+    if(validPlace(p.x,p.y)){
+      cue.x=p.x;cue.y=p.y;cue.vx=cue.vy=0;cue.in=false;
+      phase='AIM';statusMsg(cur().name+' 请击球');
+      snd(300,.05,'sine',.04);
+    }else statusMsg('此处无法放置母球','bad');
+    return;
+  }
+  if(phase==='AIM'){
+    cv.setPointerCapture(e.pointerId);
+    charging=true;power=0;
+    chargeDir=aimDir();
+  }
+});
+cv.addEventListener('pointerup',()=>{
+  if(!charging)return;
+  charging=false;
+  $('mf').style.width='0%';$('pw').textContent='0%';
+  if(phase==='AIM'&&power>.04)shoot();
+  power=0;
+});
+window.addEventListener('keydown',e=>{
+  if(phase!=='AIM'||charging)return;
+  const st=e.shiftKey?.0004:.0035;
+  if(e.key==='ArrowLeft'){aimAng-=st;}
+  else if(e.key==='ArrowRight'){aimAng+=st;}
+  else if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();}
+});
+
+const sb=$('spinBox'),sd=$('spinDot');
+function setSpin(px,py){
+  const rect=sb.getBoundingClientRect();
+  let dx=px-rect.left-sb.offsetWidth/2,dy=py-rect.top-sb.offsetHeight/2;
+  const d=Math.hypot(dx,dy),mx=sb.offsetWidth/2-9;
+  if(d>mx){dx*=mx/d;dy*=mx/d;}
+  spin={x:dx/mx,y:dy/mx};
+  sd.style.left=`calc(50% + ${dx}px)`;sd.style.top=`calc(50% + ${dy}px)`;
+}
+sb.addEventListener('pointerdown',e=>{sb.setPointerCapture(e.pointerId);sb.drag=true;setSpin(e.clientX,e.clientY);});
+sb.addEventListener('pointermove',e=>{if(sb.drag)setSpin(e.clientX,e.clientY);});
+sb.addEventListener('pointerup',()=>sb.drag=false);
+sb.addEventListener('dblclick',resetSpin);
+function resetSpin(){spin={x:0,y:0};sd.style.left='50%';sd.style.top='50%';}
+
+function rr2(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+
+const bg=document.createElement('canvas');bg.width=W*DPR;bg.height=H*DPR;
+function renderBG(){
+  const c=bg.getContext('2d');c.setTransform(DPR,0,0,DPR,0,0);
+  const g=c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,'#6b4423');g.addColorStop(.5,'#8a5a2b');g.addColorStop(1,'#523315');
+  c.fillStyle=g;rr2(12,12,W-24,H-24,32);c.fill();
+  c.strokeStyle='#2a1906';c.lineWidth=5;rr2(12,12,W-24,H-24,32);c.stroke();
+  c.save();rr2(12,12,W-24,H-24,32);c.clip();
+  c.strokeStyle='rgba(0,0,0,.08)';c.lineWidth=1;
+  for(let i=0;i<26;i++){c.beginPath();c.moveTo(12,i*H/26+6);c.bezierCurveTo(W*.3,i*H/26-14,W*.7,i*H/26+22,W-12,i*H/26+2);c.stroke();}
+  c.restore();
+  c.fillStyle='#123f22';rr2(T.x-22,T.y-22,T.w+44,T.h+44,16);c.fill();
+  const felt=c.createRadialGradient(W/2,H/2,80,W/2,H/2,600);
+  felt.addColorStop(0,'#1c9e56');felt.addColorStop(1,'#0c6134');
+  c.fillStyle=felt;c.fillRect(T.x,T.y,T.w,T.h);
+  c.fillStyle='rgba(255,255,255,.03)';
+  for(let i=0;i<2600;i++)c.fillRect(T.x+Math.random()*T.w,T.y+Math.random()*T.h,1,1);
+  const vg=c.createRadialGradient(W/2,H/2,220,W/2,H/2,640);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.34)');
+  c.fillStyle=vg;c.fillRect(T.x,T.y,T.w,T.h);
+  c.strokeStyle='#0b5129';c.lineWidth=2;c.strokeRect(T.x,T.y,T.w,T.h);
+  c.strokeStyle='rgba(255,255,255,.2)';c.lineWidth=1.5;
+  c.beginPath();c.moveTo(T.x+T.w*.25,T.y);c.lineTo(T.x+T.w*.25,T.y+T.h);c.stroke();
+  c.fillStyle='#eae2ca';
+  c.beginPath();c.arc(T.x+T.w*.25,T.y+T.h/2,3,0,7);c.fill();
+  c.beginPath();c.arc(FOOT.x,FOOT.y,3,0,7);c.fill();
+  c.fillStyle='#ead9ba';
+  for(let i=1;i<8;i++){
+    if(i===4)continue;
+    const x=T.x+T.w*i/8;
+    [[T.y-40],[T.y+T.h+40]].forEach(([y])=>{c.beginPath();c.moveTo(x,y-4.5);c.lineTo(x+4,y+2.5);c.lineTo(x-4,y+2.5);c.fill();});
+  }
+  for(let i=1;i<4;i++){
+    const y=T.y+T.h*i/4;
+    [[T.x-40],[T.x+T.w+40]].forEach(([x])=>{c.beginPath();c.moveTo(x-4.5,y);c.lineTo(x+2.5,y+4);c.lineTo(x+2.5,y-4);c.fill();});
+  }
+  for(const p of PK){
+    const rg=c.createRadialGradient(p.x,p.y,2,p.x,p.y,PR+3);
+    rg.addColorStop(0,'#000');rg.addColorStop(.72,'#090b0f');rg.addColorStop(1,'#20180d');
+    c.fillStyle=rg;c.beginPath();c.arc(p.x,p.y,PR+3,0,7);c.fill();
+    c.strokeStyle='rgba(235,200,105,.42)';c.lineWidth=2;
+    c.beginPath();c.arc(p.x,p.y,PR+2,0,7);c.stroke();
+  }
+}
+renderBG();
+
+function drawBall(b,t){
+  ctx.fillStyle='rgba(0,0,0,.33)';
+  ctx.beginPath();ctx.ellipse(b.x+2.5,b.y+3.5,R*.95,R*.72,0,0,7);ctx.fill();
+  ctx.save();
+  ctx.beginPath();ctx.arc(b.x,b.y,R,0,7);ctx.clip();
+  if(b.n===0){ctx.fillStyle='#f7f3e9';ctx.fillRect(b.x-R,b.y-R,2*R,2*R);}
+  else if(b.n>8){
+    ctx.fillStyle='#f7f3e9';ctx.fillRect(b.x-R,b.y-R,2*R,2*R);
+    ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.bandA||Math.PI/2);
+    ctx.fillStyle=colOf(b.n);ctx.fillRect(-R,-R*.58,2*R,R*1.16);ctx.restore();
+  }else{ctx.fillStyle=colOf(b.n);ctx.fillRect(b.x-R,b.y-R,2*R,2*R);}
+  const hl=ctx.createRadialGradient(b.x-R*.38,b.y-R*.42,.5,b.x-R*.38,b.y-R*.42,R*1.5);
+  hl.addColorStop(0,'rgba(255,255,255,.92)');hl.addColorStop(.28,'rgba(255,255,255,.12)');hl.addColorStop(1,'rgba(0,0,0,.3)');
+  ctx.fillStyle=hl;ctx.fillRect(b.x-R,b.y-R,2*R,2*R);
+  if(b.n>0){
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(b.x,b.y,R*.52,0,7);ctx.fill();
+    ctx.fillStyle='#111';ctx.font='bold 9.5px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(b.n,b.x,b.y+.5);
+  }
+  ctx.restore();
+  ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=.8;
+  ctx.beginPath();ctx.arc(b.x,b.y,R,0,7);ctx.stroke();
+}
+
+function pocketRay(x,y,dx,dy,excl){
+  let tMin=Infinity,pk=null;
+  for(const p of PK){
+    const ex=p.x-x,ey=p.y-y,pj=ex*dx+ey*dy;
+    if(pj<=0)continue;
+    const per2=ex*ex+ey*ey-pj*pj,rr=PR*PR;
+    if(per2>=rr)continue;
+    const t=pj-Math.sqrt(rr-per2);
+    if(t>0&&t<tMin){tMin=t;pk=p;}
+  }
+  const ws=[];
+  if(dx<-1e-9)ws.push((T.x+R-x)/dx);
+  if(dx>1e-9)ws.push((T.x+T.w-R-x)/dx);
+  if(dy<-1e-9)ws.push((T.y+R-y)/dy);
+  if(dy>1e-9)ws.push((T.y+T.h-R-y)/dy);
+  let wt=Infinity;
+  for(const w of ws)if(w>0&&w<wt)wt=w;
+  for(const b of balls){
+    if(b===cue||b.in||b===excl)continue;
+    const ex=b.x-x,ey=b.y-y,pj=ex*dx+ey*dy;
+    if(pj<=0)continue;
+    const per2=ex*ex+ey*ey-pj*pj,rr=4*R*R;
+    if(per2>=rr)continue;
+    const t=pj-Math.sqrt(rr-per2);
+    if(t>2&&t<tMin){tMin=t;pk=null;}
+  }
+  return{x:x+dx*tMin,y:y+dy*tMin,pocket:!!pk,px:pk?pk.x:x+dx*tMin,py:pk?pk.y:y+dy*tMin};
+}
+
+function drawGuide(now){
+  if(phase!=='AIM'||!mouse.in)return;
+  const d=aimDir();
+  const ray=castRay(cue.x,cue.y,d.x,d.y);
+  const hx=cue.x+d.x*ray.t,hy=cue.y+d.y*ray.t;
+  ctx.save();
+  ctx.lineWidth=2;ctx.setLineDash([9,8]);ctx.lineDashOffset=-(now/40)%17;
+  ctx.strokeStyle='rgba(255,255,255,.62)';
+  ctx.beginPath();ctx.moveTo(cue.x,cue.y);ctx.lineTo(hx,hy);ctx.stroke();
+  ctx.setLineDash([]);
+  if(!guidesOn){ctx.restore();return;}
+  if(ray.type==='wall'){
+    const dn=d.x*ray.nx+d.y*ray.ny;
+    const rd={x:d.x-2*dn*ray.nx,y:d.y-2*dn*ray.ny};
+    ctx.setLineDash([5,8]);ctx.lineDashOffset=-(now/40)%13;
+    ctx.strokeStyle='rgba(255,255,255,.28)';
+    ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(hx+rd.x*180,hy+rd.y*180);ctx.stroke();
+  }else{
+    const ob=ray.ball;
+    let nx=ob.x-hx,ny=ob.y-hy;const nd=Math.hypot(nx,ny)||1;nx/=nd;ny/=nd;
+    const hit=pocketRay(ob.x,ob.y,nx,ny,ob);
+    ctx.setLineDash([11,8]);ctx.lineDashOffset=-(now/45)%19;
+    ctx.lineWidth=3;
+    if(hit.pocket){
+      ctx.strokeStyle='rgba(255,110,70,.95)';
+      ctx.beginPath();ctx.moveTo(ob.x,ob.y);ctx.lineTo(hit.x,hit.y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.strokeStyle='rgba(255,110,70,.85)';
+      ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.arc(hit.px,hit.py,PR+4,0,7);ctx.stroke();
+    }else{
+      ctx.strokeStyle='rgba(255,214,90,.9)';
+      ctx.beginPath();ctx.moveTo(ob.x,ob.y);ctx.lineTo(hit.x,hit.y);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    let tx=d.x-(d.x*nx+d.y*ny)*nx,ty=d.y-(d.x*nx+d.y*ny)*ny;
+    const td=Math.hypot(tx,ty);
+    if(td>.06){
+      tx/=td;ty/=td;
+      ctx.strokeStyle='rgba(160,220,255,.85)';ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(hx+tx*48,hy+ty*48);ctx.stroke();
+    }
+    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1.6;
+    ctx.beginPath();ctx.arc(hx,hy,R,0,7);ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawStick(){
+  if(phase!=='AIM'||!mouse.in)return;
+  const d=charging?chargeDir:aimDir();
+  const pull=(charging?power*135:0)+24;
+  const bx=cue.x-d.x*(R+pull),by=cue.y-d.y*(R+pull);
+  const tx=bx-d.x*300,ty=by-d.y*300;
+  const g=ctx.createLinearGradient(tx,ty,bx,by);
+  g.addColorStop(0,'#201204');g.addColorStop(.45,'#8f5f30');g.addColorStop(.82,'#7c4a1e');g.addColorStop(.94,'#efe0bd');g.addColorStop(1,'#cabd9d');
+  ctx.save();
+  ctx.lineCap='round';ctx.strokeStyle=g;ctx.lineWidth=charging?8.5:7.5;
+  ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=8;ctx.shadowOffsetY=5;
+  ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(bx,by);ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle='#59aede';
+  ctx.beginPath();ctx.arc(bx,by,3.6,0,7);ctx.fill();
+}
+
+function render(now){
+  ctx.clearRect(0,0,W,H);
+  ctx.drawImage(bg,0,0,W,H);
+  drawGuide(now);
+  for(const b of balls)if(!b.in)drawBall(b,now);
+  if(phase==='PLACE'&&mouse.in){
+    ctx.globalAlpha=.55;
+    ctx.fillStyle=ghost.ok?'#ffffff':'#ff5555';
+    ctx.beginPath();ctx.arc(ghost.x,ghost.y,R,0,7);ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.setLineDash([4,4]);ctx.strokeStyle=ghost.ok?'#fff':'#ff5555';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(ghost.x,ghost.y,R+3,0,7);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=ghost.ok?'#fff':'#ff8888';ctx.font='12px sans-serif';ctx.textAlign='center';
+    ctx.fillText(ghost.ok?'点击放置母球':'不能放这里',ghost.x,ghost.y-R-9);
+  }
+  drawStick();
+}
+
+const HSTEP=1/240;
+let acc=0,lastT=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  let dt=Math.min((now-lastT)/1000,.06);lastT=now;
+  acc+=dt;let n=0;
+  while(acc>=HSTEP&&n<14){physStep(HSTEP);acc-=HSTEP;n++;}
+  if(acc>HSTEP)acc=0;
+  if(phase==='RUN'&&!balls.some(b=>!b.in&&(b.vx||b.vy)))resolveShot();
+  render(now);
+}
+
+function restart(){newGame();}
+function startFromMenu(){
+  mode=document.querySelector('input[name=gm]:checked').value;
+  breaker=0;newGame();
+}
+function showMenu(){phase='MENU';$('over').style.display='none';$('menu').style.display='flex';}
+function toggleRules(){$('rulesOv').style.display=$('rulesOv').style.display==='flex'?'none':'flex';}
+function toggleSound(){soundOn=!soundOn;$('sndBtn').textContent='声音：'+(soundOn?'开':'关');$('sndBtn').classList.toggle('off',!soundOn);}
+function toggleGuides(){guidesOn=!guidesOn;$('gdBtn').textContent='辅助线：'+(guidesOn?'开':'关');$('gdBtn').classList.toggle('off',!guidesOn);}
+
+$('menu').style.display='flex';
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
