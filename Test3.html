@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英文單詞學習與語音測試遊戲</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --text: #333;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; color: var(--primary); }
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 10px 25px;
+      border: none;
+      background: #e0e0e0;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    
+    /* Controls */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 8px 12px;
+      font-size: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Learning Cards */
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .word-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .word-title { font-size: 18px; font-weight: bold; }
+    .phonetic {
+      color: #e67e22;
+      cursor: pointer;
+      display: inline-block;
+      padding: 2px 6px;
+      background: #fef5ec;
+      border-radius: 4px;
+    }
+    .phonetic:hover { background: #fdebd0; }
+
+    /* Test Area */
+    .test-card {
+      text-align: center;
+      padding: 30px;
+      background: #fafafa;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .test-prompt { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+    .score-display { font-size: 20px; font-weight: bold; margin-top: 15px; }
+    .rec-status { font-size: 14px; color: #7f8c8d; margin-top: 5px; }
+
+    /* Multiple Choice Options */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .option-btn {
+      padding: 15px;
+      font-size: 16px;
+      background: #ffffff;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: left;
+    }
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+    .option-btn.correct {
+      background: #d4edda !important;
+      border-color: #28a745 !important;
+      color: #155724;
+    }
+    .option-btn.wrong {
+      background: #f8d7da !important;
+      border-color: #dc3545 !important;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>英文學習與測試遊戲</h1>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('learn')">📚 學習模式</button>
+    <button class="tab-btn" onclick="switchTab('test')">📝 測試模式</button>
+  </div>
+
+  <!-- 學習模式 -->
+  <div id="learn-panel" class="panel active">
+    <div class="controls">
+      <label>選擇課程：
+        <select id="lesson-select" onchange="renderWords()"></select>
+      </label>
+      <label>口音選擇：
+        <select id="accent-select">
+          <option value="en-GB">🇬🇧 英音 (British)</option>
+          <option value="en-US" selected>🇺🇸 美音 (American)</option>
+        </select>
+      </label>
+      <label>發音語速：
+        <select id="rate-select">
+          <option value="1">1.0x (正常)</option>
+          <option value="0.5">0.5x (慢速)</option>
+          <option value="0.25">0.25x (極慢)</option>
+        </select>
+      </label>
+    </div>
+    <div id="word-container" class="word-grid"></div>
+  </div>
+
+  <!-- 測試模式 -->
+  <div id="test-panel" class="panel">
+    <div class="controls">
+      <label>從：<select id="test-start"></select></label>
+      <label>到：<select id="test-end"></select></label>
+      <label>模式：
+        <select id="test-mode" onchange="resetTestArea()">
+          <option value="1">模式 1：看中文發音英文 (1-10分)</option>
+          <option value="2">模式 2：聽英文選中文 (4選1對錯)</option>
+        </select>
+      </label>
+      <button class="btn-action" onclick="startTest()">開始測試</button>
+    </div>
+
+    <div id="test-area" class="test-card" style="display:none;">
+      <div id="test-prompt" class="test-prompt">---</div>
+      <div id="test-phonetic" style="margin-bottom: 15px;"></div>
+      <button id="listen-btn" class="btn-action" style="display:none; margin-bottom:15px;" onclick="playTestAudio()">🔊 重新播放發音</button>
+
+      <!-- 模式 1 專用：麥克風回答區 -->
+      <div id="mode1-controls">
+        <button id="mic-btn" class="btn-action" onclick="toggleRecognition()">🎤 開始回答 (錄音)</button>
+        <div id="rec-status" class="rec-status">點擊麥克風按鈕開始作答...</div>
+      </div>
+
+      <!-- 模式 2 專用：4 個中文選項區 -->
+      <div id="options-container" class="options-grid" style="display:none;"></div>
+
+      <div id="test-result" class="score-display"></div>
+      <button class="btn-action" style="margin-top: 20px;" onclick="nextQuestion()">下一題 ➔</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const lessonsData = {
+  1: [
+    { word: "family", phonetic: "['fæməli]", meaning: "名. 家庭；家人" },
+    { word: "parent", phonetic: "['peərənt]", meaning: "名. 父親，母親" },
+    { word: "mother", phonetic: "['mʌðə(r)]", meaning: "名. 母親" },
+    { word: "grandmother", phonetic: "['grænmʌðə(r)]", meaning: "名. 祖母" },
+    { word: "father", phonetic: "['fɑːðə(r)]", meaning: "名. 父親" },
+    { word: "grandfather", phonetic: "['grænfɑːðə(r)]", meaning: "名. 祖父" },
+    { word: "mom", phonetic: "[mɒm]", meaning: "名. 媽媽" }
+  ],
+  2: [
+    { word: "dad", phonetic: "[dæd]", meaning: "名. 爸爸" },
+    { word: "bad", phonetic: "[bæd]", meaning: "形. 壞的" },
+    { word: "sad", phonetic: "[sæd]", meaning: "形. 傷心的，難過的" },
+    { word: "mad", phonetic: "[mæd]", meaning: "形. 氣憤的；瘋狂的" }
+  ],
+  3: [
+    { word: "brother", phonetic: "['brʌðə(r)]", meaning: "名. 哥哥；弟弟" },
+    { word: "sister", phonetic: "['sɪstə(r)]", meaning: "名. 姐姐，妹妹" },
+    { word: "cousin", phonetic: "['kʌzn]", meaning: "名. 堂(表)兄弟姐妹" },
+    { word: "baby", phonetic: "['beɪbi]", meaning: "名. 嬰兒；寶貝" },
+    { word: "babysitter", phonetic: "['beɪbisɪtə(r)]", meaning: "名. 代人臨時照顧小孩的人" },
+    { word: "aunt", phonetic: "[ɑːnt]", meaning: "名. 伯母；嬸；姑；姨；舅媽" },
+    { word: "uncle", phonetic: "['ʌŋkl]", meaning: "名. 叔；伯；舅；姑父" }
+  ]
+};
+
+for(let i=4; i<=72; i++) {
+  if(!lessonsData[i]) lessonsData[i] = [];
+}
+
+let allWordsPool = [];
+let currentTestPool = [];
+let currentQIndex = 0;
+let isListening = false;
+let recognition = null;
+let optionAnswered = false;
+
+window.onload = () => {
+  const lessonSelect = document.getElementById('lesson-select');
+  const startSelect = document.getElementById('test-start');
+  const endSelect = document.getElementById('test-end');
+
+  Object.keys(lessonsData).forEach(l => {
+    lessonSelect.add(new Option(`第 ${l} 課`, l));
+    startSelect.add(new Option(`第 ${l} 課`, l));
+    endSelect.add(new Option(`第 ${l} 課`, l));
+  });
+
+  // 收集全域單詞庫（供模式 2 生成干擾選項）
+  Object.values(lessonsData).forEach(arr => {
+    allWordsPool.push(...arr);
+  });
+
+  renderWords();
+  initSpeechRecognition();
+};
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  if(tab === 'learn') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('learn-panel').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('test-panel').classList.add('active');
+  }
+}
+
+function resetTestArea() {
+  document.getElementById('test-area').style.display = 'none';
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) {
+    alert("您的瀏覽器不支援語音合成功能");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  const accent = document.getElementById('accent-select').value || 'en-US';
+  const rate = parseFloat(document.getElementById('rate-select').value || 1);
+  
+  utterance.lang = accent;
+  utterance.rate = rate;
+  window.speechSynthesis.speak(utterance);
+}
+
+function renderWords() {
+  const lesson = document.getElementById('lesson-select').value;
+  const container = document.getElementById('word-container');
+  container.innerHTML = '';
+
+  const list = lessonsData[lesson] || [];
+  if(list.length === 0) {
+    container.innerHTML = '<p>該課程暫無數據</p>';
+    return;
+  }
+
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerHTML = `
+      <div class="word-title">${item.word} 
+        <button onclick="speak('${item.word}')" style="border:none;background:none;cursor:pointer;">🔊</button>
+      </div>
+      <div>音標：<span class="phonetic" onclick="speak('${item.word}')">${item.phonetic}</span></div>
+      <div>釋義：${item.meaning}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function initSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('rec-status').innerText = "您的瀏覽器不支援語音識別功能 (建議使用 Chrome)";
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim().toLowerCase();
+    document.getElementById('rec-status').innerText = `識別結果: "${transcript}"`;
+    evaluateAnswer(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    document.getElementById('rec-status').innerText = `識別失敗: ${event.error}`;
+    isListening = false;
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic-btn').innerText = "🎤 開始回答 (錄音)";
+  };
+}
+
+function toggleRecognition() {
+  if (!recognition) return;
+  const accent = document.getElementById('accent-select').value;
+  recognition.lang = accent;
+
+  if (isListening) {
+    recognition.stop();
+  } else {
+    recognition.start();
+    isListening = true;
+    document.getElementById('mic-btn').innerText = "🛑 正在聆聽中...";
+    document.getElementById('rec-status').innerText = "請說出英文單詞...";
+  }
+}
+
+function startTest() {
+  const start = parseInt(document.getElementById('test-start').value);
+  const end = parseInt(document.getElementById('test-end').value);
+  
+  currentTestPool = [];
+  for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+    if (lessonsData[i]) {
+      currentTestPool.push(...lessonsData[i]);
+    }
+  }
+
+  if (currentTestPool.length === 0) {
+    alert("選擇的課程範圍內沒有可測試的單詞！");
+    return;
+  }
+
+  currentTestPool.sort(() => Math.random() - 0.5);
+  currentQIndex = 0;
+  document.getElementById('test-area').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (currentQIndex >= currentTestPool.length) {
+    document.getElementById('test-prompt').innerText = "🎉 測試完成！";
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('test-result').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'none';
+    return;
+  }
+
+  const q = currentTestPool[currentQIndex];
+  const mode = document.getElementById('test-mode').value;
+  document.getElementById('test-result').innerText = "";
+  optionAnswered = false;
+
+  if (mode === '1') {
+    // 模式 1：看中文發音英文
+    document.getElementById('test-prompt').innerText = q.meaning;
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'block';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('rec-status').innerText = "點擊麥克風按鈕開始作答...";
+  } else {
+    // 模式 2：聽英文選 4 個中文選項
+    document.getElementById('test-prompt').innerText = "🎧 請聽發音選擇正確中文釋義";
+    document.getElementById('test-phonetic').innerText = q.phonetic;
+    document.getElementById('listen-btn').style.display = 'inline-block';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'grid';
+
+    generateOptions(q);
+    playTestAudio();
+  }
+}
+
+// 模式 2：生成 4 個中文選項 (1 個正確 + 3 個隨機干擾項)
+function generateOptions(correctQ) {
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  let options = [correctQ];
+  
+  // 從整體或目前測試庫中抽取 3 個不同的干擾選項
+  let poolToDistract = allWordsPool.length >= 4 ? allWordsPool : currentTestPool;
+  let candidates = poolToDistract.filter(item => item.word !== correctQ.word);
+  candidates.sort(() => Math.random() - 0.5);
+
+  for(let i = 0; i < Math.min(3, candidates.length); i++) {
+    options.push(candidates[i]);
+  }
+
+  // 隨機打亂 4 個選項順序
+  options.sort(() => Math.random() - 0.5);
+
+  options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt.meaning}`;
+    btn.onclick = () => checkOption(btn, opt.word === correctQ.word, correctQ.meaning);
+    container.appendChild(btn);
+  });
+}
+
+function checkOption(selectedBtn, isCorrect, correctMeaning) {
+  if (optionAnswered) return; // 避免重複點擊
+  optionAnswered = true;
+
+  const resultDiv = document.getElementById('test-result');
+  const allBtns = document.querySelectorAll('.option-btn');
+
+  if (isCorrect) {
+    selectedBtn.classList.add('correct');
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = '結果：✅ 回答正確！';
+  } else {
+    selectedBtn.classList.add('wrong');
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `結果：❌ 回答錯誤！(正確答案：${correctMeaning})`;
+    
+    // 標出正確選項
+    allBtns.forEach(btn => {
+      if (btn.innerText.includes(correctMeaning)) {
+        btn.classList.add('correct');
+      }
+    });
+  }
+}
+
+function playTestAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+function evaluateAnswer(userSpeech) {
+  const q = currentTestPool[currentQIndex];
+  const resultDiv = document.getElementById('test-result');
+  const target = q.word.toLowerCase();
+
+  if (userSpeech === target) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：10 / 10 分 (完美！標準單詞：${q.word})`;
+  } else if (userSpeech.includes(target) || target.includes(userSpeech)) {
+    resultDiv.style.color = '#e67e22';
+    resultDiv.innerText = `得分：7 / 10 分 (接近！標準單詞：${q.word})`;
+  } else {
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `得分：3 / 10 分 (再接再厲！標準單詞：${q.word})`;
+  }
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  loadQuestion();
+}
+</script>
+</body>
+</html>
