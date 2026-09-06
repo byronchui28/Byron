@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球即时新闻看板 (免Key版)</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #1e88e5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .category-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #e0e0e0;
+            color: #333;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .news-title {
+            font-size: 1.1rem;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            color: #1a1a1a;
+        }
+
+        .news-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .news-meta {
+            font-size: 0.8rem;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .news-link {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            grid-column: 1 / -1;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>全球即时新闻看板</h1>
+        <p>无需配置，即开即用 | 自动抓取并翻译为中文</p>
+    </header>
+
+    <div class="category-nav">
+        <button class="category-btn active" onclick="switchCategory('business', this)">经济金融</button>
+        <button class="category-btn" onclick="switchCategory('war', this)">战争/局势</button>
+        <button class="category-btn" onclick="switchCategory('environment', this)">环保气候</button>
+        <button class="category-btn" onclick="switchCategory('tech', this)">前沿科技</button>
+    </div>
+
+    <div class="news-grid" id="newsGrid">
+        <div class="loading">新闻实时加载并翻译中...</div>
+    </div>
+</div>
+
+<script>
+    // 免 API Key 的 RSS 订阅源配置
+    const rssFeeds = {
+        business: 'https://feeds.bbci.co.uk/news/business/rss.xml',
+        war: 'https://feeds.bbci.co.uk/news/world/rss.xml',
+        environment: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml',
+        tech: 'https://feeds.bbci.co.uk/news/technology/rss.xml'
+    };
+
+    // 公开免费翻译引擎 (Google 免费接口)
+    async function translateText(text) {
+        if (!text) return '';
+        // 过滤 HTML 标签
+        const cleanText = text.replace(/<[^>]*>?/gm, '');
+        try {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&dt=t&q=${encodeURIComponent(cleanText)}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            return data[0].map(item => item[0]).join('');
+        } catch (e) {
+            return cleanText;
+        }
+    }
+
+    async function loadNews(categoryKey) {
+        const grid = document.getElementById('newsGrid');
+        grid.innerHTML = '<div class="loading">抓取全球最新资讯，并在线翻译中，请稍候...</div>';
+
+        const rssUrl = rssFeeds[categoryKey];
+        // 使用免费开放的 RSS 解析中间件
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.status !== 'ok' || !data.items) {
+                grid.innerHTML = '<div class="loading">数据加载失败，请刷新重试。</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            
+            // 取前 9 条实时新闻
+            const items = data.items.slice(0, 9);
+
+            for (let item of items) {
+                const titleZh = await translateText(item.title);
+                const descZh = await translateText(item.description);
+
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.innerHTML = `
+                    <div>
+                        <h3 class="news-title">${titleZh}</h3>
+                        <p class="news-desc">${descZh.length > 100 ? descZh.substring(0, 100) + '...' : descZh}</p>
+                    </div>
+                    <div class="news-meta">
+                        <span>${new Date(item.pubDate).toLocaleDateString()}</span>
+                        <a href="${item.link}" target="_blank" class="news-link">查看原文 →</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
+        } catch (err) {
+            grid.innerHTML = '<div class="loading">网络异常，请检查网络连接或稍后再试。</div>';
+        }
+    }
+
+    function switchCategory(category, btn) {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadNews(category);
+    }
+
+    // 默认加载首个分类
+    loadNews('business');
+</script>
+
+</body>
+</html>
