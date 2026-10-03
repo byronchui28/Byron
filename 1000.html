@@ -17,7 +17,7 @@
 </head>
 <body class="text-slate-800 antialiased h-full flex flex-col selection:bg-blue-500 selection:text-white">
 
-  <!-- 頂部導航 (固定高度) -->
+  <!-- 頂部導航 -->
   <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 flex-shrink-0">
     <div class="max-w-6xl mx-auto px-4 py-2 sm:py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
       <div class="flex items-center gap-2 sm:gap-3">
@@ -40,7 +40,7 @@
     </div>
   </header>
 
-  <!-- 主內容區 (佔滿剩餘高度) -->
+  <!-- 主內容區 -->
   <main class="flex-grow max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-4 w-full flex flex-col overflow-hidden">
     
     <!-- 學習模式面板 -->
@@ -73,9 +73,8 @@
       <div id="word-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-6"></div>
     </div>
 
-    <!-- 測試模式面板（固定全屏尺寸） -->
+    <!-- 測試模式面板 -->
     <div id="panel-test" class="panel hidden h-full flex-col overflow-hidden">
-      <!-- 測試配置列 -->
       <div class="glass-card rounded-2xl shadow-sm p-2.5 sm:p-4 mb-2 bg-white flex-shrink-0">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 items-end">
           <div>
@@ -100,19 +99,17 @@
         </div>
       </div>
 
-      <!-- 測試互動區（垂直彈性拉伸，按鈕硬性黏貼底部） -->
+      <!-- 測試互動區 -->
       <div id="test-area" class="hidden flex-grow flex-col justify-between overflow-hidden">
         <div class="max-w-2xl mx-auto w-full bg-white rounded-2xl shadow-lg border border-slate-100 flex flex-col h-full overflow-hidden">
           
-          <!-- 進度標頭 -->
           <div class="bg-slate-50 px-3 py-1.5 flex justify-between items-center border-b border-slate-100 flex-shrink-0">
             <span class="text-slate-600 font-semibold text-[10px] sm:text-xs uppercase tracking-wider" id="test-progress">進度：-- / --</span>
             <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full font-bold" id="test-mode-badge">AI 語音測試</span>
           </div>
           
-          <!-- 題目與互動核心（內部縱向居中，防溢出） -->
           <div class="p-3 sm:p-5 text-center flex-grow flex flex-col justify-center items-center overflow-hidden">
-            <h3 id="test-prompt" class="text-lg sm:text-2xl font-extrabold text-slate-800 mb-1 leading-snug">---</h3>
+            <h3 id="test-prompt" class="text-base sm:text-xl font-extrabold text-slate-800 mb-1 leading-snug">---</h3>
             <div id="test-phonetic" class="text-xs text-amber-600 font-mono mb-2"></div>
             
             <button id="listen-btn" onclick="playTestAudio()" class="hidden mb-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition-all text-xs font-medium items-center gap-1 border border-slate-200">
@@ -121,7 +118,7 @@
 
             <!-- 模式 1：語音按鈕 -->
             <div id="mode1-controls" class="w-full my-auto py-1">
-              <button id="mic-btn" onclick="toggleRecognition()" class="w-14 h-14 sm:w-18 sm:h-18 rounded-full bg-blue-50 text-blue-600 text-lg sm:text-xl shadow-inner hover:bg-blue-100 transition-all mx-auto flex items-center justify-center border-4 border-white shadow-md active:scale-90">
+              <button id="mic-btn" onclick="toggleRecognition()" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-blue-50 text-blue-600 text-lg shadow-inner hover:bg-blue-100 transition-all mx-auto flex items-center justify-center border-4 border-white shadow-md active:scale-90">
                 <i class="fas fa-microphone"></i>
               </button>
               <p id="rec-status" class="text-slate-500 text-[11px] font-semibold mt-1">點擊麥克風按鈕開始作答</p>
@@ -131,24 +128,25 @@
             <div id="options-container" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-1.5 w-full my-auto"></div>
 
             <!-- 反饋評分結果 -->
-            <div id="test-result" class="mt-2 text-xs sm:text-sm font-bold rounded-lg p-2 w-full transition-all hidden"></div>
+            <div id="test-result" class="mt-2 text-xs font-bold rounded-lg p-1.5 w-full transition-all hidden"></div>
             
-            <!-- 糾正區 -->
+            <!-- 正確答案與示範區（所有模式答完即現） -->
             <div id="correction-area" class="hidden mt-1.5 bg-amber-50 border border-amber-200 rounded-lg p-2 w-full text-left">
-              <div class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">💡 正確示範</div>
-              <div class="flex items-center justify-between">
+              <div class="text-[10px] font-bold text-amber-800 uppercase tracking-wider">💡 正確答案與音標示範</div>
+              <div class="flex items-center justify-between mt-0.5">
                 <div>
                   <span id="correct-word-text" class="text-xs sm:text-sm font-bold text-slate-900 mr-1.5"></span>
-                  <span id="correct-phonetic-text" class="text-amber-600 font-mono text-[10px]"></span>
+                  <span id="correct-phonetic-text" class="text-amber-600 font-mono text-[11px]"></span>
+                  <div id="correct-meaning-text" class="text-[11px] text-slate-600 font-medium"></div>
                 </div>
-                <button onclick="playCorrectAudio()" class="bg-amber-200 hover:bg-amber-300 text-amber-900 px-2 py-0.5 rounded text-[10px] font-bold transition-all">
-                  <i class="fas fa-volume-up mr-0.5"></i> 聽發音
+                <button onclick="playCorrectAudio()" class="bg-amber-200 hover:bg-amber-300 text-amber-900 px-2.5 py-1 rounded text-xs font-bold transition-all flex-shrink-0">
+                  <i class="fas fa-volume-up mr-1"></i> 聽發音
                 </button>
               </div>
             </div>
           </div>
           
-          <!-- 固定底部的「下一題」按鈕，永久顯示在畫面內 -->
+          <!-- 固定底部下一題 -->
           <div class="bg-slate-50 p-2.5 border-t border-slate-100 flex justify-end flex-shrink-0">
             <button onclick="nextQuestion()" class="w-full sm:w-auto bg-slate-900 hover:bg-black text-white font-semibold py-2 px-5 rounded-xl transition-all text-xs sm:text-sm flex items-center justify-center shadow-md active:scale-95">
               下一題 <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
@@ -160,7 +158,6 @@
   </main>
 
   <script>
-    // 基礎核心口語數據表
     const baseSentences = [
       ["I see.", "[aɪ si:]", "我明白了。"], ["I quit!", "[aɪ kwɪt]", "我不干了！"], ["Let go!", "[let gəʊ]", "放手！"],
       ["Me too.", "[mi: tu:]", "我也是。"], ["My god!", "[maɪ gɒd]", "天哪！"], ["No way!", "[nəʊ weɪ]", "不行！"],
@@ -199,7 +196,6 @@
       ["So far, so good.", "[səʊ fɑ:(r) səʊ gʊd]", "目前還不錯。"], ["What time is it?", "[wɒt taɪm ɪz ɪt]", "幾點了？"], ["You can make it!", "[ju: kæn meɪk ɪt]", "你能做到！"]
     ];
 
-    // 高效構建 100 課 / 1000 句數據集
     const rawData = [];
     for (let i = 0; i < 1000; i++) {
       const base = baseSentences[i % baseSentences.length];
@@ -441,12 +437,19 @@
         const btn = document.createElement('button');
         btn.className = 'option-btn p-2 sm:p-2.5 border-2 border-slate-100 rounded-xl text-left font-semibold text-slate-700 bg-white hover:border-blue-500 hover:bg-blue-50/50 transition-all text-xs flex items-center active:scale-95';
         btn.innerHTML = `<span class="w-4 h-4 rounded-full bg-slate-100 text-center text-[10px] leading-4 mr-1.5 font-bold text-slate-500 flex-shrink-0">${String.fromCharCode(65 + idx)}</span> ${opt[displayField]}`;
-        btn.onclick = () => checkOption(btn, opt.word === correctQ.word, correctQ[displayField]);
+        btn.onclick = () => checkOption(btn, opt.word === correctQ.word, correctQ);
         container.appendChild(btn);
       });
     }
 
-    function checkOption(selectedBtn, isCorrect, correctAnswerText) {
+    function showCorrectAnswerBox(q) {
+      document.getElementById('correct-word-text').innerText = q.word;
+      document.getElementById('correct-phonetic-text').innerText = q.phonetic;
+      document.getElementById('correct-meaning-text').innerText = q.meaning;
+      document.getElementById('correction-area').classList.remove('hidden');
+    }
+
+    function checkOption(selectedBtn, isCorrect, correctQ) {
       if (optionAnswered) return;
       optionAnswered = true;
 
@@ -456,19 +459,20 @@
 
       if (isCorrect) {
         selectedBtn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
-        resultDiv.className = 'mt-2 text-xs font-bold rounded-lg p-1.5 block bg-emerald-100 text-emerald-800 border border-emerald-200';
+        resultDiv.className = 'mt-1.5 text-xs font-bold rounded-lg p-1.5 block bg-emerald-100 text-emerald-800 border border-emerald-200';
         resultDiv.innerHTML = '<i class="fas fa-check-circle mr-1"></i> 回答正確！';
         if (document.getElementById('test-mode').value === '3') playTestAudio();
       } else {
         selectedBtn.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-800');
-        resultDiv.className = 'mt-2 text-xs font-bold rounded-lg p-1.5 block bg-rose-100 text-rose-800 border border-rose-200';
-        resultDiv.innerHTML = `❌ 回答錯誤！正確答案：${correctAnswerText}`;
+        resultDiv.className = 'mt-1.5 text-xs font-bold rounded-lg p-1.5 block bg-rose-100 text-rose-800 border border-rose-200';
+        resultDiv.innerHTML = `❌ 回答錯誤！`;
         allBtns.forEach(btn => {
-          if (btn.innerText.includes(correctAnswerText)) {
+          if (btn.innerText.includes(correctQ.word) || btn.innerText.includes(correctQ.meaning)) {
             btn.classList.add('bg-emerald-50', 'border-emerald-500');
           }
         });
       }
+      showCorrectAnswerBox(correctQ);
     }
 
     function getLevenshteinDistance(a, b) {
@@ -487,7 +491,6 @@
     function evaluateAnswer(userSpeech) {
       const q = currentTestPool[currentQIndex];
       const resultDiv = document.getElementById('test-result');
-      const correctionArea = document.getElementById('correction-area');
       
       const cleanTarget = q.word.toLowerCase().replace(/[.,!?;:]/g, '').trim();
       const cleanInput = userSpeech.toLowerCase().replace(/[.,!?;:]/g, '').trim();
@@ -495,34 +498,24 @@
       resultDiv.classList.remove('hidden');
 
       if (cleanInput === cleanTarget) {
-        resultDiv.className = 'mt-2 text-xs font-bold rounded-lg p-1.5 block bg-emerald-100 text-emerald-800 border border-emerald-200';
+        resultDiv.className = 'mt-1.5 text-xs font-bold rounded-lg p-1.5 block bg-emerald-100 text-emerald-800 border border-emerald-200';
         resultDiv.innerHTML = `⭐ 得分：10 / 10 分 (完美！發音非常標準)`;
-        correctionArea.classList.add('hidden');
-        return;
-      }
-
-      const distance = getLevenshteinDistance(cleanInput, cleanTarget);
-      const maxLength = Math.max(cleanInput.length, cleanTarget.length);
-      const similarity = 1 - (distance / maxLength);
-      let score = 1;
-
-      if (similarity >= 0.85) score = 9;
-      else if (similarity >= 0.70) score = 7;
-      else if (similarity >= 0.50) score = 5;
-      else if (similarity >= 0.30) score = 3;
-
-      if (score >= 7) {
-        resultDiv.className = 'mt-2 text-xs font-bold rounded-lg p-1.5 block bg-emerald-50 text-emerald-700 border border-emerald-200';
-        resultDiv.innerHTML = `✅ 得分：${score} / 10 分 (發音基本合格)`;
-        correctionArea.classList.add('hidden');
       } else {
-        resultDiv.className = 'mt-2 text-xs font-bold rounded-lg p-1.5 block bg-rose-50 text-rose-700 border border-rose-200';
-        resultDiv.innerHTML = `❌ 得分：${score} / 10 分 (需加強！發音偏差較大)`;
-        
-        document.getElementById('correct-word-text').innerText = q.word;
-        document.getElementById('correct-phonetic-text').innerText = q.phonetic;
-        correctionArea.classList.remove('hidden');
+        const distance = getLevenshteinDistance(cleanInput, cleanTarget);
+        const maxLength = Math.max(cleanInput.length, cleanTarget.length);
+        const similarity = 1 - (distance / maxLength);
+        let score = similarity >= 0.7 ? 7 : (similarity >= 0.4 ? 4 : 1);
+
+        if (score >= 7) {
+          resultDiv.className = 'mt-1.5 text-xs font-bold rounded-lg p-1.5 block bg-emerald-50 text-emerald-700 border border-emerald-200';
+          resultDiv.innerHTML = `✅ 得分：${score} / 10 分 (發音基本合格)`;
+        } else {
+          resultDiv.className = 'mt-1.5 text-xs font-bold rounded-lg p-1.5 block bg-rose-50 text-rose-700 border border-rose-200';
+          resultDiv.innerHTML = `❌ 得分：${score} / 10 分 (發音偏差較大)`;
+        }
       }
+      // 無論對錯，模式 1 答完後也立刻展示正確答案
+      showCorrectAnswerBox(q);
     }
 
     function playTestAudio() { speak(currentTestPool[currentQIndex].word); }
