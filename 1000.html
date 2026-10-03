@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常用英語口語 1000 句 - 學習與語音測試系統</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --primary-hover: #357abd;
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --border: #e2e8f0;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning-bg: #fff3cd;
+      --warning-border: #ffeeba;
+      --warning-text: #856404;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px 10px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      font-size: 14px;
+      margin-top: -15px;
+      margin-bottom: 20px;
+    }
+
+    /* Tab 導航 */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .tab-btn {
+      padding: 12px 28px;
+      border: none;
+      background: #e9ecef;
+      color: #495057;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+      background: #dee2e6;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    /* 控制列 */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    select, button {
+      padding: 9px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      outline: none;
+      background-color: #fff;
+      transition: border-color 0.2s;
+    }
+
+    select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-action:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-action:active {
+      transform: scale(0.98);
+    }
+
+    /* 網格與卡片 */
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .word-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .word-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+    }
+
+    .word-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .word-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.3;
+    }
+
+    .audio-icon-btn {
+      border: none;
+      background: #edf2f7;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .audio-icon-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .sentence-index {
+      font-size: 12px;
+      color: #a0aec0;
+      font-weight: bold;
+    }
+
+    .meaning {
+      font-size: 15px;
+      color: #4a5568;
+    }
+
+    /* 測試卡片 */
+    .test-card {
+      text-align: center;
+      padding: 35px 20px;
+      background: #fafafa;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+
+    .test-prompt {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .score-display {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 20px;
+    }
+
+    .rec-status {
+      font-size: 15px;
+      color: #718096;
+      margin-top: 10px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 640px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-btn {
+      padding: 16px;
+      font-size: 16px;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+
+    .option-btn.correct {
+      background: #d4edda !important;
+      border-color: var(--success) !important;
+      color: #155724;
+      font-weight: 600;
+    }
+
+    .option-btn.wrong {
+      background: #f8d7da !important;
+      border-color: var(--danger) !important;
+      color: #721c24;
+    }
+
+    .correction-box {
+      margin-top: 20px;
+      padding: 18px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: 10px;
+      color: var(--warning-text);
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .mic-recording {
+      animation: pulse 1.5s infinite;
+      background-color: var(--danger) !important;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(220, 53, 69, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>常用英語口語 1000 句</h1>
+  <div class="subtitle">全功能專業口語學習与發音測試系統</div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('learn')">📚 學習模式</button>
+    <button class="tab-btn" onclick="switchTab('test')">📝 測試模式</button>
+  </div>
+
+  <!-- 學習模式 Panel -->
+  <div id="learn-panel" class="panel active">
+    <div class="controls">
+      <div class="control-group">
+        <label>選擇課程：</label>
+        <select id="lesson-select" onchange="renderWords()"></select>
+      </div>
+      <div class="control-group">
+        <label>口音選擇：</label>
+        <select id="accent-select">
+          <option value="en-US" selected>🇺🇸 美音 (American)</option>
+          <option value="en-GB">🇬🇧 英音 (British)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>發音語速：</label>
+        <select id="rate-select">
+          <option value="1">1.0x (正常)</option>
+          <option value="0.75">0.75x (稍慢)</option>
+          <option value="0.5">0.5x (慢速)</option>
+          <option value="0.25">0.25x (極慢)</option>
+        </select>
+      </div>
+    </div>
+    <div id="word-container" class="word-grid"></div>
+  </div>
+
+  <!-- 測試模式 Panel -->
+  <div id="test-panel" class="panel">
+    <div class="controls">
+      <div class="control-group">
+        <label>從：</label>
+        <select id="test-start"></select>
+      </div>
+      <div class="control-group">
+        <label>到：</label>
+        <select id="test-end"></select>
+      </div>
+      <div class="control-group">
+        <label>模式：</label>
+        <select id="test-mode" onchange="resetTestArea()">
+          <option value="1">模式 1：看中文發音英文 (AI語音評分 1-10分)</option>
+          <option value="2">模式 2：聽英文選中文 (4選1測試)</option>
+          <option value="3">模式 3：看中文選英文 (4選1測試)</option>
+        </select>
+      </div>
+      <button class="btn-action" onclick="startTest()">開始測試</button>
+    </div>
+
+    <div id="test-area" class="test-card" style="display:none;">
+      <div id="test-prompt" class="test-prompt">---</div>
+      <button id="listen-btn" class="btn-action" style="display:none; margin-bottom:15px;" onclick="playTestAudio()">🔊 重新播放發音</button>
+
+      <div id="mode1-controls">
+        <button id="mic-btn" class="btn-action" onclick="toggleRecognition()">🎤 開始回答 (錄音)</button>
+        <div id="rec-status" class="rec-status">點擊麥克風按鈕開始作答...</div>
+      </div>
+
+      <div id="options-container" class="options-grid" style="display:none;"></div>
+
+      <div id="test-result" class="score-display"></div>
+      
+      <!-- 低於 6 分時顯示的正確發音輔導區 -->
+      <div id="correction-area" class="correction-box" style="display:none;">
+        <div>標準英文：<strong id="correct-word-text" style="font-size:18px;"></strong></div>
+        <button class="btn-action" style="margin-top:10px;" onclick="playCorrectAudio()">🔊 點擊收聽正確標準發音</button>
+      </div>
+
+      <div>
+        <button class="btn-action" style="margin-top: 25px;" onclick="nextQuestion()">下一題 ➔</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// 完整 1000 句常用口語數據集（共50課，每課20句）
+const rawSentences = [
+  // Lesson 1
+  { id: 1, word: "I see.", meaning: "我明白了。" },
+  { id: 2, word: "I quit!", meaning: "我不干了!" },
+  { id: 3, word: "Let go!", meaning: "放手!" },
+  { id: 4, word: "Me too.", meaning: "我也是。" },
+  { id: 5, word: "My god!", meaning: "天哪!" },
+  { id: 6, word: "No way!", meaning: "不行!" },
+  { id: 7, word: "Come on.", meaning: "来吧(赶快)" },
+  { id: 8, word: "Hold on.", meaning: "等一等。" },
+  { id: 9, word: "I agree.", meaning: "我同意。" },
+  { id: 10, word: "Not bad.", meaning: "还不错。" },
+  { id: 11, word: "Not yet.", meaning: "还没。" },
+  { id: 12, word: "See you.", meaning: "再见。" },
+  { id: 13, word: "Shut up!", meaning: "闭嘴!" },
+  { id: 14, word: "So long.", meaning: "再见。" },
+  { id: 15, word: "Why not?", meaning: "好呀!(为什么不呢?)" },
+  { id: 16, word: "Allow me.", meaning: "让我来。" },
+  { id: 17, word: "Be quiet!", meaning: "安静点!" },
+  { id: 18, word: "Cheer up!", meaning: "振作起来!" },
+  { id: 19, word: "Good job!", meaning: "做得好!" },
+  { id: 20, word: "Have fun!", meaning: "玩得开心!" },
+
+  // Lesson 2
+  { id: 21, word: "How much?", meaning: "多少钱?" },
+  { id: 22, word: "I'm full.", meaning: "我饱了。" },
+  { id: 23, word: "I'm home.", meaning: "我回来了。" },
+  { id: 24, word: "I'm lost.", meaning: "我迷路了。" },
+  { id: 25, word: "My treat.", meaning: "我请客。" },
+  { id: 26, word: "So do I.", meaning: "我也一样。" },
+  { id: 27, word: "This way.", meaning: "这边请。" },
+  { id: 28, word: "After you.", meaning: "您先。" },
+  { id: 29, word: "Bless you!", meaning: "祝福你!" },
+  { id: 30, word: "Follow me.", meaning: "跟我来。" },
+  { id: 31, word: "Forget it!", meaning: "休想!(算了!)" },
+  { id: 32, word: "Good luck!", meaning: "祝好运!" },
+  { id: 33, word: "I decline!", meaning: "我拒绝!" },
+  { id: 34, word: "I promise.", meaning: "我保证。" },
+  { id: 35, word: "Of course!", meaning: "当然了!" },
+  { id: 36, word: "Slow down!", meaning: "慢点!" },
+  { id: 37, word: "Take care!", meaning: "保重!" },
+  { id: 38, word: "They hurt.", meaning: "(伤口)疼。" },
+  { id: 39, word: "Try again.", meaning: "再试试。" },
+  { id: 40, word: "Watch out!", meaning: "当心。" },
+
+  // Lesson 3
+  { id: 41, word: "What's up?", meaning: "有什么事吗?" },
+  { id: 42, word: "Be careful!", meaning: "注意!" },
+  { id: 43, word: "Bottoms up!", meaning: "干杯(见底)!" },
+  { id: 44, word: "Don't move!", meaning: "不许动!" },
+  { id: 45, word: "Guess what?", meaning: "猜猜看?" },
+  { id: 46, word: "I doubt it.", meaning: "我怀疑。" },
+  { id: 47, word: "I think so.", meaning: "我也这么想。" },
+  { id: 48, word: "I'm single.", meaning: "我是单身贵族。" },
+  { id: 49, word: "Keep it up!", meaning: "坚持下去!" },
+  { id: 50, word: "Let me see.", meaning: "让我想想。" },
+  { id: 51, word: "Never mind.", meaning: "不要紧。" },
+  { id: 52, word: "No problem!", meaning: "没问题!" },
+  { id: 53, word: "That's all!", meaning: "就这样!" },
+  { id: 54, word: "Time is up.", meaning: "时间快到了。" },
+  { id: 55, word: "What's new?", meaning: "有什么新鲜事吗?" },
+  { id: 56, word: "Count me on.", meaning: "算上我。" },
+  { id: 57, word: "Don't worry.", meaning: "别担心。" },
+  { id: 58, word: "Feel better?", meaning: "好点了吗?" },
+  { id: 59, word: "I love you!", meaning: "我爱你!" },
+  { id: 60, word: "I'm his fan.", meaning: "我是他的影迷。" },
+
+  // Lesson 4
+  { id: 61, word: "Is it yours?", meaning: "这是你的吗?" },
+  { id: 62, word: "That's neat.", meaning: "这很好。" },
+  { id: 63, word: "Are you sure?", meaning: "你肯定吗?" },
+  { id: 64, word: "Do I have to?", meaning: "非做不可吗?" },
+  { id: 65, word: "He is my age.", meaning: "他和我同岁。" },
+  { id: 66, word: "Here you are.", meaning: "给你。" },
+  { id: 67, word: "No one knows.", meaning: "没有人知道。" },
+  { id: 68, word: "Take it easy.", meaning: "别紧张。" },
+  { id: 69, word: "What a pity!", meaning: "太遗憾了!" },
+  { id: 70, word: "Anything else?", meaning: "还要别的吗?" },
+  { id: 71, word: "To be careful!", meaning: "一定要小心!" },
+  { id: 72, word: "Do me a favor?", meaning: "帮个忙,好吗?" },
+  { id: 73, word: "Help yourself.", meaning: "别客气。" },
+  { id: 74, word: "I'm on a diet.", meaning: "我在节食。" },
+  { id: 75, word: "Keep in touch.", meaning: "保持联络。" },
+  { id: 76, word: "Time is money.", meaning: "时间就是金钱。" },
+  { id: 77, word: "Who's calling?", meaning: "是哪一位?" },
+  { id: 78, word: "You did right.", meaning: "你做得对。" },
+  { id: 79, word: "You set me up!", meaning: "你出卖我!" },
+  { id: 80, word: "Can I help you?", meaning: "我能帮你吗?" },
+
+  // Lesson 5
+  { id: 81, word: "Enjoy yourself!", meaning: "祝你玩得开心!" },
+  { id: 82, word: "Excuse me, Sir.", meaning: "先生,对不起。" },
+  { id: 83, word: "Give me a hand!", meaning: "帮帮我!" },
+  { id: 84, word: "How's it going?", meaning: "怎么样?" },
+  { id: 85, word: "I have no idea.", meaning: "我没有头绪。" },
+  { id: 86, word: "I just made it!", meaning: "我做到了!" },
+  { id: 87, word: "I'll see to it.", meaning: "我会留意的。" },
+  { id: 88, word: "I'm in a hurry!", meaning: "我在赶时间!" },
+  { id: 89, word: "It's her field.", meaning: "这是她的本行。" },
+  { id: 90, word: "It's up to you.", meaning: "由你决定。" },
+  { id: 91, word: "Just wonderful!", meaning: "简直太棒了!" },
+  { id: 92, word: "What about you?", meaning: "你呢?" },
+  { id: 93, word: "You owe me one.", meaning: "你欠我一个人情。" },
+  { id: 94, word: "You're welcome.", meaning: "不客气。" },
+  { id: 95, word: "Any day will do.", meaning: "哪一天都行。" },
+  { id: 96, word: "Are you kidding?", meaning: "你在开玩笑吧!" },
+  { id: 97, word: "Congratulations!", meaning: "祝贺你!" },
+  { id: 98, word: "I can't help it.", meaning: "我情不自禁。" },
+  { id: 99, word: "I don't mean it.", meaning: "我不是故意的。" },
+  { id: 100, word: "I'll fix you up.", meaning: "我会帮你打点的。" },
+
+  // Lesson 6
+  { id: 101, word: "It sounds great!", meaning: "听起来很不错。" },
+  { id: 102, word: "It's a fine day.", meaning: "今天是个好天。" },
+  { id: 103, word: "So far, so good.", meaning: "目前还不错。" },
+  { id: 104, word: "What time is it?", meaning: "几点了?" },
+  { id: 105, word: "You can make it!", meaning: "你能做到!" },
+  { id: 106, word: "Control yourself!", meaning: "克制一下!" },
+  { id: 107, word: "He came by train.", meaning: "他乘火车来。" },
+  { id: 108, word: "He is ill in bed.", meaning: "他卧病在床。" },
+  { id: 109, word: "He lacks courage.", meaning: "他缺乏勇气。" },
+  { id: 110, word: "How's everything?", meaning: "一切还好吧?" },
+  { id: 111, word: "I have no choice.", meaning: "我别无选择。" },
+  { id: 112, word: "I like ice-cream.", meaning: "我喜欢吃冰淇淋。" },
+  { id: 113, word: "I love this game.", meaning: "我钟爱这项运动。" },
+  { id: 114, word: "I'll try my best.", meaning: "我尽力而为。" },
+  { id: 115, word: "I'm on your side.", meaning: "我全力支持你。" },
+  { id: 116, word: "Long time no see!", meaning: "好久不见!" },
+  { id: 117, word: "No pain, no gain.", meaning: "不劳无获。" },
+  { id: 118, word: "Well, it depends.", meaning: "噢,这得看情况。" },
+  { id: 119, word: "We're all for it.", meaning: "我们全都同意。" },
+  { id: 120, word: "What a good deal!", meaning: "真便宜!" },
+
+  // Lesson 7
+  { id: 121, word: "What should I do?", meaning: "我该怎么办?" },
+  { id: 122, word: "You asked for it!", meaning: "你自讨苦吃!" },
+  { id: 123, word: "You have my word.", meaning: "我保证。" },
+  { id: 124, word: "Believe it or not!", meaning: "信不信由你!" },
+  { id: 125, word: "Don't count on me.", meaning: "别指望我。" },
+  { id: 126, word: "Don't fall for it!", meaning: "别上当!" },
+  { id: 127, word: "Don't let me down.", meaning: "别让我失望。" },
+  { id: 128, word: "Easy come easy go.", meaning: "来得容易,去得快。" },
+  { id: 129, word: "I beg your pardon.", meaning: "请你原谅。" },
+  { id: 130, word: "I beg your pardon?", meaning: "请您再说一遍(我没有听清)。" },
+  { id: 131, word: "I'll be back soon.", meaning: "我马上回来。" },
+  { id: 132, word: "I'll check it out.", meaning: "我去查查看。" },
+  { id: 133, word: "It's a long story.", meaning: "说来话长。" },
+  { id: 134, word: "It's Sunday today.", meaning: "今天是星期天。" },
+  { id: 135, word: "Just wait and see!", meaning: "等着瞧!" },
+  { id: 136, word: "Make up your mind.", meaning: "做个决定吧。" },
+  { id: 137, word: "That's all I need.", meaning: "我就要这些。" },
+  { id: 138, word: "The view is great.", meaning: "景色多么漂亮!" },
+  { id: 139, word: "The wall has ears.", meaning: "隔墙有耳。" },
+  { id: 140, word: "There comes a bus.", meaning: "汽车来了。" },
+
+  // Lesson 8
+  { id: 141, word: "What day is today?", meaning: "今天星期几?" },
+  { id: 142, word: "What do you think?", meaning: "你怎么认为?" },
+  { id: 143, word: "Who told you that?", meaning: "谁告诉你的?" },
+  { id: 144, word: "Who's kicking off?", meaning: "现在是谁在开球?" },
+  { id: 145, word: "Yes, I suppose so.", meaning: "是的,我也这么认为。" },
+  { id: 146, word: "You can't miss it.", meaning: "你一定能找到的。" },
+  { id: 147, word: "Any messages for me?", meaning: "有我的留言吗?" },
+  { id: 148, word: "Don't be so modest.", meaning: "别谦虚了。" },
+  { id: 149, word: "Don't give me that!", meaning: "少来这套!" },
+  { id: 150, word: "He is a smart boy.", meaning: "他是个小机灵鬼。" },
+  { id: 151, word: "He is just a child.", meaning: "他只是个孩子。" },
+  { id: 152, word: "I can't follow you.", meaning: "我不懂你说的。" },
+  { id: 153, word: "I felt sort of ill.", meaning: "我感觉有点不适。" },
+  { id: 154, word: "I have a good idea!", meaning: "我有一个好主意。" },
+  { id: 155, word: "It is growing cool.", meaning: "天气渐渐凉爽起来。" },
+  { id: 156, word: "It seems all right.", meaning: "看来这没问题。" },
+  { id: 157, word: "It's going too far.", meaning: "太离谱了。" },
+  { id: 158, word: "May I use your pen?", meaning: "我可以用你的笔吗?" },
+  { id: 159, word: "She had a bad cold.", meaning: "她患了重感冒。" },
+  { id: 160, word: "That's a good idea.", meaning: "这个主意真不错。" },
+
+  // Lesson 9
+  { id: 161, word: "The answer is zero.", meaning: "白忙了。" },
+  { id: 162, word: "What does she like?", meaning: "她喜欢什么?" },
+  { id: 163, word: "As soon as possible!", meaning: "越快越好!" },
+  { id: 164, word: "He can hardly speak.", meaning: "他几乎说不出话来。" },
+  { id: 165, word: "He always talks big.", meaning: "他总是吹牛。" },
+  { id: 166, word: "He won an election.", meaning: "他在选举中获胜。" },
+  { id: 167, word: "I am a football fan.", meaning: "我是个足球迷。" },
+  { id: 168, word: "If only I could fly.", meaning: "要是我能飞就好了。" },
+  { id: 169, word: "I'll be right there.", meaning: "我马上就到。" },
+  { id: 170, word: "I'll see you at six.", meaning: "我六点钟见你。" },
+  { id: 171, word: "Is it true or false?", meaning: "这是对的还是错的?" },
+  { id: 172, word: "Just read it for me.", meaning: "就读给我听好了。" },
+  { id: 173, word: "Knowledge is power.", meaning: "知识就是力量。" },
+  { id: 174, word: "Move out of my way!", meaning: "让开!" },
+  { id: 175, word: "Time is running out.", meaning: "没时间了。" },
+  { id: 176, word: "We are good friends.", meaning: "我们是好朋友。" },
+  { id: 177, word: "What's your trouble?", meaning: "你哪儿不舒服?" },
+  { id: 178, word: "You did fairly well!", meaning: "你干得相当不错!" },
+  { id: 179, word: "Clothes make the man.", meaning: "人要衣装。" },
+  { id: 180, word: "Did you miss the bus?", meaning: "你错过公共汽车了?" },
+
+  // Lesson 10
+  { id: 181, word: "Don't lose your head.", meaning: "不要惊慌失措。" },
+  { id: 182, word: "He can't take a joke.", meaning: "他开不得玩笑。" },
+  { id: 183, word: "He owes my uncle $100.", meaning: "他欠我叔叔100美元。" },
+  { id: 184, word: "How are things going?", meaning: "事情进展得怎样?" },
+  { id: 185, word: "How are you recently?", meaning: "最近怎么样?" },
+  { id: 186, word: "I know all about it.", meaning: "我知道有关它的一切。" },
+  { id: 187, word: "It really takes time.", meaning: "这样太耽误时间了。" },
+  { id: 188, word: "It's against the law.", meaning: "这是违法的。" },
+  { id: 189, word: "Love me, love my dog.", meaning: "(谚语)爱屋及乌。" },
+  { id: 190, word: "My mouth is watering.", meaning: "我要流口水了。" },
+  { id: 191, word: "Speak louder, please.", meaning: "说话请大声点儿。" },
+  { id: 192, word: "This boy has no job.", meaning: "这个男孩没有工作。" },
+  { id: 193, word: "This house is my own.", meaning: "这所房子是我自己的。" },
+  { id: 194, word: "What happened to you?", meaning: "你怎么了?" },
+  { id: 195, word: "You are just in time.", meaning: "你来得正是时候。" },
+  { id: 196, word: "You need to work out.", meaning: "你需要去运动锻炼一下。" },
+  { id: 197, word: "Your hand feels cold.", meaning: "你的手摸起来很冷。" },
+  { id: 198, word: "Don't be so childish.", meaning: "别这么孩子气。" },
+  { id: 199, word: "Don't trust to chance!", meaning: "不要碰运气。" },
+  { id: 200, word: "Fasten your seat belt.", meaning: "系好你的安全带。" },
+
+  // Lesson 11
+  { id: 201, word: "He has a large income.", meaning: "他有很高的收入。" },
+  { id: 202, word: "He looks very healthy.", meaning: "他看来很健康。" },
+  { id: 203, word: "He paused for a reply.", meaning: "他停下来等着回答。" },
+  { id: 204, word: "He repaired his house.", meaning: "他修理了他的房子。" },
+  { id: 205, word: "He suggested a picnic.", meaning: "他建议搞一次野餐。" },
+  { id: 206, word: "Here's a gift for you.", meaning: "这里有个礼物送给你。" },
+  { id: 207, word: "How much does it cost?", meaning: "多少钱?" },
+  { id: 208, word: "I caught the last bus.", meaning: "我赶上了最后一班车。" },
+  { id: 209, word: "I could hardly speak.", meaning: "我简直说不出话来。" },
+  { id: 210, word: "I'll have to try that.", meaning: "我得试试这么做。" },
+  { id: 211, word: "I'm very proud of you.", meaning: "我为你感到非常骄傲。" },
+  { id: 212, word: "It doesn't make sense.", meaning: "这没有意义(不合常理)。" },
+  { id: 213, word: "Make yourself at home.", meaning: "请不要拘礼。" },
+  { id: 214, word: "My car needs washing.", meaning: "我的车需要洗一洗。" },
+  { id: 215, word: "None of your business!", meaning: "与你无关!" },
+  { id: 216, word: "Not a sound was heard.", meaning: "一点声音也没有。" },
+  { id: 217, word: "That's always the case.", meaning: "习以为常了。" },
+  { id: 218, word: "The road divides here.", meaning: "这条路在这里分岔。" },
+  { id: 219, word: "Those are watermelons.", meaning: "那些是西瓜。" },
+  { id: 220, word: "What a nice day it is!", meaning: "今天天气真好!" },
+
+  // Lesson 12
+  { id: 221, word: "What's wrong with you?", meaning: "你哪里不对劲?" },
+  { id: 222, word: "You are a chicken.", meaning: "你是个胆小鬼。" },
+  { id: 223, word: "A lovely day, isn't it?", meaning: "好天气,是吗?" },
+  { id: 224, word: "He is collecting money.", meaning: "他在筹集资金。" },
+  { id: 225, word: "He was born in New York.", meaning: "他出生在纽约。" },
+  { id: 226, word: "He was not a bit tired.", meaning: "他一点也不累。" },
+  { id: 227, word: "I will be more careful.", meaning: "我会小心一些的。" },
+  { id: 228, word: "I will never forget it.", meaning: "我会记着的。" },
+  { id: 229, word: "It is just what I need.", meaning: "这正是我所需要的。" },
+  { id: 230, word: "It rather surprised me.", meaning: "那事使我颇感惊讶。" },
+  { id: 231, word: "Just around the corner.", meaning: "就在附近。" },
+  { id: 232, word: "Just for entertainment.", meaning: "只是为了消遣一下。" },
+  { id: 233, word: "Let bygones be bygones.", meaning: "过去的,就让它过去吧。" },
+  { id: 234, word: "Mother doesn't make up.", meaning: "妈妈不化妆。" },
+  { id: 235, word: "Oh, you are kidding me.", meaning: "噢,你别拿我开玩笑了。" },
+  { id: 236, word: "She has been to school.", meaning: "她上学去了。" },
+  { id: 237, word: "Skating is interesting.", meaning: "滑冰很有趣。" },
+  { id: 238, word: "Supper is ready at six.", meaning: "晚餐六点钟就好了。" },
+  { id: 239, word: "That's a terrific idea!", meaning: "真是好主意!" },
+  { id: 240, word: "What horrible weather!", meaning: "这鬼天气!" },
+
+  // Lesson 13
+  { id: 241, word: "Which would you prefer?", meaning: "你要选哪个?" },
+  { id: 242, word: "Does she like ice-cream?", meaning: "她喜欢吃冰淇淋吗?" },
+  { id: 243, word: "First come first served.", meaning: "先到先得。" },
+  { id: 244, word: "Great minds think alike.", meaning: "英雄所见略同。" },
+  { id: 245, word: "He has a sense of humor.", meaning: "他有幽默感。" },
+  { id: 246, word: "He is acting an old man.", meaning: "他正扮演一个老人。" },
+  { id: 247, word: "He is looking for a job.", meaning: "他正在找工作。" },
+  { id: 248, word: "He doesn't care about me.", meaning: "他并不在乎我。" },
+  { id: 249, word: "I develop films myself.", meaning: "我自己冲洗照片。" },
+  { id: 250, word: "I felt no regret for it.", meaning: "对这件事我不觉得后悔。" },
+  { id: 251, word: "I get up at six o'clock.", meaning: "我六点起床。" },
+  { id: 252, word: "I meet the boss himself.", meaning: "我见到了老板本人。" },
+  { id: 253, word: "I owe you for my dinner.", meaning: "我欠你晚餐的钱。" },
+  { id: 254, word: "I really enjoyed myself.", meaning: "我玩得很开心。" },
+  { id: 255, word: "I'm fed up with my work!", meaning: "我对工作烦死了!" },
+  { id: 256, word: "It's no use complaining.", meaning: "发牢骚没什么用。" },
+  { id: 257, word: "She's under the weather.", meaning: "她心情不好。" },
+  { id: 258, word: "The child sobbed sadly.", meaning: "小孩伤心地抽泣着。" },
+  { id: 259, word: "The rumor had no basis.", meaning: "那谣言没有根据。" },
+  { id: 260, word: "They praised him highly.", meaning: "他们大大地表扬了他。" },
+
+  // Lesson 14
+  { id: 261, word: "Winter is a cold season.", meaning: "冬天是一个寒冷的季节。" },
+  { id: 262, word: "You can call me any time.", meaning: "你可以随时打电话给我。" },
+  { id: 263, word: "15 divided by 3 equals 5.", meaning: "15除以3等于5。" },
+  { id: 264, word: "All for one, one for all.", meaning: "我为人人,人人为我。" },
+  { id: 265, word: "East, west, home is best.", meaning: "金窝,银窝,不如自己的草窝。" },
+  { id: 266, word: "He grasped both my hands.", meaning: "他紧握住我的双手。" },
+  { id: 267, word: "He is physically mature.", meaning: "他身体已发育成熟。" },
+  { id: 268, word: "I am so sorry about this.", meaning: "对此我非常抱歉(遗憾)。" },
+  { id: 269, word: "I can't afford a new car.", meaning: "我买不起一部新车。" },
+  { id: 270, word: "I do want to see him now.", meaning: "我现在确实很想去见他。" },
+  { id: 271, word: "I have the right to know.", meaning: "我有权知道。" },
+  { id: 272, word: "I heard someone laughing.", meaning: "我听见有人在笑。" },
+  { id: 273, word: "I suppose you dance much.", meaning: "我想你常常跳舞吧。" },
+  { id: 274, word: "I walked across the park.", meaning: "我穿过了公园。" },
+  { id: 275, word: "I'll just play it by ear.", meaning: "我到时随机应变。" },
+  { id: 276, word: "I'm not sure I can do it.", meaning: "恐怕这事我干不了。" },
+  { id: 277, word: "I'm not used to drinking.", meaning: "我不习惯喝酒。" },
+  { id: 278, word: "Is the cut still painful?", meaning: "伤口还在痛吗?" },
+  { id: 279, word: "It's too good to be true!", meaning: "好得难以置信。" },
+  { id: 280, word: "Jean is a blue-eyed girl.", meaning: "珍是个蓝眼睛的女孩。" },
+
+  // Lesson 15
+  { id: 281, word: "Let's not waste our time.", meaning: "咱们别浪费时间了。" },
+  { id: 282, word: "May I ask some questions?", meaning: "我可以问几个问题吗?" },
+  { id: 283, word: "Money is not everything.", meaning: "金钱不是一切。" },
+  { id: 284, word: "Neither of the men spoke.", meaning: "两个人都没说过话。" },
+  { id: 285, word: "Stop making such a noise.", meaning: "别吵了。" },
+  { id: 286, word: "That makes no difference.", meaning: "没什么区别。" },
+  { id: 287, word: "The price is reasonable.", meaning: "价格还算合理。" },
+  { id: 288, word: "They crowned him king.", meaning: "他们拥立他为国王。" },
+  { id: 289, word: "They're in red and white.", meaning: "他们穿着红白相间的衣服。" },
+  { id: 290, word: "We all desire happiness.", meaning: "我们都想要幸福。" },
+  { id: 291, word: "We just caught the plane.", meaning: "我们刚好赶上了飞机。" },
+  { id: 292, word: "What shall we do tonight?", meaning: "我们今天晚上去干点儿什么呢?" },
+  { id: 293, word: "What's your goal in life?", meaning: "你的人生目标是什么?" },
+  { id: 294, word: "When was the house built?", meaning: "这幢房子是什么时候建造的?" },
+  { id: 295, word: "Why did you stay at home?", meaning: "为什么呆在家里?" },
+  { id: 296, word: "Would you like some help?", meaning: "需要帮忙吗?" },
+  { id: 297, word: "You mustn't aim too high.", meaning: "你不可好高骛远。" },
+  { id: 298, word: "You're really killing me!", meaning: "真是笑死我了!" },
+  { id: 299, word: "You've got a point there.", meaning: "你说得挺有道理的。" },
+  { id: 300, word: "Being criticized is awful!", meaning: "被人批评真是痛苦!" },
+
+  // Lesson 16
+  { id: 301, word: "Did you enter the contest?", meaning: "你参加比赛了吗?" },
+  { id: 302, word: "Do you accept credit cards?", meaning: "你们收信用卡吗?" },
+  { id: 303, word: "Don't cry over spilt milk.", meaning: "不要做无益的后悔。" },
+  { id: 304, word: "Don't let chances pass by.", meaning: "不要让机遇从我们身边溜走。" },
+  { id: 305, word: "He owned himself defeated.", meaning: "他承认自己失败了。" },
+  { id: 306, word: "He seems a little nervous.", meaning: "他显得有点紧张。" },
+  { id: 307, word: "He strolls about the town.", meaning: "他在镇上四处遛达。" },
+  { id: 308, word: "Her tooth ached all night.", meaning: "她牙疼了一整夜。" },
+  { id: 309, word: "How about a drink tonight?", meaning: "今晚喝一杯怎样?" },
+  { id: 310, word: "I can do nothing but that.", meaning: "我只会做那件事。" },
+  { id: 311, word: "I get hold of you at last.", meaning: "我终于找到你了。" },
+  { id: 312, word: "I have a surprise for you.", meaning: "我有一个意想不到的东西给你看。" },
+  { id: 313, word: "I like all kinds of fruit.", meaning: "我喜欢各种各样的水果。" },
+  { id: 314, word: "I saw it with my own eyes.", meaning: "我亲眼所见。" },
+  { id: 315, word: "I will arrange everything.", meaning: "我会安排一切的。" },
+  { id: 316, word: "I wish I knew my neighbor.", meaning: "我很想认识我的邻居。" },
+  { id: 317, word: "I would like to check out.", meaning: "我想结帐。" },
+  { id: 318, word: "It has become much cooler.", meaning: "天气变得凉爽多了。" },
+  { id: 319, word: "It's time you went to bed.", meaning: "你早就该睡觉了。" },
+  { id: 320, word: "No spitting on the street.", meaning: "禁止在大街上吐痰。" },
+
+  // Lesson 17
+  { id: 321, word: "She was totally exhausted.", meaning: "她累垮了。" },
+  { id: 322, word: "Show your tickets, please.", meaning: "请出示你的票。" },
+  { id: 323, word: "Thank you for your advice.", meaning: "谢谢你的建议。" },
+  { id: 324, word: "That's the latest fashion.", meaning: "这是最流行的款式。" },
+  { id: 325, word: "The train arrived on time.", meaning: "火车准时到达。" },
+  { id: 326, word: "There go the house lights.", meaning: "剧院的灯光灭了。" },
+  { id: 327, word: "They are paid by the hour.", meaning: "他们按时取酬。" },
+  { id: 328, word: "Things are getting better.", meaning: "情况正在好转。" },
+  { id: 329, word: "Wake me up at five thirty.", meaning: "请在五点半叫醒我。" },
+  { id: 330, word: "We are all busy with work.", meaning: "我们都忙于工作。" },
+  { id: 331, word: "Where do you want to meet?", meaning: "你想在哪儿见面?" },
+  { id: 332, word: "You can get what you want.", meaning: "你能得到你想要的。" },
+  { id: 333, word: "A barking dog doesn't bite!", meaning: "吠犬不咬人。" },
+  { id: 334, word: "Are you free this Saturday?", meaning: "你这个星期六有空吗?" },
+  { id: 335, word: "Be careful not to fall ill.", meaning: "注意不要生病了。" },
+  { id: 336, word: "Being a mother is not easy.", meaning: "做一个母亲是不容易的。" },
+  { id: 337, word: "Brevity is the soul of wit.", meaning: "简洁是智慧的精华。" },
+  { id: 338, word: "Cancer is a deadly disease.", meaning: "癌症是一种致命的疾病。" },
+  { id: 339, word: "Did you fight with others?", meaning: "你又和别人打架了吗?" },
+  { id: 340, word: "Don't dream away your time.", meaning: "不要虚度光阴。" },
+
+  // Lesson 18
+  { id: 341, word: "Don't keep me waiting long.", meaning: "不要让我等得太久。" },
+  { id: 342, word: "He has a remarkable memory.", meaning: "他有惊人的记忆力。" },
+  { id: 343, word: "He has completed the task.", meaning: "他完成了这个任务。" },
+  { id: 344, word: "He has quite a few friends.", meaning: "他有不少的朋友。" },
+  { id: 345, word: "He is capable of any crime.", meaning: "他什么样的坏事都能干得出来。" },
+  { id: 346, word: "He walks with a quick pace.", meaning: "他快步走路。" },
+  { id: 347, word: "He was not a little tired.", meaning: "他很累。" },
+  { id: 348, word: "His looks are always funny.", meaning: "他的样子总是滑稽可笑。" },
+  { id: 349, word: "How about going to a movie?", meaning: "去看场电影怎么样?" },
+  { id: 350, word: "I think I've caught a cold.", meaning: "我想我得了感冒。" },
+  { id: 351, word: "I was taking care of Sally.", meaning: "我在照顾萨莉。" },
+  { id: 352, word: "I wish I lived in New York.", meaning: "我希望住在纽约。" },
+  { id: 353, word: "I'm very glad to hear that.", meaning: "很高兴听你这样说。" },
+  { id: 354, word: "I'm your lucky fellow then.", meaning: "我就是你的幸运舞伴啦!" },
+  { id: 355, word: "It's none of your business!", meaning: "这不关你的事儿!" },
+  { id: 356, word: "No littering on the campus.", meaning: "在校园内不准乱丢废物。" },
+  { id: 357, word: "She is a good-looking girl.", meaning: "她是一个漂亮女孩。" },
+  { id: 358, word: "She mended the broken doll.", meaning: "她修补了破了的洋娃娃。" },
+  { id: 359, word: "So I just take what I want.", meaning: "那么我只拿我所需要的东西。" },
+  { id: 360, word: "Spring is a pretty season.", meaning: "春天是一个好季节。" },
+
+  // Lesson 19
+  { id: 361, word: "The figure seems all right.", meaning: "数目看起来是对的。" },
+  { id: 362, word: "The stars are too far away.", meaning: "星星太遥远了。" },
+  { id: 363, word: "The whole world knows that.", meaning: "全世界都知道。" },
+  { id: 364, word: "Tomorrow will be a holiday.", meaning: "明天放假。" },
+  { id: 365, word: "We walk on the garden path.", meaning: "我们走在花园小径上。" },
+  { id: 366, word: "What you need is just rest.", meaning: "你需要的就是休息。" },
+  { id: 367, word: "What's your favorite steps?", meaning: "你最喜欢跳什么舞?" },
+  { id: 368, word: "You'd better let her alone.", meaning: "你们最好是让她一个人呆会儿。" },
+  { id: 369, word: "A lost chance never returns.", meaning: "错过的机会永不再来。" },
+  { id: 370, word: "Don't let this get you down.", meaning: "不要为此灰心丧气。" },
+  { id: 371, word: "He shot the lion with a gun.", meaning: "他用枪把狮子打死了。" },
+  { id: 372, word: "I don't think you are right.", meaning: "我认为你是不对的。" },
+  { id: 373, word: "I have never seen the movie.", meaning: "我从未看过那部电影。" },
+  { id: 374, word: "I haven't seen you for ages.", meaning: "我好久没见到你了。" },
+  { id: 375, word: "I was alone, but not lonely.", meaning: "我独自一人,但并不觉得寂寞。" },
+  { id: 376, word: "I went there three days ago.", meaning: "我三天前去过那儿。" },
+  { id: 377, word: "It's a friendly competition.", meaning: "这是一场友谊赛。" },
+  { id: 378, word: "It's very thoughtful of you.", meaning: "你想得真周到。" },
+  { id: 379, word: "May I speak to Lora, please?", meaning: "我能和劳拉说话吗?" },
+  { id: 380, word: "Mr. Wang is fixing his bike.", meaning: "王先生在修他的自行车。" },
+
+  // Lesson 20
+  { id: 381, word: "My brother is seeking a job.", meaning: "我弟弟正在找工作。" },
+  { id: 382, word: "Nancy will retire next year.", meaning: "南希明年就退休了。" },
+  { id: 383, word: "Neither you nor he is wrong.", meaning: "你没错,他也没错。" },
+  { id: 384, word: "Opportunity knocks but once.", meaning: "机不可失,时不再来。" },
+  { id: 385, word: "She dressed herself hastily.", meaning: "她匆忙穿上衣服。" },
+  { id: 386, word: "She hired a car by the hour.", meaning: "她租了一辆按钟点计费的汽车。" },
+  { id: 387, word: "Someone is ringing the bell.", meaning: "有人在按门铃。" },
+  { id: 388, word: "The Smiths are my neighbors.", meaning: "史密斯一家是我的邻居。" },
+  { id: 389, word: "These shoes don't fit right.", meaning: "这双鞋不太合适。" },
+  { id: 390, word: "This is only the first half.", meaning: "这才是上半场呢。" },
+  { id: 391, word: "This pen doesn't write well.", meaning: "这钢笔不好写。" },
+  { id: 392, word: "Would you like a cup of tea?", meaning: "你想喝杯茶吗?" },
+  { id: 393, word: "You really look sharp today.", meaning: "你今天真漂亮。" },
+  { id: 394, word: "Another cat came to my house.", meaning: "又有一只猫来到我家了。" },
+  { id: 395, word: "Check your answers with mine.", meaning: "把你的答案跟我的核对一下。" },
+  { id: 396, word: "Don't keep the truth from me.", meaning: "别瞒着我事实真相。" },
+  { id: 397, word: "Everything has its beginning.", meaning: "凡事都有开端。" },
+  { id: 398, word: "He came to the point at once.", meaning: "他一下子就说到了点子上。" },
+  { id: 399, word: "He fell behind with his work.", meaning: "他工作落后了。" },
+  { id: 400, word: "He is the happiest man alive.", meaning: "他是世界上最快乐的人。" },
+
+  // Lesson 21
+  { id: 401, word: "He neither smokes nor drinks.", meaning: "他既不抽烟也不喝酒。" },
+  { id: 402, word: "He ran his horse up the hill.", meaning: "他策马跑上小山。" },
+  { id: 403, word: "He reminds me of his brother.", meaning: "他使我想起了他的弟弟。" },
+  { id: 404, word: "He was efficient in his work.", meaning: "他工作效率高。" },
+  { id: 405, word: "He will do anything but work.", meaning: "只要不是干活,他干什么都行。" },
+  { id: 406, word: "His father runs a restaurant.", meaning: "他的父亲经营一家餐馆。" },
+  { id: 407, word: "I have something to tell you.", meaning: "我有事要告诉你。" },
+  { id: 408, word: "I smelled a smell of cooking.", meaning: "我闻到了烧菜做饭的味道。" },
+  { id: 409, word: "I want to see the film again.", meaning: "我真想再看一遍。" },
+  { id: 410, word: "I've got too much work to do.", meaning: "我要做的工作太多了。" },
+  { id: 411, word: "Let's go for a walk, shall we?", meaning: "咱们出去走走,好吗?" },
+  { id: 412, word: "Please let me check the bill.", meaning: "请让我核对一下帐单。" },
+  { id: 413, word: "Plenty of sleep is healthful.", meaning: "充足的睡眠有益于健康。" },
+  { id: 414, word: "The sun comes up in the east.", meaning: "太阳从东方升起。" },
+  { id: 415, word: "This is because we feel pain.", meaning: "这是因为我们能感到疼痛。" },
+  { id: 416, word: "What do you desire me to do?", meaning: "你想要我做什么?" },
+  { id: 417, word: "What you said was quite true.", meaning: "你所说的完全符合事实。" },
+  { id: 418, word: "You can either stay or leave.", meaning: "你或者留下或者离开。" },
+  { id: 419, word: "Your life is your own affair.", meaning: "你的生活是你自己的事。" },
+  { id: 420, word: "All that glitters is not gold.", meaning: "发闪光的不全是黄金。" },
+
+  // Lesson 22
+  { id: 421, word: "Are you going to have a party?", meaning: "你要举行聚会吗?" },
+  { id: 422, word: "Aren't you concerned about it?", meaning: "难道你不担心吗?" },
+  { id: 423, word: "Don't forget to keep in touch.", meaning: "别忘了保持联系。" },
+  { id: 424, word: "He broke his words once again.", meaning: "他又一次违背了诺言。" },
+  { id: 425, word: "He is in his everyday clothes.", meaning: "他穿着平常的衣服。" },
+  { id: 426, word: "He is taller than I by a head.", meaning: "他比我高一头。" },
+  { id: 427, word: "He led them down the mountain.", meaning: "他带他们下山。" },
+  { id: 428, word: "He was trained to be a lawyer.", meaning: "他被培养成一名律师。" },
+  { id: 429, word: "I am afraid that I have to go.", meaning: "我要走了。" },
+  { id: 430, word: "I don't have any cash with me.", meaning: "我身上没带现金。" },
+  { id: 431, word: "I have been putting on weight.", meaning: "我开始发胖了。" },
+  { id: 432, word: "I have just finished the book.", meaning: "我刚刚读完这本书。" },
+  { id: 433, word: "I was late for work yesterday.", meaning: "我昨天上班迟到了。" },
+  { id: 434, word: "It appears to be a true story.", meaning: "这故事似乎是真的。" },
+  { id: 435, word: "I've got to start working out.", meaning: "我必须开始做健身运动了。" },
+  { id: 436, word: "Japan is to the east of China.", meaning: "日本在中国的东部。" },
+  { id: 437, word: "John asked Grace to marry him.", meaning: "约翰向格雷斯求婚。" },
+  { id: 438, word: "My watch is faster than yours.", meaning: "我的表比你的表快。" },
+  { id: 439, word: "New China was founded in 1949.", meaning: "1949年新中国成立。" },
+  { id: 440, word: "Thanks for your flattering me.", meaning: "多谢你的夸奖。" },
+
+  // Lesson 23
+  { id: 441, word: "They charged the fault on him.", meaning: "他们把过失归咎于他。" },
+  { id: 442, word: "This car is in good condition.", meaning: "这车性能很好。" },
+  { id: 443, word: "This work itself is very easy.", meaning: "这件工作本身很容易。" },
+  { id: 444, word: "Truth is the daughter of time.", meaning: "时间见真理。" },
+  { id: 445, word: "We look forward to your visit.", meaning: "期待您的光临。" },
+  { id: 446, word: "What do you think of this one?", meaning: "您觉得这个怎么样?" },
+  { id: 447, word: "What's the weather like today?", meaning: "今天天气怎么样?" },
+  { id: 448, word: "A red tie will match that suit.", meaning: "红领带会配那件衣服。" },
+  { id: 449, word: "A wet road is usually slippery.", meaning: "潮湿的路往往是滑的。" },
+  { id: 450, word: "Example is better than precept.", meaning: "身教胜于言传。" },
+  { id: 451, word: "Go right back to the beginning.", meaning: "直接回到起始位置。" },
+  { id: 452, word: "He does everything without aim.", meaning: "他做事都漫无目标。" },
+  { id: 453, word: "He is respectful to his elders.", meaning: "他对长辈很恭敬。" },
+  { id: 454, word: "He knows English better than I.", meaning: "他比我懂英语。" },
+  { id: 455, word: "He resolved to give up smoking.", meaning: "他决心戒烟。" },
+  { id: 456, word: "His talk covered many subjects.", meaning: "他的报告涉及很多课题。" },
+  { id: 457, word: "I fear that he drinks too much.", meaning: "我担心他喝的酒太多了。" },
+  { id: 458, word: "I have my hair cut every month.", meaning: "我每个月都理发。" },
+  { id: 459, word: "I want to have a part-time job.", meaning: "我想有一份兼职工作。" },
+  { id: 460, word: "I'm sorry to have bothered you.", meaning: "对不起,打扰你了。" },
+
+  // Lesson 24
+  { id: 461, word: "It is not so easy as you think.", meaning: "这事没有你想象的那么简单。" },
+  { id: 462, word: "Keep your temper under control.", meaning: "不要发脾气。" },
+  { id: 463, word: "Lying and stealing are immoral.", meaning: "说谎和偷窃都是不道德的。" },
+  { id: 464, word: "My efforts resulted in nothing.", meaning: "我的努力毫无结果。" },
+  { id: 465, word: "My false teeth are stuck to it.", meaning: "我的假牙还在上边呢!" },
+  { id: 466, word: "She is a composer for the harp.", meaning: "她是位写竖琴曲的作曲家。" },
+  { id: 467, word: "Take me to the airport, please.", meaning: "请送我去机场。" },
+  { id: 468, word: "Talking with you is a pleasure.", meaning: "和你谈话很愉快。" },
+  { id: 469, word: "The eggs are sold by the dozen.", meaning: "鸡蛋按打卖。" },
+  { id: 470, word: "The price just covers the cost.", meaning: "这个价格正好抵消成本。" },
+  { id: 471, word: "The sweater is of good quality.", meaning: "这件毛衣质地很好。" },
+  { id: 472, word: "The teacher got a little angry.", meaning: "老师有点生气了。" },
+  { id: 473, word: "Think carefully before you act.", meaning: "三思而后行。" },
+  { id: 474, word: "Walt invented the steam engine.", meaning: "瓦特发明了蒸汽机。" },
+  { id: 475, word: "We are divided in our opinions.", meaning: "我们意见分歧。" },
+  { id: 476, word: "Whatever I said, he'd disagree.", meaning: "不论我说什么他都不同意。" },
+  { id: 477, word: "Whoever comes will be welcomed.", meaning: "来的人我们都欢迎。" },
+  { id: 478, word: "You look as if you didn't care.", meaning: "你看上去好像满不在乎。" },
+  { id: 479, word: "You should look at it yourself.", meaning: "你应该亲自看看它。" },
+  { id: 480, word: "Draw your chair up to the table.", meaning: "把你的椅子拉到桌子旁边来。" },
+
+  // Lesson 25
+  { id: 481, word: "He covered himself with a quilt.", meaning: "他给自己盖上一条被。" },
+  { id: 482, word: "He found my lecture interesting.", meaning: "他觉得我讲课有趣。" },
+  { id: 483, word: "He had a good many friends here.", meaning: "他在这儿有很多朋友。" },
+  { id: 484, word: "He is only about five feet high.", meaning: "他大概只有五英尺高。" },
+  { id: 485, word: "Her family are all music lovers.", meaning: "她全家人都是音乐爱好者。" },
+  { id: 486, word: "I am busy. How is your business?", meaning: "我很忙。你的生意做得怎样?" },
+  { id: 487, word: "I don't think much of the movie.", meaning: "我认为那电影不怎么样。" },
+  { id: 488, word: "I feel like eating an ice-cream.", meaning: "我想吃一个冰淇淋。" },
+  { id: 489, word: "I found him seated on the bench.", meaning: "我发现他在椅子上坐着。" },
+  { id: 490, word: "I gave much time to the old car.", meaning: "我在这辆破车上花了不少时间。" },
+  { id: 491, word: "I lost the door key about here.", meaning: "我在这附近掉了门钥匙。" },
+  { id: 492, word: "I'm not guessing, I really know.", meaning: "我不是在猜想,我真的知道。" },
+  { id: 493, word: "It's time to tell her the truth.", meaning: "是该告诉她真相的时候了。" },
+  { id: 494, word: "Let's watch TV with a candle on.", meaning: "咱们点上蜡烛看电视吧。" },
+  { id: 495, word: "Most games cost about that much.", meaning: "大部分游戏差不多都是这个价钱。" },
+  { id: 496, word: "My parents want me to go abroad.", meaning: "我父母想让我出国。" },
+  { id: 497, word: "She has been collecting stamps.", meaning: "她一直收集邮票。" },
+  { id: 498, word: "There are many stars in the sky.", meaning: "天上有很多星星。" },
+  { id: 499, word: "We get to London this afternoon.", meaning: "我们是今天下午到达伦敦的。" },
+  { id: 500, word: "What about having a pizza first?", meaning: "先吃点比萨饼怎么样?" },
+
+  // Lesson 26
+  { id: 501, word: "You'd better look before you leap.", meaning: "你最好三思而后行。" },
+  { id: 502, word: "You know what I'm talking about.", meaning: "我想你知道我在说什么。" },
+  { id: 503, word: "He has been sick for three weeks.", meaning: "他已经病了几周了。" },
+  { id: 504, word: "He inspected the car for defects.", meaning: "他详细检查车子有无故障。" },
+  { id: 505, word: "I count you as one of my friends.", meaning: "我把你算作我的一个朋友。" },
+  { id: 506, word: "I go to school by bike every day.", meaning: "我每天骑自行车上学。" },
+  { id: 507, word: "I have a large collection of CDs.", meaning: "我收集了很多唱片。" },
+  { id: 508, word: "I won't be able to see him today.", meaning: "今天我不可能去看他。" },
+  { id: 509, word: "I'll call a taxi in case of need.", meaning: "如果需要的话,我会叫出租车的。" },
+  { id: 510, word: "Is there any sugar in the bottle?", meaning: "瓶子里还有糖吗?" },
+  { id: 511, word: "It's a secret between you and me.", meaning: "这是你我之间的秘密。" },
+  { id: 512, word: "It's very kind of you to help me.", meaning: "你帮助我真是太好了。" },
+  { id: 513, word: "Let's divide the cake into three.", meaning: "我们将蛋糕分成三份吧。" },
+  { id: 514, word: "Patience is a mark of confidence.", meaning: "耐心是自信心的一种表现。" },
+  { id: 515, word: "Susan is going to finish college.", meaning: "苏珊将完成大学学业。" },
+  { id: 516, word: "That is my idea about friendship.", meaning: "这是我关于友谊的看法。" },
+  { id: 517, word: "The book you ask for is sold out.", meaning: "你要的那本书已经售完了。" },
+  { id: 518, word: "The boy was too nervous to speak.", meaning: "那男孩紧张得说不出话来。" },
+  { id: 519, word: "The play may begin at any moment.", meaning: "戏随时都有可能开始。" },
+  { id: 520, word: "The salve will heal slight burns.", meaning: "这种药膏能治疗轻微烧伤。" },
+
+  // Lesson 27
+  { id: 521, word: "The sea sparkled in the sunlight.", meaning: "阳光下,大海波光粼粼。" },
+  { id: 522, word: "The teacher tested us in English.", meaning: "老师用英文考我们。" },
+  { id: 523, word: "There is a bridge over the river.", meaning: "河上有一座桥。" },
+  { id: 524, word: "They rode their respective bikes.", meaning: "他们各自骑着自己的自行车。" },
+  { id: 525, word: "They will arrive in half an hour.", meaning: "他们将于半小时之内到达。" },
+  { id: 526, word: "Time is more valuable than money.", meaning: "时间比金钱宝贵。" },
+  { id: 527, word: "We are all in favor of this plan.", meaning: "我们都赞同这项计划。" },
+  { id: 528, word: "We reached London this afternoon.", meaning: "我们是今天下午到达伦敦的。" },
+  { id: 529, word: "We two finished a bottle of wine.", meaning: "我俩喝完了一瓶酒。" },
+  { id: 530, word: "What a lovely little girl she is!", meaning: "她是一个多么可爱的小女孩耶!" },
+  { id: 531, word: "Will you pick me up at my place?", meaning: "你能到我的住处来接我吗?" },
+  { id: 532, word: "You may choose whatever you like.", meaning: "你可以喜欢什么就选什么。" },
+  { id: 533, word: "You're suffering from an allergy?", meaning: "你过敏吗?" },
+  { id: 534, word: "Beyond all questions you are right.", meaning: "毫无疑问,你是对的。" },
+  { id: 535, word: "But I plan to weed the yard today.", meaning: "我计划今天除院子里的草。" },
+  { id: 536, word: "But who will do all the housework?", meaning: "但是这些家务活谁来做呢?" },
+  { id: 537, word: "Close the door after you, please.", meaning: "请随手关门。" },
+  { id: 538, word: "Come to see me whenever you like.", meaning: "你可以随时来见我。" },
+  { id: 539, word: "Don't pull the chairs about, boys!", meaning: "不要把椅子拖来拖去,孩子们!" },
+  { id: 540, word: "He drives more carefully than you.", meaning: "他开车比你小心。" },
+
+  // Lesson 28
+  { id: 541, word: "He invited me to dinner yesterday.", meaning: "他昨天请我吃晚饭了。" },
+  { id: 542, word: "He struck his attacker on the ear.", meaning: "他打了那个攻击者一耳光。" },
+  { id: 543, word: "He suddenly appeared in the party.", meaning: "他突然在晚会上出现了。" },
+  { id: 544, word: "Her handbag goes with her clothes.", meaning: "她的手袋和她的衣服很搭配。" },
+  { id: 545, word: "Here we are. Row M, seats 1 and 3.", meaning: "哦,到了。M排,1号和3号。" },
+  { id: 546, word: "His boss might get angry with him.", meaning: "他的老板也许会生他的气。" },
+  { id: 547, word: "I expect to be there this evening.", meaning: "我打算今天晚上到那儿去。" },
+  { id: 548, word: "I really need to lose some weight.", meaning: "我真的需要减肥了。" },
+  { id: 549, word: "I think you have the wrong number.", meaning: "我想你打错号码了。" },
+  { id: 550, word: "I would rather stay at home alone.", meaning: "我宁愿独自呆在家。" },
+  { id: 551, word: "I'd like to look at some sweaters.", meaning: "我想看看毛衣。" },
+  { id: 552, word: "Its origin is still a mystery now.", meaning: "它的起源至今仍是个谜。" },
+  { id: 553, word: "Money is no more than our servant.", meaning: "金钱不过是我们的仆人。" },
+  { id: 554, word: "Once you begin, you must continue.", meaning: "一旦开始,你就得继续。" },
+  { id: 555, word: "She is poor but quite respectable.", meaning: "她虽穷,人品却很端正。" },
+  { id: 556, word: "She spent a lot of money on books.", meaning: "她花了很多钱来买书。" },
+  { id: 557, word: "The girl in red is his girlfriend.", meaning: "穿红衣服的那个女孩是他的女朋友。" },
+  { id: 558, word: "There is a chair below the window.", meaning: "窗户下面有一把椅子。" },
+  { id: 559, word: "They employed him as a consultant.", meaning: "他们雇用他为顾问。" },
+  { id: 560, word: "To be honest with you, I'm twenty.", meaning: "老实说,我20岁。" },
+
+  // Lesson 29
+  { id: 561, word: "We often call him by his nickname.", meaning: "我们经常叫他的绰号。" },
+  { id: 562, word: "Will you be free tomorrow evening?", meaning: "你明晚有空吗?" },
+  { id: 563, word: "Would you like to leave a message?", meaning: "你要留话吗?" },
+  { id: 564, word: "You can never turn the clock back.", meaning: "时光不能倒流。" },
+  { id: 565, word: "You may as well tell me the truth.", meaning: "你还是把事实告诉我为好。" },
+  { id: 566, word: "Are your grandparents still living?", meaning: "你的祖父母还在么?" },
+  { id: 567, word: "Can you recognize that woman, Mary?", meaning: "你能认出那个女人是谁了吗,玛丽?" },
+  { id: 568, word: "Do you have any suggestions for me?", meaning: "你对我有什么建议么?" },
+  { id: 569, word: "He is tough, but I am even tougher.", meaning: "他是一个硬汉子,不过我要比他更硬。" },
+  { id: 570, word: "He made his way through the forest.", meaning: "他设法穿过了森林。" },
+  { id: 571, word: "He suggests you leave here at once.", meaning: "他建议你立刻离开这儿。" },
+  { id: 572, word: "He was married to a friend of mine.", meaning: "他和我的一个朋友结了婚。" },
+  { id: 573, word: "He will blame you for carelessness.", meaning: "他会责备你的粗心大意。" },
+  { id: 574, word: "I can give you a number of excuses.", meaning: "我可以给你说出很多理由。" },
+  { id: 575, word: "I don't doubt that he will help me.", meaning: "我不怀疑他会援助我。" },
+  { id: 576, word: "I hope you enjoy your stay with us.", meaning: "希望您在这儿过的愉快。" },
+  { id: 577, word: "I'd like to repair our differences.", meaning: "我愿意消除一下我们之间的分歧。" },
+  { id: 578, word: "It's nothing to be surprised about.", meaning: "这事不值得大惊小怪。" },
+  { id: 579, word: "It's rude to stare at other people.", meaning: "盯着别人看是不礼貌的。" },
+  { id: 580, word: "Bob has always had a crush on Lucy.", meaning: "鲍伯一直在爱着露茜。" },
+
+  // Lesson 30
+  { id: 581, word: "Let's take a short break for lunch.", meaning: "让我们休息一会儿,去吃午饭。" },
+  { id: 582, word: "Linda speaks as if she were a boss.", meaning: "琳达说话总好象她是老板。" },
+  { id: 583, word: "She became more and more beautiful.", meaning: "她变得越来越漂亮了。" },
+  { id: 584, word: "Suppose it rains, what shall we do?", meaning: "万一下雨,我们该怎么办?" },
+  { id: 585, word: "The book is protected by copyright.", meaning: "该书受版权保护。" },
+  { id: 586, word: "The ice is hard enough to skate on.", meaning: "冰已经厚得可以划冰了。" },
+  { id: 587, word: "The price includes postage charges.", meaning: "价格包括邮资在内。" },
+  { id: 588, word: "This is a little something for you.", meaning: "这是我给你们的一点心意。" },
+  { id: 589, word: "What he likes best is making jokes.", meaning: "他最喜欢开玩笑。" },
+  { id: 590, word: "Who but Jack would do such a thing?", meaning: "除了杰克谁会做这种事呢?" },
+  { id: 591, word: "You should have a mind of your own.", meaning: "你必须有自己的主见。" },
+  { id: 592, word: "You will soon get used to the work.", meaning: "你很快就会习惯于这项工作的。" },
+  { id: 593, word: "Columbus discovered America in 1492.", meaning: "哥伦布于1492年发现了美洲。" },
+  { id: 594, word: "God helps those who help themselves.", meaning: "上帝帮助那些自己帮自己的人。" },
+  { id: 595, word: "He has a nice sum of money put away.", meaning: "他存了一大笔钱。" },
+  { id: 596, word: "He is heavily insured against death.", meaning: "他给自己投了巨额的人身保险。" },
+  { id: 597, word: "He used to learn everything by rote.", meaning: "他过去总是死记硬背。" },
+  { id: 598, word: "He's a terrible man when he's angry.", meaning: "他生气的时候很可怕。" },
+  { id: 599, word: "I am on my way to the grocery store.", meaning: "我正在去杂货店的路上。" },
+  { id: 600, word: "I am sick of always waiting for you!", meaning: "你老让我等你,真是烦透了。" },
+
+  // Lesson 31
+  { id: 601, word: "I appreciate John's helping in time.", meaning: "我感谢约翰的及时帮助。" },
+  { id: 602, word: "I bought it the day it was released.", meaning: "它发行的当天我就买了。" },
+  { id: 603, word: "I doubted whether the story is true.", meaning: "我怀疑那故事是不是真的。" },
+  { id: 604, word: "I learnt that I had passed the test.", meaning: "我获悉我测验及格了。" },
+  { id: 605, word: "I will seek from my doctor's advice.", meaning: "我将请教医生的意见。" },
+  { id: 606, word: "Ice cream is popular among children.", meaning: "冰淇淋深受孩子们的欢迎。" },
+  { id: 607, word: "I'd like to get this film developed.", meaning: "我要冲洗这卷胶卷。" },
+  { id: 608, word: "In a word, I am tired of everything.", meaning: "总之,我对一切都很厌倦。" },
+  { id: 609, word: "Let us do it by ourselves, will you?", meaning: "我们自己做这件事,可以吗?" },
+  { id: 610, word: "May I know the quantity you require?", meaning: "请问你们需要多少数量的货物?" },
+  { id: 611, word: "Nobody has ever solved this problem.", meaning: "没有人曾解决过这个问题。" },
+  { id: 612, word: "Our school covers 100 square meters.", meaning: "我们学校占地面积100平方米。" },
+  { id: 613, word: "People enjoyed the stamps very much.", meaning: "人们非常喜爱这些邮票。" },
+  { id: 614, word: "The editor overlooked a print error.", meaning: "这位编辑漏掉了一个印刷错误。" },
+  { id: 615, word: "The sudden barking frightened Clara.", meaning: "突然的狗叫声吓坏了克拉拉。" },
+  { id: 616, word: "The teams are coming onto the field.", meaning: "队员们都进场了。" },
+  { id: 617, word: "There is a mark of ink on his shirt.", meaning: "他的衬衣上有一块墨迹。" },
+  { id: 618, word: "There isn't any water in the bottle.", meaning: "瓶子里一点水也没有。" },
+  { id: 619, word: "This joke has gone a little too far.", meaning: "这个玩笑开得有点过分了。" },
+  { id: 620, word: "We arrived in London this afternoon.", meaning: "我们是今天下午到达伦敦的。" },
+
+  // Lesson 32
+  { id: 621, word: "We can't go out because of the rain.", meaning: "我们不能出去因为下雨了。" },
+  { id: 622, word: "We should make good use of our time.", meaning: "我们应该充分利用我们的时间。" },
+  { id: 623, word: "We should save unnecessary expenses.", meaning: "我们应节省不必要的开支。" },
+  { id: 624, word: "You may have heard of Birth Control.", meaning: "你们也许听说过控制人口出生的措施。" },
+  { id: 625, word: "After a pause he continued his story.", meaning: "停顿一下之后他继续说他的。" },
+  { id: 626, word: "As you know, I am a very kind person.", meaning: "你知道,我是个很和善的人。" },
+  { id: 627, word: "He dare not tell us his evil conduct.", meaning: "他不敢告诉我们他的恶行。" },
+  { id: 628, word: "I can express myself in good English.", meaning: "我可以用很好的英语来表达自己的观点。" },
+  { id: 629, word: "I'll furnish my house with furniture.", meaning: "我要为我的房子置办家具。" },
+  { id: 630, word: "It seemed as if there was no way out.", meaning: "看情形似乎没有出路了。" },
+  { id: 631, word: "It's the hottest day I've had so far.", meaning: "这是迄今为止我经历的最热的一天。" },
+  { id: 632, word: "Mr. Smith is in charge of this class.", meaning: "史密斯老师负责该班。" },
+  { id: 633, word: "Mr. Smith taught English at a school.", meaning: "史密斯先生在一所学校教英语。" },
+  { id: 634, word: "None of us is afraid of difficulties.", meaning: "我们当中没有一个人害怕困难。" },
+  { id: 635, word: "Our school is in the east of Beijing.", meaning: "我们学校在北京的东部。" },
+  { id: 636, word: "She really wishes her clock had rung.", meaning: "她真希望今天早上她的闹钟响了。" },
+  { id: 637, word: "She teaches foreign students Chinese.", meaning: "她教外国学生汉语。" },
+  { id: 638, word: "The question will be settled tonight.", meaning: "这个问题将在今晚解决。" },
+  { id: 639, word: "The weight is too much for my height.", meaning: "相对于我的身高来说,体重太重了!" },
+  { id: 640, word: "There are mice in Mrs. Lee's kitchen!", meaning: "李太太的厨房里有老鼠!" },
+
+  // Lesson 33
+  { id: 641, word: "There is no one but hopes to be rich.", meaning: "没有人不想发财。" },
+  { id: 642, word: "There'll be some sport reviews on TV.", meaning: "电视上会有一些体育评论。" },
+  { id: 643, word: "This company is our regular customer.", meaning: "这家公司是我们的老客户。" },
+  { id: 644, word: "This is a good example of his poetry.", meaning: "这是他诗作的一个好例子。" },
+  { id: 645, word: "What we read influences our thinking.", meaning: "我们所阅读的书本会影响我们的思想。" },
+  { id: 646, word: "Words can't express what I felt then.", meaning: "无法用语言形容我当时的感受。" },
+  { id: 647, word: "You really have an ear for pop music.", meaning: "你确实对流行音乐很有欣赏力。" },
+  { id: 648, word: "A bad workman quarrels with his tools.", meaning: "手艺差的工人总是抱怨工具不好使。" },
+  { id: 649, word: "Can you adapt yourself to the new job?", meaning: "你能适应新的工作吗?" },
+  { id: 650, word: "Does the computer ever make a mistake?", meaning: "计算机出错吗?" },
+  { id: 651, word: "Don't be uneasy about the consequence.", meaning: "不必为后果忧虑不安。" },
+  { id: 652, word: "Even a child can answer this question.", meaning: "即使小孩儿都能回答这个问题。" },
+  { id: 653, word: "He has many strange ideas in his mind.", meaning: "他脑子里尽是奇思怪想。" },
+  { id: 654, word: "He is commonly supposed to be foolish.", meaning: "他是公认的傻瓜。" },
+  { id: 655, word: "He sat with his arms across the chest.", meaning: "他双臂交叉于胸前的坐在那里。" },
+  { id: 656, word: "He set up a fine example to all of us.", meaning: "他为我们树立了一个好榜样。" },
+  { id: 657, word: "His cake is four times as big as mine.", meaning: "他的蛋糕是我的四倍大。" },
+  { id: 658, word: "I do not care whether it rains or not.", meaning: "我不管天会不会下雨。" },
+  { id: 659, word: "I have a lot in common with my sister.", meaning: "我和我姐姐有很多相同之处。" },
+  { id: 660, word: "I haven't even touched your tooth yet.", meaning: "我还没有碰到你的牙齿呢。" },
+
+  // Lesson 34
+  { id: 661, word: "I'm looking forward to a prompt reply.", meaning: "盼迅速答复。" },
+  { id: 662, word: "It is an excellent novel in every way.", meaning: "无论从哪方面来看,这都是一本优秀的小说。" },
+  { id: 663, word: "It is clear that the cat has eaten it!", meaning: "很明显,是猫偷吃的!" },
+  { id: 664, word: "Nothing but death can part the couple.", meaning: "除了死之外,什么也拆不散这一对。" },
+  { id: 665, word: "Now she looks pale as if she were ill.", meaning: "现在她脸色难看,好像病了一样。" },
+  { id: 666, word: "She was injured badly in the accident.", meaning: "她在这次意外中受到重伤。" },
+  { id: 667, word: "The secret was spread among the crowd.", meaning: "秘密在人群当中传播开来。" },
+  { id: 668, word: "The two brothers look very much alike.", meaning: "这兄弟俩看上去很相像。" },
+  { id: 669, word: "Their interest is listening to others.", meaning: "他们的兴趣是听别人说话。" },
+  { id: 670, word: "There was a notice in the supermarket.", meaning: "超市里有一个布告。" },
+  { id: 671, word: "This one cannot compare with that one.", meaning: "这个与那个无法比较。" },
+  { id: 672, word: "To know everything is to know nothing.", meaning: "样样通,样样松。" },
+  { id: 673, word: "To tell the truth, I don't like disco.", meaning: "说实话,我不喜欢迪斯科。" },
+  { id: 674, word: "True and False have opposite meanings.", meaning: "真与假含义完全相反。" },
+  { id: 675, word: "What's the point of going to college?", meaning: "上大学有何用?" },
+  { id: 676, word: "Where can we make the insurance claim?", meaning: "我们可以在哪里提出保险赔偿?" },
+  { id: 677, word: "Why don't I pick you up at your house?", meaning: "为什么不让我去接你呢?" },
+  { id: 678, word: "Why don't you attend an aerobic class?", meaning: "你为什么不去参加一个有氧健身班呢?" },
+  { id: 679, word: "You can kill two birds with one stone.", meaning: "一举两得。" },
+  { id: 680, word: "You can't go in no matter who you are.", meaning: "不管你是谁,都不能进去。" },
+
+  // Lesson 35
+  { id: 681, word: "You should learn these words by heart.", meaning: "你应该把这些词背熟。" },
+  { id: 682, word: "Could I have those two tickets, please?", meaning: "这两张票给我行不行?" },
+  { id: 683, word: "He has to take care of his sick mother.", meaning: "他得照顾他生病的母亲。" },
+  { id: 684, word: "He hired a workman to repair the fence.", meaning: "他雇用了一个工人修理围墙。" },
+  { id: 685, word: "I can't make this machine run properly.", meaning: "我无法使这部机器正常运转。" },
+  { id: 686, word: "I don't know if I'll have the patience.", meaning: "我不知道我有没有耐心。" },
+  { id: 687, word: "I don't like what you are saying.", meaning: "我不喜欢你说的话。" },
+  { id: 688, word: "I fell in love with her at first sight.", meaning: "我第一眼见到她就爱上了她。" },
+  { id: 689, word: "I have just heard from my sister, Mary.", meaning: "我刚收到我妹妹玛丽的一封信。" },
+  { id: 690, word: "If you would only try, you could do it.", meaning: "只要你肯尝试,你一定能做这件事。" },
+  { id: 691, word: "It is no use learning without thinking.", meaning: "学而不思则罔。" },
+  { id: 692, word: "It was a lazy, breezy autumn afternoon.", meaning: "这是一个懒散的,起风的秋日下午。" },
+  { id: 693, word: "Jack is the strongest boy in the class.", meaning: "杰克是全班最强壮的男孩。" },
+  { id: 694, word: "Please fetch a chair from another room.", meaning: "请到别的房间取一把椅子。" },
+  { id: 695, word: "The doctor began to operate on the boy.", meaning: "医生开始给那个男孩动手术。" },
+  { id: 696, word: "The doctor is taking my blood pressure.", meaning: "医生正给我量血压。" },
+  { id: 697, word: "The machines will not operate properly.", meaning: "那些机器不能正常运转。" },
+  { id: 698, word: "The students declared against cheating.", meaning: "学生们表示反对作弊。" },
+  { id: 699, word: "There is hope so long as he is with us.", meaning: "只要他在就有希望。" },
+  { id: 700, word: "He talks as if he were the head of the office.", meaning: "他说话的口气像办公室主任似的。" },
+
+  // Lesson 36
+  { id: 701, word: "His cake is three times bigger than mine.", meaning: "他的蛋糕比我的大三倍。" },
+  { id: 702, word: "I am looking forward to your early reply.", meaning: "希望早日得到你的答复。" },
+  { id: 703, word: "I could say nothing but that I was sorry.", meaning: "我除了说“对不起”之外,什么也说不出来。" },
+  { id: 704, word: "I don't know how to express my gratitude.", meaning: "我不知道怎样来表达我的感激之情。" },
+  { id: 705, word: "I have to catch a plane. Could you hurry?", meaning: "我要赶飞机,你能快点吗?" },
+  { id: 706, word: "I haven't heard from her for a long time.", meaning: "我好久没有她的消息了。" },
+  { id: 707, word: "I would like to wash the clothes for you.", meaning: "我愿意帮你洗这些衣服。" },
+  { id: 708, word: "Let me see your driver's license, please.", meaning: "请让我看看你的驾驶执照。" },
+  { id: 709, word: "She goes to work every day except Sunday.", meaning: "除星期天外,他每天去上班。" },
+  { id: 710, word: "Take a seat please, make yourself at home.", meaning: "请坐,随便一点。" },
+  { id: 711, word: "The damage was caused by external forces.", meaning: "损害是由外力引起的。" },
+  { id: 712, word: "The doctor advised me to give up smoking.", meaning: "医生建议我戒烟。" },
+  { id: 713, word: "The flowers make the room more beautiful.", meaning: "花使房间变得更加美了。" },
+  { id: 714, word: "There is a good restaurant on the street.", meaning: "那条大街上有一个很好的餐馆。" },
+  { id: 715, word: "They covered 120 miles in a single night.", meaning: "他们仅一夜就走了120英里路。" },
+  { id: 716, word: "Try to look on the bright side of things.", meaning: "尽量从好的方面看。" },
+  { id: 717, word: "What's your plan for the summer vacation?", meaning: "你暑假打算干什么?" },
+  { id: 718, word: "You may pick whichever one you like best.", meaning: "你可以挑你最喜欢的。" },
+  { id: 719, word: "You're welcome to stay with us next time.", meaning: "欢迎您下次再光临我们的饭店。" },
+  { id: 720, word: "There was a murder in London yesterday.", meaning: "昨天伦敦发生了一起谋杀案。" },
+
+  // Lesson 37
+  { id: 721, word: "They stared at the huge tiger with awe.", meaning: "他们敬畏地看着那头巨虎。" },
+  { id: 722, word: "He never misses a chance to see a movie.", meaning: "他从不错过看电影的机会。" },
+  { id: 723, word: "I cannot put up with my noisy roommates.", meaning: "我受不了我那些吵闹的室友了。" },
+  { id: 724, word: "I will be back by the end of next month.", meaning: "我下个月底会回来。" },
+  { id: 725, word: "I'm good at freestyle and breaststroke.", meaning: "我擅长自由泳和蛙泳。" },
+  { id: 726, word: "It was your turn to wash them yesterday.", meaning: "昨天轮到你把它们洗干净。" },
+  { id: 727, word: "Let's go out to have a dinner, shall we?", meaning: "咱们出去吃饭吧,好吗?" },
+  { id: 728, word: "Please push the ladder against the wall.", meaning: "请把梯子靠在墙壁上。" },
+  { id: 729, word: "She is standing in the front of the bus.", meaning: "她站在公共汽车的前部。" },
+  { id: 730, word: "The doctor asked me to watch what I eat.", meaning: "医生要我注意饮食。" },
+  { id: 731, word: "The grass is moist early in the morning.", meaning: "清晨的草地湿漉漉的。" },
+  { id: 732, word: "The test finished. We began our holiday.", meaning: "考试结束了,我们开始放假。" },
+  { id: 733, word: "This question is too complicated for me.", meaning: "这个问题对我说来太复杂了。" },
+  { id: 734, word: "Tony speaks English and he plays tennis.", meaning: "托尼会说英语,打网球。" },
+  { id: 735, word: "What is worth doing is worth doing well.", meaning: "只要你觉得某事值得去做,就一定要把它做好。" },
+  { id: 736, word: "Would you like to go to a party with me?", meaning: "你想不想和我一起去参加一个聚会?" },
+  { id: 737, word: "All at once, a rabbit came out of a hole.", meaning: "突然,一只兔子从一个洞中跑了出来。" },
+  { id: 738, word: "All characters in the book are imaginary.", meaning: "书中所有的人物都是虚构的。" },
+  { id: 739, word: "Do you feel like going to that new disco?", meaning: "你想去那个新开的迪厅吗?" },
+  { id: 740, word: "Ducks know how to swim when they are born.", meaning: "鸭子天生会游泳。" },
+
+  // Lesson 38
+  { id: 741, word: "He spent most of his life gathering money.", meaning: "他一生大部分时间用来积聚钱财。" },
+  { id: 742, word: "He usually stays at home with his pet dog.", meaning: "他通常跟他的爱犬待在家里。" },
+  { id: 743, word: "How peaceful and beautiful the country is!", meaning: "多么平静美丽的国家呀!" },
+  { id: 744, word: "I am told that you dance wonderfully well.", meaning: "我听说你的舞跳得特棒。" },
+  { id: 745, word: "I have had several conversations with him.", meaning: "我已经和他谈过几次了。" },
+  { id: 746, word: "It is the best film that I have ever seen.", meaning: "这是我所看过的最好的电影。" },
+  { id: 747, word: "It's only a party in honor of my birthday.", meaning: "这只是为了庆祝我的生日而举行的晚会。" },
+  { id: 748, word: "Learning English is like building a house.", meaning: "学英语象盖房子。" },
+  { id: 749, word: "Listening with your heart is good for you.", meaning: "专心聆听别人说话对你有好处。" },
+  { id: 750, word: "My grandpa died of hunger in the old days.", meaning: "我爷爷在旧社会死于饥饿。" },
+  { id: 751, word: "She feared staying alone in the farmhouse.", meaning: "她害怕一个人留在农舍里。" },
+  { id: 752, word: "She guided the tourists around the castle.", meaning: "她引导旅游者参观了这座城堡。" },
+  { id: 753, word: "She runs everyday in order to lose weight.", meaning: "她每天都跑步是为了减肥。" },
+  { id: 754, word: "She sang perfectly in the hall last night.", meaning: "她昨晚在大厅唱得非常好。" },
+  { id: 755, word: "Somebody is always complaining to others.", meaning: "有人总是向别人抱怨。" },
+  { id: 756, word: "They don't often have a bad day this year.", meaning: "他们今年的运气还不错。" },
+  { id: 757, word: "We regard the matter as nothing important.", meaning: "我们认为这件事情不重要。" },
+  { id: 758, word: "We'll take our holiday sometime in August.", meaning: "我们将在八月份的某个时候休假。" },
+  { id: 759, word: "Could you direct me to the station, please?", meaning: "请问到车站怎么走?" },
+  { id: 760, word: "Have you cleared your luggage with customs?", meaning: "你的行李通关了吗?" },
+
+  // Lesson 39
+  { id: 761, word: "He bothered me with a great many questions.", meaning: "他对我提了一大堆问题,真烦!" },
+  { id: 762, word: "He does exercises every day in the morning.", meaning: "他每天早上鍛鍊身體。" },
+  { id: 763, word: "How do I control myself? I can't calm down.", meaning: "我怎能控制我自己?我无法冷静下来。" },
+  { id: 764, word: "I dig songs and I like pop music very much.", meaning: "我特别喜欢歌曲和流行音乐。" },
+  { id: 765, word: "I'd like to cash a traveler's check please.", meaning: "我想兑换旅行支票。" },
+  { id: 766, word: "I'd like to pick sea shells this afternoon.", meaning: "今天下午我想去捡贝壳。" },
+  { id: 767, word: "It's odd that they didn't reply our letter.", meaning: "他们没有给我们回信,这真奇怪。" },
+  { id: 768, word: "John seldom gets together with his friends.", meaning: "约翰很少与朋友聚在一起。" },
+  { id: 769, word: "Many people have been out of work recently.", meaning: "最近有许多人失业。" },
+  { id: 770, word: "Please give my best regards to your family.", meaning: "请代我向你们全家致以最诚挚的问候。" },
+  { id: 771, word: "Some people have compared books to friends.", meaning: "有些人把书比作朋友。" },
+  { id: 772, word: "The bat together with the balls was stolen.", meaning: "球拍和球全被偷了。" },
+  { id: 773, word: "The color of her dress suits her very well.", meaning: "她衣服的颜色很适合她。" },
+  { id: 774, word: "The days get longer and the nights shorter.", meaning: "白天变长了,黑夜变短了。" },
+  { id: 775, word: "The dress doesn't fit her. She is too thin.", meaning: "这件衣服不适合她,她太瘦了。" },
+  { id: 776, word: "The examination put a lot of stress on him.", meaning: "那次考试给了他很大的压力。" },
+  { id: 777, word: "The mother sat the child at a little table.", meaning: "母亲安排孩子坐到小桌旁。" },
+  { id: 778, word: "There is some difference between the twins.", meaning: "这对双胞胎有点儿不一样。" },
+  { id: 779, word: "They insisted on staying rather than going.", meaning: "他们坚持留下来,而不愿意走。" },
+  { id: 780, word: "Trust me, the game is really worth playing.", meaning: "相信我,这游戏确实值得一玩。" },
+
+  // Lesson 40
+  { id: 781, word: "Unlike her friends, she never gave up hope.", meaning: "与她的朋友的不同之处是,她从不放弃希望。" },
+  { id: 782, word: "Well done! You are always doing a good job!", meaning: "干得不错!你总是干得很出色!" },
+  { id: 783, word: "We're planning a tour to Italy this summer.", meaning: "我们计划今年夏天到意大利去旅行。" },
+  { id: 784, word: "Were there any letters for me this morning?", meaning: "今天早上有我的信吗?" },
+  { id: 785, word: "Why isn't Mrs. Lee's cat catching mice?", meaning: "李太太的猫为何不在抓这些老鼠呢?" },
+  { id: 786, word: "Your English is improving little by little.", meaning: "你的英语正在渐渐提高。" },
+  { id: 787, word: "Could you tell me where I can wash hands?", meaning: "请问洗手间怎么走?" },
+  { id: 788, word: "Do you have any plans for the weekend?", meaning: "你有办法打发这个漫长的周末吗?" },
+  { id: 789, word: "He decided to bring a suit against his boss.", meaning: "他决定起诉他的老板。" },
+  { id: 790, word: "He devoted his life to the study of science.", meaning: "他把毕生献给科学研究。" },
+  { id: 791, word: "He had to choose between death and dishonor.", meaning: "他不得不在死亡和耻辱之间选择。" },
+  { id: 792, word: "His previous attempts had been unsuccessful.", meaning: "他以前的尝试没有成功。" },
+  { id: 793, word: "I determined that nothing should be changed.", meaning: "我决定什么都不改变。" },
+  { id: 794, word: "I don't think it will lead to good results.", meaning: "我认为这事不会有什么好结果。" },
+  { id: 795, word: "I have 4 books and 2 magazines to check out.", meaning: "我有4本书和2本杂志要借。" },
+  { id: 796, word: "I think I've filled in everything correctly.", meaning: "我想各项都填对了。" },
+  { id: 797, word: "I'm not sure whether I locked the door.", meaning: "我没把握是否锁了门。" },
+  { id: 798, word: "It took him a little time to fix that watch.", meaning: "他很快就把表修理好了。" },
+  { id: 799, word: "My father is at home looking for the ticket.", meaning: "我爸爸正在家里找票呢!" },
+  { id: 800, word: "Not until last week did I get a work permit.", meaning: "直到上周我才拿到工作许可证。" },
+
+  // Lesson 41
+  { id: 801, word: "She intends to make teaching her profession.", meaning: "她想以教书为职业。" },
+  { id: 802, word: "The letter 'x' stands for an unknown number.", meaning: "字母x代表未知数。" },
+  { id: 803, word: "The sight of the dead body scared him stiff.", meaning: "看到尸体把它吓僵了。" },
+  { id: 804, word: "There are lots of huge buildings in Beijing.", meaning: "在北京有许多高大的建筑物。" },
+  { id: 805, word: "There is an interesting film on Channel one.", meaning: "在一频道有一部有趣的电影。" },
+  { id: 806, word: "They plan to immigrate to Finland next year.", meaning: "他们计划明年移居芬兰。" },
+  { id: 807, word: "We enjoyed driving along the expressway.", meaning: "我们喜欢沿着新建的高速公路开车。" },
+  { id: 808, word: "We need to cooperate perfectly to win.", meaning: "要想赢得比赛,我们需要密切配合。" },
+  { id: 809, word: "We need more than listening. We need action!", meaning: "我们需要的不光是听得进意见,我们要的是行动。" },
+  { id: 810, word: "Yes, I wouldn't go home early if I were you.", meaning: "是的,如果我是你,我不会早回家。" },
+  { id: 811, word: "Your answer is satisfying. I feel satisfied.", meaning: "你的答案是令人满意的。我感到很满意。" },
+  { id: 812, word: "Betty and Susan are talking on the phone.", meaning: "贝蒂和苏珊正在通电话。" },
+  { id: 813, word: "Great efforts ensure the success of work.", meaning: "巨大的努力确保了我们工作的成功。" },
+  { id: 814, word: "He has tasted the sweets and bitters of life.", meaning: "他已尝遍了人生的甜酸苦辣。" },
+  { id: 815, word: "He said he was educated in the United States.", meaning: "他说他是在美国受的教育。" },
+  { id: 816, word: "How do you like our English literature prof?", meaning: "你觉得我们的英国文学课的教授怎么样?" },
+  { id: 817, word: "I am looking forward to your visit next week.", meaning: "我期待着你下周来访。" },
+  { id: 818, word: "I feel I am the happiest person in world.", meaning: "我觉得自己是世界上最幸福的人了。" },
+  { id: 819, word: "I had to sit up all night writing report.", meaning: "我不得不熬通宵写报告。" },
+  { id: 820, word: "I hope we can see each other again sometime.", meaning: "希望还能有相见的机会。" },
+
+  // Lesson 42
+  { id: 821, word: "I saw him playing football on playground.", meaning: "我看见他在操场上踢足球。" },
+  { id: 822, word: "It is tomorrow that they will have meeting.", meaning: "就在明天(而不是在别的某一天)他们要开会。" },
+  { id: 823, word: "Let me tell you details about clearance.", meaning: "让我告诉你一些通关的细节。" },
+  { id: 824, word: "The brain needs continuous supply of blood.", meaning: "大脑需要连续不断地供血。" },
+  { id: 825, word: "The doctor's words made him comfortable.", meaning: "医生的话让他感觉很舒服。" },
+  { id: 826, word: "The truth is quite other than you think.", meaning: "事实真相和你所想的完全不同。" },
+  { id: 827, word: "They stopped talking when boss came in.", meaning: "当老板进来的时候,他们停止了交谈。" },
+  { id: 828, word: "They were glad of examination being over.", meaning: "他们为考试结束了而高兴。" },
+  { id: 829, word: "This is by far largest cake in the world.", meaning: "这是目前世界上最大的蛋糕了。" },
+  { id: 830, word: "Whichever you choose, you won't be glad.", meaning: "不论你选择哪一个,你都不会满意。" },
+  { id: 831, word: "Will you connect this wire to television?", meaning: "你把这根电线和电视机连上好吗?" },
+  { id: 832, word: "His words are impressed on my memory.", meaning: "他的话深深地铭记在我的心头。" },
+  { id: 833, word: "Is this the right bus for Capital Library?", meaning: "这辆车到首都图书馆吗?" },
+  { id: 834, word: "One third of this area is covered with forest.", meaning: "这一地区三分之一的地方都是森林。" },
+  { id: 835, word: "They are arguing over who pays the bill.", meaning: "他们为谁应该付款而争论不休。" },
+  { id: 836, word: "Wait a moment, I'll be with you in an instant.", meaning: "等一下,我立刻就来。" },
+  { id: 837, word: "You'll save time not waiting for elevator.", meaning: "你可以节省等电梯的时间。" },
+  { id: 838, word: "A clear conscience laughs at accusation.", meaning: "只要问心无愧,无端的指责可以一笑置之。" },
+  { id: 839, word: "I have a headache, and she has a stomachache.", meaning: "我头疼,她胃疼。" },
+  { id: 840, word: "He glared at Bill, ready to teach a lesson.", meaning: "他怒视着比尔,准备教训他一顿。" },
+
+  // Lesson 43
+  { id: 841, word: "I assure you that you will feel no pain at all.", meaning: "我保证你根本不会觉得疼的。" },
+  { id: 842, word: "I can't afford to go to restaurant every day.", meaning: "每天都去餐馆吃饭,我真是支付不起。" },
+  { id: 843, word: "I left at 6:00 so that I could catch train.", meaning: "我六点钟出门,以便赶上火车。" },
+  { id: 844, word: "I'm afraid I have bad news for you.", meaning: "我恐怕有些很坏的消息要告诉你。" },
+  { id: 845, word: "Learn to say the right thing at right time.", meaning: "学会在适当的时候说适当的话。" },
+  { id: 846, word: "No wonder you can't sleep when you eat so much.", meaning: "你吃这么多难怪睡不着。" },
+  { id: 847, word: "Please ask her to call me back when back.", meaning: "她回来时请让她给我回个电话。" },
+  { id: 848, word: "There are lots of people in swimming pool.", meaning: "游泳池里挤满了人。" },
+  { id: 849, word: "They have to work hard to support family.", meaning: "他们必须努力工作来支持他们的家。" },
+  { id: 850, word: "This way, he can kill two birds with one stone.", meaning: "这样他就能两全其美。" },
+  { id: 851, word: "We are all taking medicine against disease.", meaning: "我们都服药治疗疾病。" },
+  { id: 852, word: "Would you please go to a dance with me?", meaning: "请你跟我一起去参加一个舞会好吗?" },
+  { id: 853, word: "He usually drops in at my place on his way home.", meaning: "他常常在回家的路上顺便来看看我。" },
+  { id: 854, word: "His vanity was hurt by talking so frankly.", meaning: "他们坦率的谈话伤害了他的虚荣心。" },
+  { id: 855, word: "How would you go to Beijing, by air or train?", meaning: "你怎样去北京,是乘飞机还是坐火车?" },
+  { id: 856, word: "I cannot express how glad I am to hear.", meaning: "我无法表达我接到他的信时有多高兴。" },
+  { id: 857, word: "If Tom cannot keep promise, he'll lose face.", meaning: "如果汤姆不能信守诺言,他就会丢面子。" },
+  { id: 858, word: "I'll still love her even if she doesn't.", meaning: "即使她不爱我,我还仍然爱她。" },
+  { id: 859, word: "I received invitation, but didn't accept.", meaning: "我收到一份请帖,但没有接受。" },
+  { id: 860, word: "If I were you, I wouldn't be bothered by English.", meaning: "如果我是你,就不会为英语烦恼了。" },
+
+  // Lesson 44
+  { id: 861, word: "If you don't work, you'll fail exam.", meaning: "如果你不学习,你考试就会不及格。" },
+  { id: 862, word: "I'm thinking of hanging lamp from ceiling.", meaning: "我打算把灯吊在天花板上。" },
+  { id: 863, word: "It is more important to be healthy than slim.", meaning: "健康永远比皮包骨头好。" },
+  { id: 864, word: "Long ago, people believed world was flat.", meaning: "很久以前人们相信地球是平的。" },
+  { id: 865, word: "Old tunes are sweetest and old friends surest.", meaning: "老调最甜美,老友最可靠。" },
+  { id: 866, word: "She makes it clear she doesn't like swimming.", meaning: "她明确地表示她不喜欢游泳。" },
+  { id: 867, word: "The constitution guards liberty of people.", meaning: "宪法保护人民的自由。" },
+  { id: 868, word: "The doctor examined soldier's wound carefully.", meaning: "大夫仔细检查了战士的伤口。" },
+  { id: 869, word: "The harder I study, better my English will be.", meaning: "我越努力,我的英语就会越好。" },
+  { id: 870, word: "The sun was shining and sky was crystal clear.", meaning: "阳光闪烁,天空湛蓝。" },
+  { id: 871, word: "This cellar room is damp in rainy season.", meaning: "这间地下室在雨季非常潮湿。" },
+  { id: 872, word: "Computers are becoming part of everyday life.", meaning: "电子计算机正渐渐成为我们日常生活的一部分。" },
+  { id: 873, word: "Every man is fool sometimes, but not always.", meaning: "每个人都有愚蠢的时候,但是没有一个人永远愚蠢。" },
+  { id: 874, word: "He dreamed of traveling to remote islands.", meaning: "他曾梦想到遥远的南海诸岛去旅游。" },
+  { id: 875, word: "How can I climb wall! I wish I were a bird!", meaning: "我怎么能够爬得上那堵墙?我要是一只鸟就好了!" },
+  { id: 876, word: "However, Susan has not made up her mind yet.", meaning: "然而,苏珊却还没有决定。" },
+  { id: 877, word: "I really think little exercise would do good.", meaning: "我真的觉得做点运动对你有好处。" },
+  { id: 878, word: "I will never forget days spent with you.", meaning: "我永远都不会忘记和你一起度过的日子。" },
+  { id: 879, word: "I got a bad headache, and my nose is running.", meaning: "我头痛得厉害,还流鼻涕。" },
+  { id: 880, word: "Many young girls dream of being fashion model.", meaning: "许多年轻女孩梦想成为时装模特儿。" },
+
+  // Lesson 45
+  { id: 881, word: "Most of earth's surface is covered by water.", meaning: "大部分的地球表面被水覆盖着。" },
+  { id: 882, word: "Somebody's knocking at door. I'll answer it.", meaning: "有人在敲门,我去开。" },
+  { id: 883, word: "The number 13 bus will take you to hospital.", meaning: "13路车会带你去医院。" },
+  { id: 884, word: "They celebrated his birthday with a party.", meaning: "他们举办舞会来祝贺他的生日。" },
+  { id: 885, word: "They misplaced book under other categories.", meaning: "他们把它错放到另一个类别去了。" },
+  { id: 886, word: "They played a shameful part in whole affair.", meaning: "他们在这一事件中扮演了可耻的角色。" },
+  { id: 887, word: "As a matter of fact, he pretended to be ill.", meaning: "实际上,他是在装病。" },
+  { id: 888, word: "I will speak against anything I know wrong.", meaning: "我会对所有我认为不对的事情直言不讳。" },
+  { id: 889, word: "In spite of heavy rain, she went to shop.", meaning: "尽管下着大雨,她还是去了商店。" },
+  { id: 890, word: "No matter what happened, he wouldn't speak.", meaning: "不管发生什么事,他也不会说一句话。" },
+  { id: 891, word: "No one knows location of hidden treasure.", meaning: "谁也不知道藏宝地点在哪里。" },
+  { id: 892, word: "The old lady enjoys quiet life with family.", meaning: "老太太和她的家人安享宁静的生活。" },
+  { id: 893, word: "The population of city is close to a million.", meaning: "这个城市的人口接近一百万。" },
+  { id: 894, word: "We are prohibited from smoking on campus.", meaning: "我们被禁止在校园内抽烟。" },
+  { id: 895, word: "Growth, however, brings new problems.", meaning: "不过,发展也带来了新的问题和顾虑。" },
+  { id: 896, word: "He appears to be your friend but I doubt it.", meaning: "他看上去像是你的朋友,但我怀疑他是否是真心的。" },
+  { id: 897, word: "I am so full that I would burst with another bite.", meaning: "我吃得如此之饱,我感觉我再吃一口肚子就要胀破了。" },
+  { id: 898, word: "I have two cats. One is white, other is black.", meaning: "我有两只猫,一只是白猫,另一只是黑猫。" },
+  { id: 899, word: "I'm sorry, these 2 books are 3 days overdue.", meaning: "小姐,对不起,这两本书已经过期3天了。" },
+  { id: 900, word: "Jalu has forgotten falling off his bicycle.", meaning: "詹露早忘掉他从自行车上摔下来这件事了。" },
+
+  // Lesson 46
+  { id: 901, word: "Manners are quite different from country to country.", meaning: "各国的礼仪各不相同。" },
+  { id: 902, word: "Not only did I know her, but was her best friend.", meaning: "我不仅认识她,还是她最好的朋友。" },
+  { id: 903, word: "Best-known movie awards are Academy Awards.", meaning: "最著名的电影奖是奥斯卡金像奖。" },
+  { id: 904, word: "We've got to do something about neighbor's dog!", meaning: "我们得对邻居的狗采取点行动了!" },
+  { id: 905, word: "Will you come and join us for dinner on Sunday?", meaning: "星期天来和我们共进晚餐好吗?" },
+  { id: 906, word: "Do you think people are company's greatest wealth?", meaning: "你认为人是公司最大的财富吗?" },
+  { id: 907, word: "He thinks himself somebody, but we think him nobody.", meaning: "他自以为是重要人物,但我们觉得他什么也不是。" },
+  { id: 908, word: "I believe I haven't reached summit of career.", meaning: "我相信我还没有达到事业的巅峰。" },
+  { id: 909, word: "It is no matter whether you get there early or late.", meaning: "你早到晚到都没有关系。" },
+  { id: 910, word: "It's against rules to handle ball in soccer.", meaning: "在足球中以手触球就是犯规。" },
+  { id: 911, word: "Nurse assisted doctor in operating room.", meaning: "护士在手术室协助医生动手术。" },
+  { id: 912, word: "What I do on my time is nobody else's business.", meaning: "我在自己的时间里干什么根本不关别人的事。" },
+  { id: 913, word: "What I want to do is different from others.", meaning: "我想做的与别人不同。" },
+  { id: 914, word: "You forget to write down date of departure.", meaning: "您忘了写离店日期了。" },
+  { id: 915, word: "\"I wish I'd known about that rule earlier\", she said.", meaning: "“我要是早点知道这个规矩就好了!”她说。" },
+  { id: 916, word: "Could you tell me secret for long happy life?", meaning: "你能告诉我长时间地过着快乐的生活的秘诀吗?" },
+  { id: 917, word: "He holds a position of great responsibility.", meaning: "他担任着一个责任重大的职务。" },
+  { id: 918, word: "It is said he has secret love affairs with two women!", meaning: "据说他背地里和两个女人有关系!" },
+  { id: 919, word: "Number 13 buses run much more frequently, don't they?", meaning: "13路车跑得更勤,是不是?" },
+  { id: 920, word: "They are only too delighted to accept invitation.", meaning: "他们非常乐意接受邀请。" },
+
+  // Lesson 47
+  { id: 921, word: "We are going to have final examination next week.", meaning: "我们下周举行期末考试。" },
+  { id: 922, word: "Medical care helps keep people alive longer.", meaning: "现在的医疗保健使得人们活得更长。" },
+  { id: 923, word: "Do you think you'll be able to sleep right away?", meaning: "你认为你马上就能睡着吗?" },
+  { id: 924, word: "I am in charge of company when manager is out.", meaning: "经理不在时由我来管理公司。" },
+  { id: 925, word: "I borrowed notebook from Tom and lent it to Mary.", meaning: "我从汤姆那儿借了一本笔记本,我又把它借给玛丽了。" },
+  { id: 926, word: "I'm doing washing and John is cooking dinner.", meaning: "我正在洗衣服,约翰在做晚饭。" },
+  { id: 927, word: "Were there exciting incidents during journey?", meaning: "你们在旅行中有没有什么令人激动的事情?" },
+  { id: 928, word: "As far as policy is concerned, I have to say something.", meaning: "谈到政策,我得说几句。" },
+  { id: 929, word: "Could you tell me maximum weight allowance?", meaning: "您能告诉我行李的最大重量限额是多少吗?" },
+  { id: 930, word: "He came out of library, large book under arm.", meaning: "他夹着本厚书,走出了图书馆。" },
+  { id: 931, word: "Brothers differ from each other in interests.", meaning: "这几个兄弟各有所好。" },
+  { id: 932, word: "Although we can't see atoms, they exist.", meaning: "虽然我们看不见原子,但它们的确存在。" },
+  { id: 933, word: "I am familiar with casual atmosphere here.", meaning: "我对公司中这种放松的氛围感到很熟悉。" },
+  { id: 934, word: "Most people eat, write, and work with right hand.", meaning: "大多数人吃饭,写字,工作都用右手。" },
+  { id: 935, word: "Only by working hard can we succeed in everything.", meaning: "只有努力,才能成功。" },
+  { id: 936, word: "Take it easy, you will be all right in a couple of days.", meaning: "别担心,你两天之内就会痊愈的。" },
+  { id: 937, word: "Beatles represented part of spirit of age.", meaning: "甲壳虫乐队代表了他们时代的部分精神。" },
+  { id: 938, word: "There being no one to help, I did it alone.", meaning: "因为没有人帮助我,我不得不独立完成这项工作。" },
+  { id: 939, word: "How much cloth does it take to make a skirt?", meaning: "女孩做一条裙子要用多少布?" },
+  { id: 940, word: "With all these mouths to feed, he was stuck.", meaning: "由于有那么多人要供养,他不知道怎么办才好。" },
+
+  // Lesson 48
+  { id: 941, word: "I forgot to prepare speech supposed to give.", meaning: "我忘了准备今天的我该做的演讲了。" },
+  { id: 942, word: "It's supposed to start at 6:30 sharp, but I doubt it.", meaning: "应该是六点半整的,但是我觉得够呛。" },
+  { id: 943, word: "On behalf of company, I welcome you here.", meaning: "我代表我们公司欢迎你来这里。" },
+  { id: 944, word: "She's been quite different since coming back.", meaning: "从美国回来之后,她变化很大。" },
+  { id: 945, word: "Today it is common that women make up in public.", meaning: "今天,在公共场所看到妇女和姑娘化妆打扮是很普遍的事。" },
+  { id: 946, word: "I have to transfer to No. 11 bus, but where is stop?", meaning: "我需要换乘11路公共汽车,但是汽车站在哪儿?" },
+  { id: 947, word: "I supposed him clever but he was a fool.", meaning: "我以为他很聪明,其实他是个蠢货。" },
+  { id: 948, word: "The rabbit ran to woods and did not come back.", meaning: "兔子跑进了森林再也没有出来了。" },
+  { id: 949, word: "Tom and Mary congratulated us on birth of daughter.", meaning: "汤姆和玛丽为我们女儿的出生向我们表示祝贺。" },
+  { id: 950, word: "I can't help eating sweets whenever in presence.", meaning: "我无论什么时候一看到甜食就忍不住要吃。" },
+  { id: 951, word: "I am vacuuming floor and have shirts to iron.", meaning: "我正在用真空吸尘器清理地板,还有好几件衬衫要熨。" },
+  { id: 952, word: "I will love you until seas run dry and rocks crumble.", meaning: "我将爱你直到海枯石烂。" },
+  { id: 953, word: "There is a broken small old gray stone bridge over river.", meaning: "河上有一座破烂不堪的、古老的、灰色的小石桥。" },
+  { id: 954, word: "No wonder people say computers are taking over world.", meaning: "难怪有人说电子计算机正渐渐接管世界。" },
+  { id: 955, word: "Enormous increase of population creates problems.", meaning: "巨大的人口增长将产生很多问题。" },
+  { id: 956, word: "There's nothing better for you than water and sleep.", meaning: "你最好多喝水多休息。" },
+  { id: 957, word: "You should always depend on yourself rather than others.", meaning: "你应该是依靠你自己,而不是别人。" },
+  { id: 958, word: "I would like to express to all sincere welcome.", meaning: "让我向在座诸位致以最真挚的欢迎。" },
+  { id: 959, word: "Many people prefer living in country to town.", meaning: "许多人喜欢住在农村而不喜欢住在城市。" },
+  { id: 960, word: "Since I'm here, I'd like to try typical dish.", meaning: "既然来了,我想吃这个国家特有的食物。" },
+
+  // Lesson 49
+  { id: 961, word: "Walking up and down stairs beats exercise machine.", meaning: "上下楼梯可比什么健身器都要好。" },
+  { id: 962, word: "Had it not been for alarm clock she wouldn't be late.", meaning: "如果不是因为闹钟不响的话,她就不会迟到了。" },
+  { id: 963, word: "However hard you work, boss won't be fully satisfied.", meaning: "无论你有多努力,老板总不会完全满意。" },
+  { id: 964, word: "If he had not broken tooth, he wouldn't be in hospital.", meaning: "如果他没有把牙齿弄坏,现在就不在医院了。" },
+  { id: 965, word: "You might as well throw money away as spend in gambling.", meaning: "你与其把钱花在赌博上,不如把它丢掉的好。" },
+  { id: 966, word: "Can you put me in picture about World Cup Match?", meaning: "你能给我讲讲关于世界杯足球赛的状况吗?" },
+  { id: 967, word: "I'm usually just using search engines to look up info.", meaning: "我通常只是用搜索引擎找一些资料。" },
+  { id: 968, word: "He goes home early for fear that wife would be angry.", meaning: "他每天很早就回家,免得老婆生气。" },
+  { id: 969, word: "I regret to inform you that we cannot offer employment.", meaning: "很遗憾地告诉你,我们无法雇用你。" },
+  { id: 970, word: "I will continue learning, though tired of English.", meaning: "尽管我很烦英语,我还是要学它。" },
+  { id: 971, word: "Li Bai is one of greatest poets in China.", meaning: "李白是中国有史以来最伟大的诗人之一。" },
+  { id: 972, word: "Many people complain computers are taking over jobs.", meaning: "许多人抱怨说计算机正在接管人的工作。" },
+  { id: 973, word: "The cupboards in kitchen were full of unnecessary things.", meaning: "她厨房的橱柜中放满了她不需要的东西。" },
+  { id: 974, word: "What he said didn't annoy me, I knew he didn't mean it.", meaning: "我并不在乎他所说的,我知道他不是那个意思。" },
+  { id: 975, word: "He asked personal questions, but I'd never answer.", meaning: "他问了我几个个人问题,我根本不愿回答。" },
+  { id: 976, word: "I don't care where we go as long as no standing in line.", meaning: "不管去哪里,只要不用站着排队就行。" },
+  { id: 977, word: "She likes Mike, but doesn't want to marry so early.", meaning: "她喜欢迈克,但她不想那么早就结婚。" },
+  { id: 978, word: "Why don't you find a job and end dependence on parents?", meaning: "你为何不找个职业,不再依靠你的父母呢?" },
+  { id: 979, word: "Will you please find out what time train arrives?", meaning: "能不能请你帮我查查火车什么时候到?" },
+  { id: 980, word: "A good knowledge of English improves employment chances.", meaning: "英语好将有助于增加你们的就业机会。" },
+
+  // Lesson 50
+  { id: 981, word: "If she finds out you spilled ink, she'll blow stack.", meaning: "如果她发现你在她上衣上洒了墨水,她会大发脾气的。" },
+  { id: 982, word: "I would be grateful for info about entry to college.", meaning: "若能寄给我贵校的入学申请材料我将十分感激。" },
+  { id: 983, word: "Mr. Smith knew Jack didn't look at others due to nerves.", meaning: "史密斯先生知道杰克不敢看别人是因为紧张。" },
+  { id: 984, word: "On being introduced, a British person often shakes hands.", meaning: "英国人被介绍给别人的时候常常和对方握握手。" },
+  { id: 985, word: "I want to take a walk along river bank, singing songs.", meaning: "我想在河边散步,唱我喜欢的歌。" },
+  { id: 986, word: "Overweight results from overeating and stress.", meaning: "很多人认为肥胖超重是因为吃得过多和压力造成的。" },
+  { id: 987, word: "Yet all these things have one thing in common.", meaning: "然而所有这些东西,看上去虽不同,但却有一个共同点。" },
+  { id: 988, word: "All my best memories come back clearly to me.", meaning: "所有美好的记忆又在我脑海清晰地浮现了,有些甚至还令我哭泣。" },
+  { id: 989, word: "This is most wonderful day of my life, with you now.", meaning: "今天是我一生中最美好的一天,因为我现在和你在一起。" },
+  { id: 990, word: "When I was young, I'd listen to radio for favorite songs.", meaning: "当我还是个小女孩的时候,我常听着收音机,等待我最喜欢的歌。" },
+  { id: 991, word: "I'm certain he'll see film, because he bought ticket.", meaning: "我肯定他会去看电影的,因为他把票都买好了。" },
+  { id: 992, word: "You'll have to pay fine before checking books out.", meaning: "在你借书之前你要先付清罚款。" },
+  { id: 993, word: "You guys talk so loudly I have to speak at top of voice!", meaning: "哎!你们一直这样大声讲话,我都不得不扯着嗓子说话了。" },
+  { id: 994, word: "We should not only know theory but how to apply it.", meaning: "我们不仅要知道理论,还要知道怎样把理论应用于实践。" },
+  { id: 995, word: "Combining exercise with diet is effective to lose weight.", meaning: "运动与节食结合也许是减肥最有效的途径。" },
+  { id: 996, word: "Maximum weight allowance is 60 kilos per traveler.", meaning: "每个旅客托运的行李最大重量限额是60公斤,手提行李除外。" },
+  { id: 997, word: "You are just putting on little weight, easily off.", meaning: "你只是稍微胖了些,很快就会恢复的。" },
+  { id: 998, word: "More and more companies replace people with computers.", meaning: "在许多国家有越来越多的公司使用电子计算机来代替人。" },
+  { id: 999, word: "There are mice next to refrigerator, sink, and cupboard!", meaning: "冰箱边、洗碗槽下,还有橱柜里面都有老鼠!" },
+  { id: 1000, word: "That's a game two people can play.", meaning: "这一手你会我也会。" }
+];
+
+// 自動將 1000 句分爲 50 課，每課 20 句
+const lessonsData = {};
+const LESSON_SIZE = 20;
+const totalLessons = Math.ceil(rawSentences.length / LESSON_SIZE);
+
+for (let i = 1; i <= totalLessons; i++) {
+  lessonsData[i] = rawSentences.slice((i - 1) * LESSON_SIZE, i * LESSON_SIZE);
+}
+
+let allWordsPool = [...rawSentences];
+let currentTestPool = [];
+let currentQIndex = 0;
+let isListening = false;
+let recognition = null;
+let optionAnswered = false;
+let cachedVoices = [];
+
+function loadVoices() {
+  if ('speechSynthesis' in window) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+}
+
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+window.onload = () => {
+  const lessonSelect = document.getElementById('lesson-select');
+  const startSelect = document.getElementById('test-start');
+  const endSelect = document.getElementById('test-end');
+
+  for (let l = 1; l <= totalLessons; l++) {
+    lessonSelect.add(new Option(`第 ${l} 課 (句 ${ (l-1)*20+1 } - ${ Math.min(l*20, 1000) })`, l));
+    startSelect.add(new Option(`第 ${l} 課`, l));
+    endSelect.add(new Option(`第 ${l} 課`, l));
+  }
+
+  // 預設測試結尾爲第 5 課
+  if (endSelect.options.length >= 5) {
+    endSelect.selectedIndex = 4;
+  }
+
+  renderWords();
+  initSpeechRecognition();
+};
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  if(tab === 'learn') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('learn-panel').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('test-panel').classList.add('active');
+  }
+}
+
+function resetTestArea() {
+  document.getElementById('test-area').style.display = 'none';
+}
+
+function getBestVoice(targetLang) {
+  if (!cachedVoices || cachedVoices.length === 0) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+  let voice = cachedVoices.find(v => v.lang.replace('_', '-') === targetLang);
+  if (!voice) {
+    const langPrefix = targetLang.split('-')[0];
+    voice = cachedVoices.find(v => v.lang.startsWith(langPrefix));
+  }
+  return voice || null;
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) {
+    alert("您的瀏覽器不支援語音合成功能");
+    return;
+  }
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  const accent = document.getElementById('accent-select').value || 'en-US';
+  let rate = parseFloat(document.getElementById('rate-select').value || 1);
+
+  utterance.lang = accent;
+  utterance.rate = rate;
+
+  const matchedVoice = getBestVoice(accent);
+  if (matchedVoice) {
+    utterance.voice = matchedVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function renderWords() {
+  const lesson = document.getElementById('lesson-select').value;
+  const container = document.getElementById('word-container');
+  container.innerHTML = '';
+
+  const list = lessonsData[lesson] || [];
+  if(list.length === 0) {
+    container.innerHTML = '<p>該課程暫無數據</p>';
+    return;
+  }
+
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerHTML = `
+      <div class="word-header">
+        <div class="word-title">${item.word}</div>
+        <button class="audio-icon-btn" onclick="speak('${escapeQuote(item.word)}')" title="點擊朗讀">🔊</button>
+      </div>
+      <div class="meaning">釋義：${item.meaning}</div>
+      <div class="sentence-index">句號：#${item.id}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function escapeQuote(str) {
+  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function initSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('rec-status').innerText = "您的瀏覽器不支援語音識別功能 (建議使用 Chrome / Edge 瀏覽器)";
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim();
+    document.getElementById('rec-status').innerText = `識別結果: "${transcript}"`;
+    evaluateAnswer(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    document.getElementById('rec-status').innerText = `識別失敗或無聲音: ${event.error}`;
+    stopMicUI();
+  };
+
+  recognition.onend = () => {
+    stopMicUI();
+  };
+}
+
+function stopMicUI() {
+  isListening = false;
+  const btn = document.getElementById('mic-btn');
+  btn.innerText = "🎤 開始回答 (錄音)";
+  btn.classList.remove('mic-recording');
+}
+
+function toggleRecognition() {
+  if (!recognition) {
+    alert("您的瀏覽器未支援 Web Speech API 語音識別功能。");
+    return;
+  }
+  const accent = document.getElementById('accent-select').value;
+  recognition.lang = accent;
+
+  if (isListening) {
+    recognition.stop();
+    stopMicUI();
+  } else {
+    try {
+      recognition.start();
+      isListening = true;
+      const btn = document.getElementById('mic-btn');
+      btn.innerText = "🛑 正在聆聽中...點擊結束";
+      btn.classList.add('mic-recording');
+      document.getElementById('rec-status').innerText = "請清晰地讀出英文句子...";
+    } catch(e) {
+      console.error(e);
+    }
+  }
+}
+
+function startTest() {
+  const start = parseInt(document.getElementById('test-start').value);
+  const end = parseInt(document.getElementById('test-end').value);
+  
+  currentTestPool = [];
+  for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+    if (lessonsData[i]) {
+      currentTestPool.push(...lessonsData[i]);
+    }
+  }
+
+  if (currentTestPool.length === 0) {
+    alert("選擇的課程範圍內沒有可測試的句子！");
+    return;
+  }
+
+  currentTestPool.sort(() => Math.random() - 0.5);
+  currentQIndex = 0;
+  document.getElementById('test-area').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (currentQIndex >= currentTestPool.length) {
+    document.getElementById('test-prompt').innerText = "🎉 測試完成！恭喜完成本組練習！";
+    document.getElementById('test-result').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('correction-area').style.display = 'none';
+    return;
+  }
+
+  const q = currentTestPool[currentQIndex];
+  const mode = document.getElementById('test-mode').value;
+  document.getElementById('test-result').innerText = "";
+  document.getElementById('correction-area').style.display = 'none';
+  optionAnswered = false;
+
+  if (mode === '1') {
+    document.getElementById('test-prompt').innerText = q.meaning;
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'block';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('rec-status').innerText = "點擊麥克風按鈕開始作答...";
+  } else if (mode === '2') {
+    document.getElementById('test-prompt').innerText = "🎧 請聽發音選擇正確中文釋義";
+    document.getElementById('listen-btn').style.display = 'inline-block';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'grid';
+
+    generateOptions(q, 'meaning');
+    playTestAudio();
+  } else if (mode === '3') {
+    document.getElementById('test-prompt').innerText = q.meaning;
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'grid';
+
+    generateOptions(q, 'word');
+  }
+}
+
+function generateOptions(correctQ, displayField) {
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  let options = [correctQ];
+  let poolToDistract = allWordsPool.length >= 4 ? allWordsPool : currentTestPool;
+  let candidates = poolToDistract.filter(item => item.id !== correctQ.id);
+  candidates.sort(() => Math.random() - 0.5);
+
+  for(let i = 0; i < Math.min(3, candidates.length); i++) {
+    options.push(candidates[i]);
+  }
+
+  options.sort(() => Math.random() - 0.5);
+
+  options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt[displayField]}`;
+    btn.onclick = () => checkOption(btn, opt.id === correctQ.id, correctQ[displayField]);
+    container.appendChild(btn);
+  });
+}
+
+function checkOption(selectedBtn, isCorrect, correctAnswerText) {
+  if (optionAnswered) return;
+  optionAnswered = true;
+
+  const resultDiv = document.getElementById('test-result');
+  const allBtns = document.querySelectorAll('.option-btn');
+
+  if (isCorrect) {
+    selectedBtn.classList.add('correct');
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = '結果：✅ 回答正確！';
+    
+    if (document.getElementById('test-mode').value === '3') {
+      playTestAudio();
+    }
+  } else {
+    selectedBtn.classList.add('wrong');
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `結果：❌ 回答錯誤！`;
+    
+    allBtns.forEach(btn => {
+      if (btn.innerText.includes(correctAnswerText)) {
+        btn.classList.add('correct');
+      }
+    });
+  }
+}
+
+function playTestAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+function playCorrectAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+// Levenshtein 距離演算法 (忽略大小寫和符號)
+function cleanText(str) {
+  return str.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function getLevenshteinDistance(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
+function evaluateAnswer(userSpeech) {
+  const q = currentTestPool[currentQIndex];
+  const resultDiv = document.getElementById('test-result');
+  const correctionArea = document.getElementById('correction-area');
+  
+  const target = cleanText(q.word);
+  const input = cleanText(userSpeech);
+
+  if (input === target) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：10 / 10 分 (完美！發音非常標準)`;
+    correctionArea.style.display = 'none';
+    return;
+  }
+
+  const distance = getLevenshteinDistance(input, target);
+  const maxLength = Math.max(input.length, target.length);
+  const similarity = maxLength === 0 ? 0 : (1 - distance / maxLength);
+
+  let score = 1;
+
+  if (similarity >= 0.90) {
+    score = 9;
+  } else if (similarity >= 0.80) {
+    score = 8;
+  } else if (similarity >= 0.70) {
+    score = 7;
+  } else if (similarity >= 0.60) {
+    score = 6;
+  } else if (similarity >= 0.45) {
+    score = 4;
+  } else if (similarity >= 0.25) {
+    score = 2;
+  } else {
+    score = 1;
+  }
+
+  if (score >= 6) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：${score} / 10 分 (發音基本合格)`;
+    correctionArea.style.display = 'none';
+  } else {
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `得分：${score} / 10 分 (不合格！發音偏差較大)`;
+    
+    document.getElementById('correct-word-text').innerText = q.word;
+    correctionArea.style.display = 'inline-block';
+  }
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  loadQuestion();
+}
+</script>
+</body>
+</html>
