@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雅思 A1 高頻詞彙學習與語音測試遊戲</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --text: #333;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; color: var(--primary); margin-bottom: 5px; }
+    .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 20px; }
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 10px 25px;
+      border: none;
+      background: #e0e0e0;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 8px 12px;
+      font-size: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .btn-action {
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    .word-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .word-title { font-size: 18px; font-weight: bold; color: #2c3e50; }
+    .pos-tag { font-size: 12px; background: #eef2f7; padding: 2px 6px; border-radius: 4px; color: #4a5568; margin-left: 6px; }
+    .syllable { font-size: 12px; color: #888; margin-left: 4px; }
+    .example-box { font-size: 13px; color: #555; background: #f9f9f9; padding: 8px; border-left: 3px solid var(--primary); border-radius: 0 4px 4px 0; margin-top: 4px; }
+
+    .test-card {
+      text-align: center;
+      padding: 30px;
+      background: #fafafa;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .test-prompt { font-size: 26px; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
+    .score-display { font-size: 20px; font-weight: bold; margin-top: 15px; }
+    .rec-status { font-size: 14px; color: #7f8c8d; margin-top: 5px; }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .option-btn {
+      padding: 15px;
+      font-size: 16px;
+      background: #ffffff;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: left;
+    }
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: #f0f7ff;
+    }
+    .option-btn.correct {
+      background: #d4edda !important;
+      border-color: #28a745 !important;
+      color: #155724;
+    }
+    .option-btn.wrong {
+      background: #f8d7da !important;
+      border-color: #dc3545 !important;
+      color: #721c24;
+    }
+
+    .correction-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 8px;
+      color: #856404;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>雅思 A1 高頻詞彙學習與語音測試遊戲</h1>
+  <div class="subtitle">Will's English Workshop - 雅思生活技能 A1 級別高頻詞彙庫</div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('learn')">📚 學習模式</button>
+    <button class="tab-btn" onclick="switchTab('test')">📝 測試模式</button>
+  </div>
+
+  <div id="learn-panel" class="panel active">
+    <div class="controls">
+      <label>選擇主題課程：
+        <select id="lesson-select" onchange="renderWords()"></select>
+      </label>
+      <label>口音選擇：
+        <select id="accent-select">
+          <option value="en-GB" selected>🇬🇧 英音 (British)</option>
+          <option value="en-US">🇺🇸 美音 (American)</option>
+        </select>
+      </label>
+      <label>發音語速：
+        <select id="rate-select">
+          <option value="1">1.0x (正常)</option>
+          <option value="0.5">0.5x (慢速)</option>
+          <option value="0.25">0.25x (極慢)</option>
+        </select>
+      </label>
+    </div>
+    <div id="word-container" class="word-grid"></div>
+  </div>
+
+  <div id="test-panel" class="panel">
+    <div class="controls">
+      <label>從：<select id="test-start"></select></label>
+      <label>到：<select id="test-end"></select></label>
+      <label>模式：
+        <select id="test-mode" onchange="resetTestArea()">
+          <option value="1">模式 1：看中文發音英文 (專業高標準評分)</option>
+          <option value="2">模式 2：聽英文選中文 (4選1對錯)</option>
+          <option value="3">模式 3：看中文選英文 (4選1對錯)</option>
+        </select>
+      </label>
+      <button class="btn-action" onclick="startTest()">開始測試</button>
+    </div>
+
+    <div id="test-area" class="test-card" style="display:none;">
+      <div id="test-prompt" class="test-prompt">---</div>
+      <div id="test-phonetic" style="margin-bottom: 15px;"></div>
+      <button id="listen-btn" class="btn-action" style="display:none; margin-bottom:15px;" onclick="playTestAudio()">🔊 重新播放發音</button>
+
+      <div id="mode1-controls">
+        <button id="mic-btn" class="btn-action" onclick="toggleRecognition()">🎤 開始回答 (錄音)</button>
+        <div id="rec-status" class="rec-status">點擊麥克風按鈕開始作答...</div>
+      </div>
+
+      <div id="options-container" class="options-grid" style="display:none;"></div>
+
+      <div id="test-result" class="score-display"></div>
+      
+      <!-- 低於 6 分時顯示的正確發音輔導區 -->
+      <div id="correction-area" class="correction-box" style="display:none;">
+        <div>標準單詞：<strong id="correct-word-text"></strong> <span id="correct-phonetic-text" style="color:#e67e22;"></span></div>
+        <button class="btn-action" style="margin-top:8px;" onclick="playCorrectAudio()">🔊 點擊收聽正確發音</button>
+      </div>
+
+      <div>
+        <button class="btn-action" style="margin-top: 20px;" onclick="nextQuestion()">下一題 ➔</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const lessonsData = {
+  1: {
+    title: "主題一：個人背景與人物",
+    words: [
+      { word: "name", pos: "n.", syllables: 1, meaning: "名字", example: "My name is Li Ming." },
+      { word: "nationality", pos: "n.", syllables: 4, meaning: "國籍", example: "My nationality is Chinese." },
+      { word: "birthday", pos: "n.", syllables: 2, meaning: "生日", example: "My birthday is July the 9th." },
+      { word: "age", pos: "n.", syllables: 1, meaning: "年齡", example: "I'm 37 years old." },
+      { word: "from", pos: "prep.", syllables: 1, meaning: "來自", example: "I'm from CQ." },
+      { word: "spell", pos: "v.", syllables: 1, meaning: "拼寫", example: "Can you spell it for me?" },
+      { word: "call", pos: "v.", syllables: 1, meaning: "稱呼；叫", example: "You can call me." },
+      { word: "come", pos: "v.", syllables: 1, meaning: "來", example: "I come from Shenyang." },
+      { word: "family", pos: "n.", syllables: 2, meaning: "家庭；家人", example: "There are 4 people in my family." },
+      { word: "parent", pos: "n.", syllables: 2, meaning: "父母(一方)", example: "I live with my parents and my son." },
+      { word: "brother", pos: "n.", syllables: 2, meaning: "兄弟", example: "I have a younger brother." },
+      { word: "sister", pos: "n.", syllables: 2, meaning: "姐妹", example: "I have a younger sister." },
+      { word: "son", pos: "n.", syllables: 1, meaning: "兒子", example: "I take care of my son everyday." },
+      { word: "friend", pos: "n.", syllables: 1, meaning: "朋友", example: "Ms. Zhang is my best friend." },
+      { word: "best", pos: "adj.", syllables: 1, meaning: "最好的", example: "Can you tell me something about your best friend?" },
+      { word: "kind", pos: "adj.", syllables: 1, meaning: "友善的；親切的", example: "She is a teacher, and she is very kind." },
+      { word: "meet", pos: "v.", syllables: 1, meaning: "見面；遇見", example: "We usually meet in the supermarket." },
+      { word: "teacher", pos: "n.", syllables: 2, meaning: "老師", example: "She is a teacher, and she is very kind." },
+      { word: "neighbour", pos: "n.", syllables: 2, meaning: "鄰居", example: "I don't know much about my neighbours." },
+      { word: "engineer", pos: "n.", syllables: 3, meaning: "工程師", example: "He works in a big company as an engineer." },
+      { word: "hard-working", pos: "adj.", syllables: 3, meaning: "勤奮的", example: "He is very hard-working." }
+    ]
+  },
+  2: {
+    title: "主題二：休閒、興趣與愛好",
+    words: [
+      { word: "watch", pos: "v.", syllables: 1, meaning: "觀看", example: "I like watching movies on TV." },
+      { word: "television", pos: "n.", syllables: 4, meaning: "電視", example: "What do you watch on television?" },
+      { word: "shopping", pos: "n.", syllables: 2, meaning: "購物", example: "I usually go shopping in the shopping center." },
+      { word: "clothes", pos: "n.(pl.)", syllables: 1, meaning: "衣服", example: "I like wearing t-shirts." },
+      { word: "animal", pos: "n.", syllables: 3, meaning: "動物", example: "Which animal do you like best?" },
+      { word: "food", pos: "n.", syllables: 1, meaning: "食物", example: "I like vegetables and meat." },
+      { word: "drink", pos: "n.", syllables: 1, meaning: "飲品", example: "My favorite drink is milk." },
+      { word: "month", pos: "n.", syllables: 1, meaning: "月份", example: "What's your favorite month of the year?" },
+      { word: "colour", pos: "n.", syllables: 2, meaning: "顏色", example: "My favorite color is red." },
+      { word: "newspaper", pos: "n.", syllables: 3, meaning: "報紙", example: "I read newspapers in the morning." },
+      { word: "music", pos: "n.", syllables: 2, meaning: "音樂", example: "I listen to music in the evening." },
+      { word: "singer", pos: "n.", syllables: 2, meaning: "歌手", example: "My favorite singer is Jacky Cheung." },
+      { word: "pet", pos: "n.", syllables: 1, meaning: "寵物", example: "Do you have any pets?" },
+      { word: "sport", pos: "n.", syllables: 1, meaning: "運動", example: "What sports do you like/play?" },
+      { word: "running", pos: "n.", syllables: 2, meaning: "跑步", example: "I like running." },
+      { word: "swimming", pos: "n.", syllables: 2, meaning: "游泳", example: "My favorite sport is swimming." },
+      { word: "travel", pos: "v./n.", syllables: 2, meaning: "旅行；出行", example: "Do you like travelling?" },
+      { word: "weekend", pos: "n.", syllables: 2, meaning: "週末", example: "What do you do at the weekend?" },
+      { word: "holiday", pos: "n.", syllables: 3, meaning: "假期", example: "I like travelling on holiday." },
+      { word: "read", pos: "v.", syllables: 1, meaning: "閱讀", example: "I read newspapers in the morning." },
+      { word: "relax", pos: "v.", syllables: 2, meaning: "放鬆", example: "It makes me relaxed." }
+    ]
+  },
+  3: {
+    title: "主題三：學習與工作",
+    words: [
+      { word: "work", pos: "v./n.", syllables: 1, meaning: "工作", example: "I work in the city center." },
+      { word: "study", pos: "v./n.", syllables: 2, meaning: "學習", example: "Do you work or study?" },
+      { word: "job", pos: "n.", syllables: 1, meaning: "職業；工作", example: "What do you do? What's your job?" },
+      { word: "worker", pos: "n.", syllables: 2, meaning: "工人；職員", example: "I'm an office worker." },
+      { word: "housewife", pos: "n.", syllables: 2, meaning: "家庭主婦", example: "I am a housewife, I take care of my son everyday." },
+      { word: "email", pos: "n.", syllables: 2, meaning: "電子郵件", example: "Do you use email a lot?" },
+      { word: "student", pos: "n.", syllables: 2, meaning: "學生", example: "There are about ten students in my class." },
+      { word: "lesson", pos: "n.", syllables: 2, meaning: "課程", example: "When do you have English lessons?" },
+      { word: "class", pos: "n.", syllables: 1, meaning: "班級；課堂", example: "I practice listening in my English class." },
+      { word: "college", pos: "n.", syllables: 2, meaning: "大學；學院", example: "How do you travel to college?" },
+      { word: "company", pos: "n.", syllables: 2, meaning: "公司", example: "He works in a big company as an engineer." },
+      { word: "improve", pos: "v.", syllables: 2, meaning: "提升；提高", example: "It helps me to improve my English." },
+      { word: "practise", pos: "v.", syllables: 2, meaning: "練習", example: "I practice listening, reading, speaking and writing." }
+    ]
+  },
+  4: {
+    title: "主題四：房屋與住所",
+    words: [
+      { word: "flat", pos: "n.", syllables: 1, meaning: "公寓", example: "I live in a flat." },
+      { word: "room", pos: "n.", syllables: 1, meaning: "房間", example: "How many rooms are there in your flat?" },
+      { word: "bedroom", pos: "n.", syllables: 2, meaning: "臥室", example: "My favorite room is my bedroom." },
+      { word: "living room", pos: "n.", syllables: 3, meaning: "客廳", example: "My family often drinks coffee in the living room." },
+      { word: "kitchen", pos: "n.", syllables: 2, meaning: "廚房", example: "My mother always cooks in the kitchen." },
+      { word: "bathroom", pos: "n.", syllables: 2, meaning: "浴室", example: "There is one bathroom in my house." },
+      { word: "live", pos: "v.", syllables: 1, meaning: "居住", example: "I live with my parents and my son." },
+      { word: "shop", pos: "n.", syllables: 1, meaning: "商店", example: "What shops are there near your home?" },
+      { word: "supermarket", pos: "n.", syllables: 4, meaning: "超市", example: "There are many supermarkets near my home." },
+      { word: "cozy", pos: "adj.", syllables: 2, meaning: "舒適的", example: "It is not big but it is very cozy." },
+      { word: "bright", pos: "adj.", syllables: 1, meaning: "明亮的", example: "I have a big living room and it is very bright." },
+      { word: "comfortable", pos: "adj.", syllables: 4, meaning: "舒服的", example: "The sofa is very comfortable to lie on." }
+    ]
+  },
+  5: {
+    title: "主題五：天氣、時間、地點與出行",
+    words: [
+      { word: "weather", pos: "n.", syllables: 2, meaning: "天氣", example: "What weather do you like?" },
+      { word: "sunny", pos: "adj.", syllables: 2, meaning: "晴朗的", example: "I like sunny days best." },
+      { word: "morning", pos: "n.", syllables: 2, meaning: "早上", example: "I get up at 7 o'clock in the morning." },
+      { word: "evening", pos: "n.", syllables: 3, meaning: "晚上", example: "I listen to music in the evening." },
+      { word: "city", pos: "n.", syllables: 2, meaning: "城市", example: "I live in Shenyang, it's a big city." },
+      { word: "town", pos: "n.", syllables: 1, meaning: "城鎮", example: "We live in a small town." },
+      { word: "province", pos: "n.", syllables: 2, meaning: "省份", example: "It's a big province." },
+      { word: "park", pos: "n.", syllables: 1, meaning: "公園", example: "Many people are doing exercises in the park." },
+      { word: "transportation", pos: "n.", syllables: 4, meaning: "交通", example: "Transportation is a common exam topic." },
+      { word: "traffic jam", pos: "n.", syllables: 2, meaning: "交通擁堵", example: "I don't like the traffic jam in the city." },
+      { word: "healthy", pos: "adj.", syllables: 2, meaning: "健康的", example: "Swimming helps me to keep healthy." }
+    ]
+  },
+  6: {
+    title: "主題六：考試專用功能短句(聽力口語應急)",
+    words: [
+      { word: "Excuse me, could you please repeat the question again?", pos: "phrase", syllables: 0, meaning: "不好意思，可以請你重複一遍問題嗎？(聽不懂提問專用)", example: "Excuse me, could you please repeat the question again?" },
+      { word: "Me too.", pos: "phrase", syllables: 0, meaning: "我也是。(回應 And you? / What about you?)", example: "Me too." }
+    ]
+  }
+};
+
+let allWordsPool = [];
+let currentTestPool = [];
+let currentQIndex = 0;
+let isListening = false;
+let recognition = null;
+let optionAnswered = false;
+let cachedVoices = [];
+
+function loadVoices() {
+  if ('speechSynthesis' in window) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+}
+
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+window.onload = () => {
+  const lessonSelect = document.getElementById('lesson-select');
+  const startSelect = document.getElementById('test-start');
+  const endSelect = document.getElementById('test-end');
+
+  Object.keys(lessonsData).forEach(l => {
+    const title = lessonsData[l].title;
+    lessonSelect.add(new Option(title, l));
+    startSelect.add(new Option(title, l));
+    endSelect.add(new Option(title, l));
+  });
+
+  Object.values(lessonsData).forEach(group => {
+    allWordsPool.push(...group.words);
+  });
+
+  renderWords();
+  initSpeechRecognition();
+};
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  if(tab === 'learn') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('learn-panel').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('test-panel').classList.add('active');
+  }
+}
+
+function resetTestArea() {
+  document.getElementById('test-area').style.display = 'none';
+}
+
+function getBestVoice(targetLang) {
+  if (!cachedVoices || cachedVoices.length === 0) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+  let voice = cachedVoices.find(v => v.lang.replace('_', '-') === targetLang);
+  if (!voice) {
+    const langPrefix = targetLang.split('-')[0];
+    voice = cachedVoices.find(v => v.lang.startsWith(langPrefix) && v.lang.includes(targetLang.split('-')[1]));
+  }
+  return voice || null;
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) {
+    alert("您的瀏覽器不支援語音合成功能");
+    return;
+  }
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  const accent = document.getElementById('accent-select').value || 'en-GB';
+  let rate = parseFloat(document.getElementById('rate-select').value || 1);
+  
+  if (accent === 'en-GB' && rate === 0.25) {
+    rate = 0.18;
+  }
+
+  utterance.lang = accent;
+  utterance.rate = rate;
+
+  const matchedVoice = getBestVoice(accent);
+  if (matchedVoice) {
+    utterance.voice = matchedVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function renderWords() {
+  const lessonKey = document.getElementById('lesson-select').value;
+  const container = document.getElementById('word-container');
+  container.innerHTML = '';
+
+  const group = lessonsData[lessonKey];
+  const list = group ? group.words : [];
+
+  if(list.length === 0) {
+    container.innerHTML = '<p>該課程暫無數據</p>';
+    return;
+  }
+
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    const syllableText = item.syllables > 0 ? `<span class="syllable">(${item.syllables}音節)</span>` : '';
+    card.innerHTML = `
+      <div class="word-title">
+        ${item.word} 
+        <span class="pos-tag">${item.pos}</span>
+        ${syllableText}
+        <button onclick="speak('${item.word.replace(/'/g, "\\'")}')" style="border:none;background:none;cursor:pointer;font-size:16px;">🔊</button>
+      </div>
+      <div><strong>釋義：</strong>${item.meaning}</div>
+      <div class="example-box"><strong>真題例句：</strong>${item.example}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function initSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('rec-status').innerText = "您的瀏覽器不支援語音識別功能 (建議使用 Chrome)";
+    return;
+  }
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim().toLowerCase();
+    document.getElementById('rec-status').innerText = `識別結果: "${transcript}"`;
+    evaluateAnswer(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    document.getElementById('rec-status').innerText = `識別失敗: ${event.error}`;
+    isListening = false;
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic-btn').innerText = "🎤 開始回答 (錄音)";
+  };
+}
+
+function toggleRecognition() {
+  if (!recognition) return;
+  const accent = document.getElementById('accent-select').value;
+  recognition.lang = accent;
+
+  if (isListening) {
+    recognition.stop();
+  } else {
+    recognition.start();
+    isListening = true;
+    document.getElementById('mic-btn').innerText = "🛑 正在聆聽中...";
+    document.getElementById('rec-status').innerText = "請朗讀英文單詞/句子...";
+  }
+}
+
+function startTest() {
+  const start = parseInt(document.getElementById('test-start').value);
+  const end = parseInt(document.getElementById('test-end').value);
+  
+  currentTestPool = [];
+  for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+    if (lessonsData[i] && lessonsData[i].words) {
+      currentTestPool.push(...lessonsData[i].words);
+    }
+  }
+
+  if (currentTestPool.length === 0) {
+    alert("選擇的課程範圍內沒有可測試的單詞！");
+    return;
+  }
+
+  currentTestPool.sort(() => Math.random() - 0.5);
+  currentQIndex = 0;
+  document.getElementById('test-area').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (currentQIndex >= currentTestPool.length) {
+    document.getElementById('test-prompt').innerText = "🎉 測試完成！";
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('test-result').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('correction-area').style.display = 'none';
+    return;
+  }
+
+  const q = currentTestPool[currentQIndex];
+  const mode = document.getElementById('test-mode').value;
+  document.getElementById('test-result').innerText = "";
+  document.getElementById('correction-area').style.display = 'none';
+  optionAnswered = false;
+
+  if (mode === '1') {
+    document.getElementById('test-prompt').innerText = q.meaning;
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'block';
+    document.getElementById('options-container').style.display = 'none';
+    document.getElementById('rec-status').innerText = "點擊麥克風按鈕開始作答...";
+  } else if (mode === '2') {
+    document.getElementById('test-prompt').innerText = "🎧 請聽發音選擇正確中文釋義";
+    document.getElementById('test-phonetic').innerText = `[${q.pos}]`;
+    document.getElementById('listen-btn').style.display = 'inline-block';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'grid';
+
+    generateOptions(q, 'meaning');
+    playTestAudio();
+  } else if (mode === '3') {
+    document.getElementById('test-prompt').innerText = q.meaning;
+    document.getElementById('test-phonetic').innerText = "";
+    document.getElementById('listen-btn').style.display = 'none';
+    document.getElementById('mode1-controls').style.display = 'none';
+    document.getElementById('options-container').style.display = 'grid';
+
+    generateOptions(q, 'word');
+  }
+}
+
+function generateOptions(correctQ, displayField) {
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  let options = [correctQ];
+  let poolToDistract = allWordsPool.length >= 4 ? allWordsPool : currentTestPool;
+  let candidates = poolToDistract.filter(item => item.word !== correctQ.word);
+  candidates.sort(() => Math.random() - 0.5);
+
+  for(let i = 0; i < Math.min(3, candidates.length); i++) {
+    options.push(candidates[i]);
+  }
+
+  options.sort(() => Math.random() - 0.5);
+
+  options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt[displayField]}`;
+    btn.onclick = () => checkOption(btn, opt.word === correctQ.word, correctQ[displayField]);
+    container.appendChild(btn);
+  });
+}
+
+function checkOption(selectedBtn, isCorrect, correctAnswerText) {
+  if (optionAnswered) return;
+  optionAnswered = true;
+
+  const resultDiv = document.getElementById('test-result');
+  const allBtns = document.querySelectorAll('.option-btn');
+
+  if (isCorrect) {
+    selectedBtn.classList.add('correct');
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = '結果：✅ 回答正確！';
+    
+    if (document.getElementById('test-mode').value === '3') {
+      playTestAudio();
+    }
+  } else {
+    selectedBtn.classList.add('wrong');
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `結果：❌ 回答錯誤！(正確答案：${correctAnswerText})`;
+    
+    allBtns.forEach(btn => {
+      if (btn.innerText.includes(correctAnswerText)) {
+        btn.classList.add('correct');
+      }
+    });
+  }
+}
+
+function playTestAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+function playCorrectAudio() {
+  const q = currentTestPool[currentQIndex];
+  speak(q.word);
+}
+
+function getLevenshteinDistance(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
+function evaluateAnswer(userSpeech) {
+  const q = currentTestPool[currentQIndex];
+  const resultDiv = document.getElementById('test-result');
+  const correctionArea = document.getElementById('correction-area');
+  
+  const target = q.word.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+  const input = userSpeech.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+
+  if (input === target) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：10 / 10 分 (完美！發音非常標準)`;
+    correctionArea.style.display = 'none';
+    return;
+  }
+
+  const distance = getLevenshteinDistance(input, target);
+  const maxLength = Math.max(input.length, target.length);
+  const similarity = 1 - (distance / maxLength);
+
+  let score = 1;
+
+  if (similarity >= 0.95) {
+    score = 9;
+  } else if (similarity >= 0.85) {
+    score = 8;
+  } else if (similarity >= 0.75) {
+    score = 6;
+  } else if (similarity >= 0.60) {
+    score = 4;
+  } else if (similarity >= 0.40) {
+    score = 2;
+  } else {
+    score = 1;
+  }
+
+  if (input.length > 0 && target.length > 0) {
+    if (input[0] !== target[0]) {
+      score = Math.min(score, 3);
+    }
+  }
+
+  if (score >= 6) {
+    resultDiv.style.color = '#28a745';
+    resultDiv.innerText = `得分：${score} / 10 分 (發音基本合格)`;
+    correctionArea.style.display = 'none';
+  } else {
+    resultDiv.style.color = '#dc3545';
+    resultDiv.innerText = `得分：${score} / 10 分 (不合格！發音偏差較大)`;
+    
+    document.getElementById('correct-word-text').innerText = q.word;
+    document.getElementById('correct-phonetic-text').innerText = `[${q.pos}]`;
+    correctionArea.style.display = 'inline-block';
+  }
+}
+
+function nextQuestion() {
+  currentQIndex++;
+  loadQuestion();
+}
+</script>
+</body>
+</html>
