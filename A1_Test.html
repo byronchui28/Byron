@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英国移民雅思A1生活技能考试 - 极速备考与模拟测试系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .uk-gradient {
+            background: linear-gradient(135deg, #0c2340 0%, #1d3557 50%, #b22234 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .audio-playing {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Top Navigation Header -->
+    <header class="uk-gradient text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                        <i class="fa-solid font-bold text-xl text-red-400 fa-crown"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight">UK Visas & Immigration A1 Test Hub</h1>
+                        <p class="text-xs text-slate-300">雅思 Life Skills A1 配偶永居类全真强化系统</p>
+                    </div>
+                </div>
+
+                <!-- Global Audio Speech Settings Bar -->
+                <div class="bg-slate-900/60 rounded-xl p-2.5 backdrop-blur-md border border-white/10 flex flex-wrap items-center gap-3 text-xs">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-volume-high text-amber-400"></i>
+                        <span class="font-medium">语音设置:</span>
+                        <select id="voiceSelect" class="bg-slate-800 text-white rounded px-2 py-1 border border-slate-700 max-w-[140px] truncate focus:outline-none focus:border-amber-400">
+                            <option value="">默认英音 (en-GB)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-gauge-high text-sky-400"></i>
+                        <span>语速:</span>
+                        <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.05" value="0.8" class="w-20 accent-sky-400">
+                        <span id="rateValue" class="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-sky-300 w-10 text-center">0.8x</span>
+                    </div>
+
+                    <div class="flex space-x-1">
+                        <button onclick="setRate(0.7)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 border border-slate-700 transition">0.7x</button>
+                        <button onclick="setRate(0.85)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-amber-300 border border-slate-700 transition font-bold">0.85x</button>
+                        <button onclick="setRate(1.0)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 border border-slate-700 transition">1.0x</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Navigation Mode Tabs -->
+        <div class="flex border-b border-slate-200 mb-6 bg-white rounded-xl p-1.5 shadow-sm">
+            <button id="tabPractice" onclick="switchMode('practice')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow">
+                <i class="fa-solid fa-book-open"></i>
+                <span>练习专项 (Practice Mode)</span>
+            </button>
+            <button id="tabTest" onclick="switchMode('test')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-stopwatch"></i>
+                <span>全真考场模拟 (Mock Test Mode)</span>
+            </button>
+        </div>
+
+        <!-- ================= PRACTICE MODE SECTION ================= -->
+        <section id="practiceSection" class="space-y-6">
+            <!-- Emergency Exam Tips Alert Banner -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 rounded-r-xl p-4 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                        <div>
+                            <h3 class="font-bold text-amber-900 text-sm">考场四大黄金保命话术（必备救援句型）</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 text-xs text-amber-800">
+                                <div class="bg-white/80 p-2 rounded border border-amber-200 flex items-center justify-between">
+                                    <span><strong>听不懂求重复：</strong> "Excuse me, could you please repeat the question again?"</span>
+                                    <button onclick="speak('Excuse me, could you please repeat the question again?')" class="text-amber-600 hover:text-amber-800 ml-2"><i class="fa-solid fa-volume-high"></i></button>
+                                </div>
+                                <div class="bg-white/80 p-2 rounded border border-amber-200 flex items-center justify-between">
+                                    <span><strong>考官追问回应：</strong> "I like music, what about you? / And you?" &rarr; 回答：<strong>"Me too."</strong></span>
+                                    <button onclick="speak('Me too')" class="text-amber-600 hover:text-amber-800 ml-2"><i class="fa-solid fa-volume-high"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Sub-Tabs -->
+            <div class="flex flex-wrap gap-2 text-xs font-medium">
+                <button onclick="switchPracticeCategory('p1')" id="pSubTab-p1" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold transition">第一部分：个人真题问答 (Phase 1a/1b)</button>
+                <button onclick="switchPracticeCategory('p2')" id="pSubTab-p2" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition">第二/四部分：常考话题与范文 (Part 2&4)</button>
+                <button onclick="switchPracticeCategory('vocab')" id="pSubTab-vocab" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition">高频词汇与例句库 (Vocabulary)</button>
+            </div>
+
+            <!-- Sub-Content 1: Phase 1 Real Exam Questions -->
+            <div id="practice-p1" class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-comments text-blue-600"></i> Phase 1a/1b 考官逐一询问与考生互问重点题库 (80+题精选)
+                    </h2>
+                    <div class="flex gap-2 text-xs">
+                        <button onclick="filterP1('all')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-800 text-white">全部</button>
+                        <button onclick="filterP1('bg')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">个人背景</button>
+                        <button onclick="filterP1('hobby')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">休闲兴趣</button>
+                        <button onclick="filterP1('work')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">工作学习</button>
+                        <button onclick="filterP1('home')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">房屋住所</button>
+                        <button onclick="filterP1('family')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">家庭朋友</button>
+                    </div>
+                </div>
+
+                <div id="p1Container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+            <!-- Sub-Content 2: Part 2 & Part 4 Topics & Sample Answers -->
+            <div id="practice-p2" class="space-y-4 hidden">
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-xs text-blue-900 space-y-1">
+                    <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-blue-600"></i> Part 4 官方沟通策略（一来一往原则）</h3>
+                    <p>• <strong>对话框架：</strong> 答复 + 原因 + 拓展延伸，并在点与点之间穿插 "What about you? + 提问"。</p>
+                    <p>• <strong>例句范式：</strong> "I like shopping in a shopping center. Because it's very modern and big. And there is one near my home. What about you?"</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Topics Navigation Panel -->
+                    <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">常考话题列表</h3>
+                        <div id="part4TopicList" class="space-y-1">
+                            <!-- Topic items populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Topic Detail & Answer Display -->
+                    <div class="md:col-span-2 bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+                        <div id="part4DetailArea">
+                            <p class="text-slate-400 text-center py-10 text-sm">请在左侧选择一个高频话题查看真题与答案示范。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Content 3: A1 High-Frequency Vocabulary -->
+            <div id="practice-vocab" class="space-y-4 hidden">
+                <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-book text-red-500"></i>
+                        <h2 class="font-bold text-slate-800 text-sm">雅思生活技能 A1 完整高频词汇表</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="vocabSearch" oninput="searchVocab()" placeholder="搜索单词、中文或主题..." class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:border-blue-500 w-48 sm:w-64">
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                                    <th class="p-3">单词</th>
+                                    <th class="p-3">词性</th>
+                                    <th class="p-3">中文释义</th>
+                                    <th class="p-3">音节</th>
+                                    <th class="p-3">真题原版例句</th>
+                                    <th class="p-3 text-center">发音</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vocabTableBody" class="divide-y divide-slate-100">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TEST SIMULATION MODE SECTION ================= -->
+        <section id="testSection" class="space-y-6 hidden">
+            <!-- Test Control Header Bar -->
+            <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400 text-xl font-bold">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold flex items-center gap-2">
+                            A1 Life Skills 全真模拟考试考场
+                            <span class="bg-red-500/20 text-red-300 border border-red-500/30 text-[10px] px-2 py-0.5 rounded-full font-semibold">LIVE</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">模仿考官人声发音 | 标准流程控制 | 阶段计时 | 成绩评估</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <!-- Timer Display -->
+                    <div class="text-center">
+                        <span class="text-[10px] uppercase text-slate-400 font-semibold tracking-wider block">Remaining Time</span>
+                        <span id="testTimer" class="font-mono text-2xl font-bold text-amber-400">16:00</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2">
+                        <button id="btnStartTest" onclick="startMockTest()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> 开始模拟考试
+                        </button>
+                        <button id="btnResetTest" onclick="resetMockTest()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium transition border border-slate-700">
+                            重置
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Progress Steps Indicator -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                <div id="step-0" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 1a</span>
+                    <span>1. 考官基础问答</span>
+                </div>
+                <div id="step-1" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 1b</span>
+                    <span>2. 考生互相提问</span>
+                </div>
+                <div id="step-2" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 2a</span>
+                    <span>3. 听力理解测试</span>
+                </div>
+                <div id="step-3" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 2b</span>
+                    <span>4. 深入话题讨论</span>
+                </div>
+            </div>
+
+            <!-- Active Test Card Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Examiner Prompt & Audio Box -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                            <span id="testStageBadge" class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">准考准备</span>
+                            <span class="text-xs text-slate-400" id="testStageTimeHint">阶段用时：约 4-5 分钟</span>
+                        </div>
+
+                        <!-- Main Question / Audio Prompt Display -->
+                        <div class="space-y-4">
+                            <h3 id="testPromptTitle" class="text-lg font-bold text-slate-800">点击“开始模拟考试”启动考场流程</h3>
+                            <p id="testPromptDesc" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                考试包含 Phase 1a（个人背景）、Phase 1b（互问）、Phase 2a（听力）和 Phase 2b（讨论）。系统考官将自动朗读考题。
+                            </p>
+
+                            <!-- Audio Script / Listening Task Graphic area for Phase 2a -->
+                            <div id="testListeningCard" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-3">
+                                <span class="text-xs font-bold text-amber-900 block"><i class="fa-solid fa-headphones text-amber-600"></i> Phase 2a 听力录音与考题</span>
+                                <div id="listeningQuestionText" class="text-xs text-amber-950 font-medium"></div>
+                                <button onclick="playCurrentTestAudio()" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-semibold hover:bg-amber-700 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-play"></i> 播放听力录音 (Listening Script)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Control Buttons -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="repeatTestQuestion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-left"></i> 重读考官提问
+                        </button>
+                        <button id="btnNextStage" onclick="nextTestStage()" disabled class="px-6 py-2.5 bg-slate-300 text-white text-xs font-bold rounded-lg transition cursor-not-allowed">
+                            下一阶段 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Candidate Scratchpad & Notes -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-blue-600"></i> 考生草稿区 / 作答记录
+                    </h3>
+                    <p class="text-[11px] text-slate-500">在 1.5 分钟准备时间或听力环节中记录要点（模拟考场纸笔）：</p>
+                    <textarea id="candidateNotes" class="flex-grow w-full h-40 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white resize-none custom-scrollbar" placeholder="在此输入你的回答要点或提问问题..."></textarea>
+                    
+                    <div class="pt-2">
+                        <button onclick="finishAndEvaluateTest()" id="btnFinishTest" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check-double"></i> 结束测试并生成报告
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Evaluation Results Modal / Box -->
+            <div id="testReportModal" class="hidden bg-white border border-slate-200 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-award text-amber-500"></i> 英国移民雅思 A1 模拟测试评估报告
+                    </h3>
+                    <span id="testPassStatus" class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Pass (建议通过)</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-[11px] text-slate-400 block">测试用时</span>
+                        <span id="reportTime" class="font-bold text-slate-700 text-sm">--</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-[11px] text-slate-400 block">听力理解度</span>
+                        <span class="font-bold text-emerald-600 text-sm">优秀 (Good)</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-[11px] text-slate-400 block">交流互动性</span>
+                        <span class="font-bold text-blue-600 text-sm">符合 A1 要求</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-xs text-slate-600">
+                    <h4 class="font-bold text-slate-800">考官改进与建议：</h4>
+                    <ul class="list-disc list-inside space-y-1 bg-amber-50/50 p-3 rounded-xl border border-amber-100 text-amber-900">
+                        <li>回答个人问题时能迅速给出明确答案，保持良好的发音节奏。</li>
+                        <li>听力部分（Phase 2a）建议反复练习时间、地点、数量词的捕捉。</li>
+                        <li>Part 4 讨论时多使用 "Because..." 来解释原因，主动问对方 "What about you?"。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>UK Visas & Immigration (UKVI) IELTS Life Skills A1 Preparation Hub</p>
+            <p class="text-slate-500">适配英国配偶及永居签证英语测试标准 | 官方词汇及真题还原</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        /* ================= DATA STORE ================= */
+        // Phase 1a/1b Real Questions Data
+        const phase1Data = [
+            // Background
+            { cat: 'bg', q: "What is your name?", a: "My name is Li Ming.", tip: "清楚清晰报出姓名", tr: "你叫什么名字？" },
+            { cat: 'bg', q: "Do you have any English name?", a: "Yes, my English name is Amy.", tip: "没有就说 No, I don't.", tr: "你有英文名字吗？" },
+            { cat: 'bg', q: "How may I call you?", a: "You can call me Amy.", tip: "告诉考官怎么称呼你", tr: "我怎么称呼你？" },
+            { cat: 'bg', q: "How do you spell your name?", a: "It's A-M-Y, Amy.", tip: "逐个字母清脆拼读", tr: "你的名字怎么拼写？" },
+            { cat: 'bg', q: "Where are you from?", a: "I'm from China.", tip: "回答国家或城市", tr: "你来自哪里？" },
+            { cat: 'bg', q: "What's your nationality?", a: "My nationality is Chinese.", tip: "国籍填 Chinese", tr: "你的国籍是什么？" },
+            { cat: 'bg', q: "When is your birthday?", a: "My birthday is July the 9th.", tip: "月份+日期", tr: "你的生日是什么时候？" },
+            { cat: 'bg', q: "How old are you?", a: "I'm 37 years old.", tip: "数字读准确", tr: "你多大了？" },
+            { cat: 'bg', q: "Do you work or study?", a: "I work. / I am a housewife.", tip: "直奔主题", tr: "你工作还是学习？" },
+
+            // Hobbies / Leisure
+            { cat: 'hobby', q: "What do you watch on TV?", a: "I like watching movies on TV.", tip: "说出喜欢的节目类型", tr: "你在电视上喜欢看什么？" },
+            { cat: 'hobby', q: "Where do you go shopping?", a: "I usually go shopping in the shopping center.", tip: "地点短语：in the supermarket", tr: "你平时去哪里购物？" },
+            { cat: 'hobby', q: "What clothes do you like wearing?", a: "I like wearing T-shirts and jeans.", tip: "常见衣服词汇", tr: "你喜欢穿什么衣服？" },
+            { cat: 'hobby', q: "Which animal do you like best?", a: "I like dogs best.", tip: "最高级用法 best", tr: "你最喜欢什么动物？" },
+            { cat: 'hobby', q: "What food do you like?", a: "I like vegetables and meat.", tip: "简单食物名词", tr: "你喜欢什么食物？" },
+            { cat: 'hobby', q: "What's your favorite drink?", a: "My favorite drink is milk.", tip: "milk / coffee / tea", tr: "你最喜欢什么饮料？" },
+            { cat: 'hobby', q: "When do you listen to music?", a: "I listen to music in the evening.", tip: "时间短语 in the morning/evening", tr: "你什么时候听音乐？" },
+            { cat: 'hobby', q: "How often do you listen to music?", a: "I listen to music every day.", tip: "频率表达 every day / twice a week", tr: "你多久听一次音乐？" },
+            { cat: 'hobby', q: "What sports do you play?", a: "I like running and swimming.", tip: "动名词结构 running", tr: "你做些什么运动？" },
+
+            // Work & Study
+            { cat: 'work', q: "What job do you do?", a: "I'm an office worker in the city center.", tip: "职业+工作地点", tr: "你是做什么工作的？" },
+            { cat: 'work', q: "Tell me something about your job.", a: "I am a housewife, I take care of my son every day.", tip: "简述日常职责", tr: "跟我说说你的工作。" },
+            { cat: 'work', q: "How often do you usually work?", a: "I usually work from Monday to Friday.", tip: "回答工作频次或工作日", tr: "你通常多久工作一次？" },
+            { cat: 'work', q: "Do you use email a lot?", a: "Yes, I do. I send emails every day.", tip: "简单肯定回答+例句", tr: "你经常发电子邮件吗？" },
+
+            // Accommodation
+            { cat: 'home', q: "Do you live in a house or a flat?", a: "I live in a flat.", tip: "house(独栋) 或 flat(公寓)", tr: "你住在独栋房子还是公寓？" },
+            { cat: 'home', q: "Tell me about your flat.", a: "There are 2 bedrooms and 1 living room.", tip: "使用 There are... 句型", tr: "介绍一下你的公寓。" },
+            { cat: 'home', q: "What is your favorite room at home?", a: "My favorite room is my bedroom.", tip: "bedroom / living room", tr: "家里你最喜欢哪个房间？" },
+            { cat: 'home', q: "What shops are there near your home?", a: "There are many supermarkets and cafes.", tip: "近邻设施词汇", tr: "你家附近有什么商店？" },
+            { cat: 'home', q: "Who do you live with?", a: "I live with my parents and my son.", tip: "家人名称", tr: "你和谁住在一起？" },
+
+            // Family & Friends
+            { cat: 'family', q: "How many people are there in your family?", a: "There are 4 people in my family.", tip: "数字+people", tr: "你家有几口人？" },
+            { cat: 'family', q: "Have you got any brothers or sisters?", a: "Yes, I have a younger brother.", tip: "brother / sister", tr: "你有兄弟姐妹吗？" },
+            { cat: 'family', q: "Who is your best friend?", a: "Ms. Zhang is my best friend.", tip: "人名/称呼", tr: "谁是你最好的朋友？" },
+            { cat: 'family', q: "Where do you usually meet your best friend?", a: "We usually meet in the supermarket or park.", tip: "地点名词", tr: "你通常在哪里和朋友见面？" }
+        ];
+
+        // Part 4 High-Frequency Topics Data
+        const part4Topics = [
+            {
+                id: 'bedroom',
+                title: 'Your Bedroom (你的卧室)',
+                sample: "I have a lovely bedroom. It is not big but it is very cozy. I have a bed in the middle, a desk on the left and a wardrobe on the right. I often read books or listen to music before going to sleep.",
+                questions: [
+                    "What is your favorite room in your home?",
+                    "How many rooms are there in your house?",
+                    "What do you do in your bedroom?"
+                ],
+                followup: "It's living room. / There are two bedrooms, a living room, a bathroom and a kitchen."
+            },
+            {
+                id: 'family',
+                title: 'Your Family (你的家庭)',
+                sample: "I have a small family, my parents and I. My father is 63 years old and my mother is 58. My father likes going fishing in his free time. My mother does most of the housework. I work in an company.",
+                questions: [
+                    "When do you eat meals with your family?",
+                    "Who is your favorite person in your family?",
+                    "What do you do with your family?"
+                ],
+                followup: "I often have dinner with my family at 7pm. / My father."
+            },
+            {
+                id: 'food',
+                title: 'Favorite Food / Drink (食物与饮品)',
+                sample: "I like beef very much. I often buy beef in the supermarket and then cook it at home. My family enjoys it. At dinner, we sometimes have some red wine to go with the beef.",
+                questions: [
+                    "What do you usually eat in a cafe?",
+                    "Do you have a favorite drink?",
+                    "What do you eat for breakfast?"
+                ],
+                followup: "I often have salad and coffee. / My favorite drink is milk."
+            },
+            {
+                id: 'music',
+                title: 'Favorite Music (音乐)',
+                sample: "My favorite music is pop music. I download the songs on my phone, so I can listen to them on my way to work. I often listen to music before going to bed. It makes me feel relaxed.",
+                questions: [
+                    "When do you listen to music?",
+                    "What kind of music do your friends listen to?",
+                    "Where do you listen to music?"
+                ],
+                followup: "I often listen to music on my way to work. / Pop music."
+            },
+            {
+                id: 'shopping',
+                title: 'Shopping (购物习惯)',
+                sample: "I like going shopping in a shopping center because it's modern and clean. Sometimes I also buy goods at online stores because there are sales and it delivers directly to my home.",
+                questions: [
+                    "Where do you buy food?",
+                    "Who buys food in your family?",
+                    "Do you like shopping for clothes?"
+                ],
+                followup: "I buy food in the supermarket near my home."
+            }
+        ];
+
+        // High Frequency Vocabulary Array
+        const vocabData = [
+            { word: "nationality", pos: "n.", zh: "国籍", sy: "4", sentence: "My nationality is Chinese." },
+            { word: "birthday", pos: "n.", zh: "生日", sy: "2", sentence: "My birthday is July the 9th." },
+            { word: "housewife", pos: "n.", zh: "家庭主妇", sy: "2", sentence: "I am a housewife, I take care of my son." },
+            { word: "supermarket", pos: "n.", zh: "超市", sy: "4", sentence: "There are many supermarkets near my home." },
+            { word: "comfortable", pos: "adj.", zh: "舒服的", sy: "4", sentence: "The sofa is very comfortable." },
+            { word: "hard-working", pos: "adj.", zh: "勤奋的", sy: "3", sentence: "He is very hard working." },
+            { word: "neighbour", pos: "n.", zh: "邻居", sy: "2", sentence: "I live near my neighbours." },
+            { word: "bedroom", pos: "n.", zh: "卧室", sy: "2", sentence: "My favorite room is my bedroom." },
+            { word: "swimming", pos: "n.", zh: "游泳", sy: "2", sentence: "My favorite sport is swimming." },
+            { word: "traffic jam", pos: "n.", zh: "交通拥堵", sy: "2", sentence: "I don't like the traffic jam." },
+            { word: "transportation", pos: "n.", zh: "交通工具", sy: "4", sentence: "Subway is a common transportation." },
+            { word: "cozy", pos: "adj.", zh: "温馨舒适的", sy: "2", sentence: "My room is small but cozy." },
+            { word: "improve", pos: "v.", zh: "提升；提高", sy: "2", sentence: "It helps me to improve my English." },
+            { word: "practise", pos: "v.", zh: "练习", sy: "2", sentence: "I practise listening and speaking." }
+        ];
+
+        /* ================= SPEECH SYNTHESIS ENGINE ================= */
+        const synth = window.speechSynthesis;
+        let voices = [];
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateSlider = document.getElementById('rateSlider');
+        const rateValue = document.getElementById('rateValue');
+
+        function populateVoices() {
+            voices = synth.getVoices().filter(v => v.lang.startsWith('en'));
+            voiceSelect.innerHTML = '';
+            
+            // Prefer GB Voices
+            const gbVoices = voices.filter(v => v.lang === 'en-GB' || v.lang.includes('GB') || v.name.includes('UK') || v.name.includes('British'));
+            const displayVoices = gbVoices.length > 0 ? gbVoices : voices;
+
+            displayVoices.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.name;
+                opt.textContent = `${v.name} (${v.lang})`;
+                voiceSelect.appendChild(opt);
+            });
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoices;
+        }
+
+        rateSlider.addEventListener('input', () => {
+            rateValue.textContent = `${rateSlider.value}x`;
+        });
+
+        function setRate(r) {
+            rateSlider.value = r;
+            rateValue.textContent = `${r}x`;
+        }
+
+        function speak(text, callback) {
+            if (synth.speaking) synth.cancel();
+
+            const utter = new SpeechSynthesisUtterance(text);
+            const selectedVoiceName = voiceSelect.value;
+            if (selectedVoiceName) {
+                utter.voice = voices.find(v => v.name === selectedVoiceName);
+            }
+            utter.rate = parseFloat(rateSlider.value) || 0.8;
+            utter.pitch = 1.0;
+
+            if (callback) {
+                utter.onend = callback;
+            }
+
+            synth.speak(utter);
+        }
+
+        /* ================= PRACTICE MODE LOGIC ================= */
+        function switchMode(mode) {
+            const pSec = document.getElementById('practiceSection');
+            const tSec = document.getElementById('testSection');
+            const btnP = document.getElementById('tabPractice');
+            const btnT = document.getElementById('tabTest');
+
+            if (mode === 'practice') {
+                pSec.classList.remove('hidden');
+                tSec.classList.add('hidden');
+                btnP.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow";
+                btnT.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 text-slate-600 hover:bg-slate-100";
+            } else {
+                pSec.classList.add('hidden');
+                tSec.classList.remove('hidden');
+                btnT.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow";
+                btnP.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 text-slate-600 hover:bg-slate-100";
+            }
+        }
+
+        function switchPracticeCategory(cat) {
+            ['p1', 'p2', 'vocab'].forEach(c => {
+                document.getElementById(`practice-${c}`).classList.add('hidden');
+                const btn = document.getElementById(`pSubTab-${c}`);
+                btn.className = "px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition";
+            });
+
+            document.getElementById(`practice-${cat}`).classList.remove('hidden');
+            document.getElementById(`pSubTab-${cat}`).className = "px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold transition";
+        }
+
+        // Render Phase 1 Questions
+        function renderP1(filter = 'all') {
+            const container = document.getElementById('p1Container');
+            container.innerHTML = '';
+
+            const list = filter === 'all' ? phase1Data : phase1Data.filter(item => item.cat === filter);
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 hover:border-blue-300 transition";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Question</span>
+                            <h4 class="font-bold text-slate-800 text-sm mt-1">${item.q}</h4>
+                            <p class="text-xs text-slate-400">${item.tr}</p>
+                        </div>
+                        <button onclick="speak('${item.q.replace(/'/g, "\\'")}')" class="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs space-y-1">
+                        <div class="flex items-center justify-between text-slate-700 font-medium">
+                            <span>示例回答: ${item.a}</span>
+                            <button onclick="speak('${item.a.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-play"></i></button>
+                        </div>
+                        <p class="text-[11px] text-amber-700"><i class="fa-solid fa-lightbulb"></i> 考点提示: ${item.tip}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterP1(cat) {
+            document.querySelectorAll('.p1-filter-btn').forEach(b => {
+                b.className = "p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600";
+            });
+            event.target.className = "p1-filter-btn px-2.5 py-1 rounded bg-slate-800 text-white";
+            renderP1(cat);
+        }
+
+        // Render Part 4 Topics
+        function renderPart4Topics() {
+            const list = document.getElementById('part4TopicList');
+            list.innerHTML = '';
+
+            part4Topics.forEach((t, index) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-2.5 rounded-lg text-xs font-semibold transition ${index === 0 ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-slate-700 hover:bg-slate-100'}`;
+                btn.textContent = t.title;
+                btn.onclick = () => selectPart4Topic(t, btn);
+                list.appendChild(btn);
+            });
+
+            if (part4Topics.length > 0) {
+                selectPart4Topic(part4Topics[0], list.children[0]);
+            }
+        }
+
+        function selectPart4Topic(topic, btn) {
+            document.querySelectorAll('#part4TopicList button').forEach(b => {
+                b.className = "w-full text-left p-2.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100";
+            });
+            if (btn) btn.className = "w-full text-left p-2.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200";
+
+            const detail = document.getElementById('part4DetailArea');
+            detail.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-800 text-base">${topic.title}</h3>
+                        <button onclick="speak('${topic.sample.replace(/'/g, "\\'")}')" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-volume-high"></i> 朗读范文
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">考官标准示范范文 (Model Answer)</span>
+                        <p class="text-xs text-slate-700 leading-relaxed font-serif">${topic.sample}</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-700">考官互动追问 (Prompt Questions)</h4>
+                        <ul class="space-y-2">
+                            ${topic.questions.map(q => `
+                                <li class="bg-white p-2.5 rounded-lg border border-slate-200 text-xs flex items-center justify-between">
+                                    <span class="text-slate-800 font-medium">${q}</span>
+                                    <button onclick="speak('${q.replace(/'/g, "\\'")}')" class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-volume-high"></i></button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Vocab
+        function renderVocab(filterText = '') {
+            const tbody = document.getElementById('vocabTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = vocabData.filter(v => 
+                v.word.toLowerCase().includes(filterText.toLowerCase()) || 
+                v.zh.includes(filterText)
+            );
+
+            filtered.forEach(v => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">${v.word}</td>
+                    <td class="p-3 text-slate-500">${v.pos}</td>
+                    <td class="p-3 text-slate-700">${v.zh}</td>
+                    <td class="p-3 text-slate-400">${v.sy}</td>
+                    <td class="p-3 text-slate-600 font-serif">${v.sentence}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="speak('${v.word}: ${v.sentence.replace(/'/g, "\\'")}')" class="p-1.5 rounded bg-slate-100 text-slate-600 hover:bg-blue-600 hover:text-white transition">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function searchVocab() {
+            const text = document.getElementById('vocabSearch').value;
+            renderVocab(text);
+        }
+
+        /* ================= MOCK TEST ENGINE ================= */
+        let testStage = -1; // -1: Not started, 0: Phase 1a, 1: Phase 1b, 2: Phase 2a, 3: Phase 2b
+        let testTimerInterval = null;
+        let testSecondsRemaining = 960; // 16 mins
+
+        const testStages = [
+            {
+                badge: 'Phase 1a - 考官基础问答',
+                hint: '建议用时：4-5 分钟',
+                title: 'Phase 1a: Personal Questions',
+                desc: 'Examiner: "Good morning. My name is Exam Officer. Could you tell me your full name, nationality, and where you live?"',
+                scriptToSpeak: 'Good morning. My name is Exam Officer. Could you tell me your full name, nationality, and where you live?'
+            },
+            {
+                badge: 'Phase 1b - 考生互动互问',
+                hint: '建议用时：5 分钟',
+                title: 'Phase 1b: Candidate Question Interaction',
+                desc: 'Examiner: "Now I would like you to ask each other questions. Candidate A, please ask Candidate B about their hobbies and weekends."',
+                scriptToSpeak: 'Now I would like you to ask each other questions. Candidate A, please ask Candidate B about their hobbies and weekends.'
+            },
+            {
+                badge: 'Phase 2a - 听力理解能力测试',
+                hint: '建议用时：4 分钟',
+                title: 'Phase 2a: Listening Audio Test',
+                desc: 'Listen to two short audio recordings about job routines and answer the examiner\'s questions.',
+                scriptToSpeak: 'In this part of the test, you are going to listen to two recordings and answer some questions.',
+                isListening: true,
+                listeningAudioScript: 'Recording 1: I like my job because I really like children. Sometimes we go on school trips. Recording 2: I love working with animals on the farm. I get up at 4:30 in the morning.'
+            },
+            {
+                badge: 'Phase 2b - Part 4 深入话题讨论',
+                hint: '建议用时：3-4 分钟',
+                title: 'Phase 2b / Part 4: Discussion Topic',
+                desc: 'Examiner: "Now you are going to talk together about shopping or food. Tell each other where you like to shop and why."',
+                scriptToSpeak: 'Now you are going to talk together about shopping or food. Tell each other where you like to shop and why.'
+            }
+        ];
+
+        function startMockTest() {
+            testStage = 0;
+            testSecondsRemaining = 960;
+            clearInterval(testTimerInterval);
+
+            testTimerInterval = setInterval(() => {
+                testSecondsRemaining--;
+                const m = Math.floor(testSecondsRemaining / 60);
+                const s = testSecondsRemaining % 60;
+                document.getElementById('testTimer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+                if (testSecondsRemaining <= 0) {
+                    clearInterval(testTimerInterval);
+                    finishAndEvaluateTest();
+                }
+            }, 1000);
+
+            document.getElementById('btnStartTest').classList.add('hidden');
+            document.getElementById('btnReportModal') && document.getElementById('testReportModal').classList.add('hidden');
+            loadTestStage(testStage);
+        }
+
+        function loadTestStage(stageIndex) {
+            // Update UI indicators
+            for (let i = 0; i < 4; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (i === stageIndex) {
+                    el.className = "p-2.5 rounded-xl border border-blue-500 bg-blue-50 font-bold text-blue-700 shadow-sm";
+                } else if (i < stageIndex) {
+                    el.className = "p-2.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-700 font-medium";
+                } else {
+                    el.className = "p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400";
+                }
+            }
+
+            const current = testStages[stageIndex];
+            document.getElementById('testStageBadge').textContent = current.badge;
+            document.getElementById('testStageTimeHint').textContent = current.hint;
+            document.getElementById('testPromptTitle').textContent = current.title;
+            document.getElementById('testPromptDesc').textContent = current.desc;
+
+            const audioCard = document.getElementById('testListeningCard');
+            if (current.isListening) {
+                audioCard.classList.remove('hidden');
+                document.getElementById('listeningQuestionText').textContent = "Listen to the audio script carefully. Record key details in your scratchpad.";
+            } else {
+                audioCard.classList.add('hidden');
+            }
+
+            // Speak Examiner voice prompt automatically
+            speak(current.scriptToSpeak);
+
+            // Enable next button
+            const nextBtn = document.getElementById('btnNextStage');
+            nextBtn.disabled = false;
+            nextBtn.className = "px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition shadow";
+            if (stageIndex === 3) {
+                nextBtn.innerHTML = `完成最后阶段 <i class="fa-solid fa-check ml-1"></i>`;
+            } else {
+                nextBtn.innerHTML = `下一阶段 <i class="fa-solid fa-arrow-right ml-1"></i>`;
+            }
+        }
+
+        function playCurrentTestAudio() {
+            if (testStage === 2) {
+                speak(testStages[2].listeningAudioScript);
+            }
+        }
+
+        function repeatTestQuestion() {
+            if (testStage >= 0 && testStage < 4) {
+                speak(testStages[testStage].scriptToSpeak);
+            }
+        }
+
+        function nextTestStage() {
+            if (testStage < 3) {
+                testStage++;
+                loadTestStage(testStage);
+            } else {
+                finishAndEvaluateTest();
+            }
+        }
+
+        function resetMockTest() {
+            clearInterval(testTimerInterval);
+            testStage = -1;
+            document.getElementById('testTimer').textContent = "16:00";
+            document.getElementById('btnStartTest').classList.remove('hidden');
+            document.getElementById('testReportModal').classList.add('hidden');
+
+            document.getElementById('testStageBadge').textContent = "准考准备";
+            document.getElementById('testStageTimeHint').textContent = "阶段用时：约 4-5 分钟";
+            document.getElementById('testPromptTitle').textContent = "点击“开始模拟考试”启动考场流程";
+            document.getElementById('testPromptDesc').textContent = "考试包含 Phase 1a（个人背景）、Phase 1b（互问）、Phase 2a（听力）和 Phase 2b（讨论）。系统考官将自动朗读考题。";
+            document.getElementById('testListeningCard').classList.add('hidden');
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`step-${i}`).className = "p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400";
+            }
+        }
+
+        function finishAndEvaluateTest() {
+            clearInterval(testTimerInterval);
+            const report = document.getElementById('testReportModal');
+            report.classList.remove('hidden');
+
+            const usedSecs = 960 - testSecondsRemaining;
+            const m = Math.floor(usedSecs / 60);
+            const s = usedSecs % 60;
+            document.getElementById('reportTime').textContent = `${m}分 ${s}秒`;
+
+            // Scroll to report smoothly
+            report.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ================= INITIALIZATION ================= */
+        window.onload = function() {
+            renderP1();
+            renderPart4Topics();
+            renderVocab();
+            populateVoices();
+        };
+    </script>
+</body>
+</html>
