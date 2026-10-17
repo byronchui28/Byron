@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英国移民雅思A1生活技能考试 - 备考与模拟测试全量整合系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .uk-gradient {
+            background: linear-gradient(135deg, #0c2340 0%, #1d3557 50%, #b22234 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Top Navigation Header -->
+    <header class="uk-gradient text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                        <i class="fa-solid font-bold text-xl text-red-400 fa-crown"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight">UK Visas & Immigration A1 Test Hub</h1>
+                        <p class="text-xs text-slate-300">雅思 Life Skills A1 配偶永居类全真强化系统 (WEW全量资料+官方真题全集版)</p>
+                    </div>
+                </div>
+
+                <!-- Global Audio Speech Settings Bar -->
+                <div class="bg-slate-900/60 rounded-xl p-2.5 backdrop-blur-md border border-white/10 flex flex-wrap items-center gap-3 text-xs">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-volume-high text-amber-400"></i>
+                        <span class="font-medium">语音设置:</span>
+                        <select id="voiceSelect" class="bg-slate-800 text-white rounded px-2 py-1 border border-slate-700 max-w-[140px] truncate focus:outline-none focus:border-amber-400">
+                            <option value="">默认英音 (en-GB)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-gauge-high text-sky-400"></i>
+                        <span>语速:</span>
+                        <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.05" value="0.8" class="w-20 accent-sky-400">
+                        <span id="rateValue" class="font-mono bg-slate-800 px-1.5 py-0.5 rounded text-sky-300 w-10 text-center">0.8x</span>
+                    </div>
+
+                    <div class="flex space-x-1">
+                        <button onclick="setRate(0.7)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 border border-slate-700 transition">0.7x</button>
+                        <button onclick="setRate(0.85)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-amber-300 border border-slate-700 transition font-bold">0.85x</button>
+                        <button onclick="setRate(1.0)" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 border border-slate-700 transition">1.0x</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Navigation Mode Tabs -->
+        <div class="flex border-b border-slate-200 mb-6 bg-white rounded-xl p-1.5 shadow-sm">
+            <button id="tabPractice" onclick="switchMode('practice')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow">
+                <i class="fa-solid fa-book-open"></i>
+                <span>练习专项 (Practice Mode)</span>
+            </button>
+            <button id="tabListening" onclick="switchMode('listening')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-headphones"></i>
+                <span>官方听力真题库 (Phase 2a Listening)</span>
+            </button>
+            <button id="tabTest" onclick="switchMode('test')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-stopwatch"></i>
+                <span>全真考场模拟 (Mock Test Mode)</span>
+            </button>
+        </div>
+
+        <!-- ================= PRACTICE MODE SECTION ================= -->
+        <section id="practiceSection" class="space-y-6">
+            <!-- Emergency Exam Tips Alert Banner -->
+            <div class="bg-amber-50 border-l-4 border-amber-500 rounded-r-xl p-4 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
+                        <div>
+                            <h3 class="font-bold text-amber-900 text-sm">考场四大黄金保命话术与“一来一往”互动原则</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 text-xs text-amber-800">
+                                <div class="bg-white/80 p-2 rounded border border-amber-200 flex items-center justify-between">
+                                    <span><strong>听不懂求重复：</strong> "Excuse me, could you please repeat the question again?"</span>
+                                    <button onclick="speak('Excuse me, could you please repeat the question again?')" class="text-amber-600 hover:text-amber-800 ml-2"><i class="fa-solid fa-volume-high"></i></button>
+                                </div>
+                                <div class="bg-white/80 p-2 rounded border border-amber-200 flex items-center justify-between">
+                                    <span><strong>考官追问回应：</strong> "I like music, what about you? / And you?" &rarr; 回答：<strong>"Me too."</strong></span>
+                                    <button onclick="speak('Me too')" class="text-amber-600 hover:text-amber-800 ml-2"><i class="fa-solid fa-volume-high"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Sub-Tabs -->
+            <div class="flex flex-wrap gap-2 text-xs font-medium">
+                <button onclick="switchPracticeCategory('p1')" id="pSubTab-p1" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold transition">第一部分：个人真题问答 (Phase 1a/1b)</button>
+                <button onclick="switchPracticeCategory('p2_topics')" id="pSubTab-p2_topics" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition">第二部分：常考话题分类拆解 (Part 2 Topics)</button>
+                <button onclick="switchPracticeCategory('p4')" id="pSubTab-p4" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition">第四部分：高频话题与全量范文 (Part 4 Topics)</button>
+                <button onclick="switchPracticeCategory('vocab')" id="pSubTab-vocab" class="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition">全量高频词汇表 (Vocabulary)</button>
+            </div>
+
+            <!-- Sub-Content 1: Phase 1 Real Exam Questions -->
+            <div id="practice-p1" class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-comments text-blue-600"></i> Phase 1 考官逐一询问重点真题库 (全量分类)
+                    </h2>
+                    <div class="flex flex-wrap gap-1.5 text-xs">
+                        <button onclick="filterP1('all')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-800 text-white">全部</button>
+                        <button onclick="filterP1('bg')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">个人背景</button>
+                        <button onclick="filterP1('hobby')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">休闲兴趣</button>
+                        <button onclick="filterP1('work')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">学习工作</button>
+                        <button onclick="filterP1('home')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">房屋住所</button>
+                        <button onclick="filterP1('family')" class="p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600">家庭朋友</button>
+                    </div>
+                </div>
+
+                <div id="p1Container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+            <!-- Sub-Content 2: Part 2 Topics Guide -->
+            <div id="practice-p2_topics" class="space-y-4 hidden">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-xs text-indigo-900 space-y-2">
+                    <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-layer-group text-indigo-600"></i> 第二部分 (Part 2) 话题提问与互动切入策略</h3>
+                    <p>在第二部分中，考官要求考生根据特定话题向对方提问。掌握四大基本类目的切入角度是通关关键：</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-2">
+                        <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm">
+                            <span class="font-bold text-indigo-700 block mb-1">👤 人物类 (People)</span>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">• 年龄: How old is...?<br>• 工作: What's his/her job?<br>• 兴趣: What's his/her hobby?<br>• 籍贯: Where is he/she from?</p>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm">
+                            <span class="font-bold text-indigo-700 block mb-1">📅 事件/活动类 (Events)</span>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">• 时间: When do you...?<br>• 地点: Where do you...?<br>• 人物: Who do you...with?<br>• 原因/方式: Why / How...?</p>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm">
+                            <span class="font-bold text-indigo-700 block mb-1">📍 地点类 (Places)</span>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">• 距离: How far is it from home?<br>• 样貌: What does it look like?<br>• 活动: What do you do there?<br>• 同伴: Who do you go with?</p>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-lg border border-indigo-100 shadow-sm">
+                            <span class="font-bold text-indigo-700 block mb-1">🛍️ 物品/其他 (Items/Other)</span>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">• 衣服/食物/天气/节假日<br>• 喜爱偏好及原因<br>• 购买方式或频次</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="p2TopicContainer">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+            <!-- Sub-Content 3: Part 4 Topics & Sample Answers -->
+            <div id="practice-p4" class="space-y-4 hidden">
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-xs text-blue-900 space-y-1">
+                    <h3 class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-blue-600"></i> Part 4 官方沟通策略（“一来一往”互动框架）</h3>
+                    <p>• <strong>核心原则：</strong> 严禁单人独白表达！必须采用“一来一往”模式。</p>
+                    <p>• <strong>答复范式：</strong> 观点/回应 + 原因 (Because...) + 拓展延伸，并在点与点之间穿插 <strong>"What about you?" / "And you?"</strong> 提问对方。</p>
+                    <p>• <strong>开场句型：</strong> "I like [主题]... There are many [扩展点]..."，直接引出话题。</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Topics Navigation Panel -->
+                    <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Part 4 全量常考话题 (27+题)</h3>
+                        <div id="part4TopicList" class="space-y-1">
+                            <!-- Topic items populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Topic Detail & Answer Display -->
+                    <div class="md:col-span-2 bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+                        <div id="part4DetailArea">
+                            <p class="text-slate-400 text-center py-10 text-sm">请在左侧选择一个高频话题查看真题、作答范文与考官追问。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Content 4: A1 High-Frequency Vocabulary -->
+            <div id="practice-vocab" class="space-y-4 hidden">
+                <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-book text-red-500"></i>
+                        <h2 class="font-bold text-slate-800 text-sm">雅思生活技能 A1 全量高频词汇表 (含音节与真题例句)</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="vocabSearch" oninput="searchVocab()" placeholder="搜索单词、中文或主题..." class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs focus:outline-none focus:border-blue-500 w-48 sm:w-64">
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                                    <th class="p-3">单词 / 短语</th>
+                                    <th class="p-3">词性</th>
+                                    <th class="p-3">中文释义</th>
+                                    <th class="p-3">音节</th>
+                                    <th class="p-3">真题原版例句</th>
+                                    <th class="p-3 text-center">发音</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vocabTableBody" class="divide-y divide-slate-100">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= OFFICIAL LISTENING PAPERS SECTION ================= -->
+        <section id="listeningSection" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-headphones text-red-600"></i> 剑桥官方雅思 A1 听力真题库 (Sample A & Past Papers 2-8)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">包含完整 Listening Scripts 朗读音频、选项图解、细化提问及官方标准 Key 答案。</p>
+                </div>
+                <div class="flex gap-2" id="listeningPaperTabs">
+                    <!-- Paper Tabs Dynamic -->
+                </div>
+            </div>
+
+            <div id="listeningPaperDetail" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+                <!-- Paper Content Display -->
+            </div>
+        </section>
+
+        <!-- ================= TEST SIMULATION MODE SECTION ================= -->
+        <section id="testSection" class="space-y-6 hidden">
+            <!-- Test Control Header Bar -->
+            <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-lg border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400 text-xl font-bold">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold flex items-center gap-2">
+                            A1 Life Skills 全真模拟考试考场
+                            <span class="bg-red-500/20 text-red-300 border border-red-500/30 text-[10px] px-2 py-0.5 rounded-full font-semibold">LIVE</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">模仿考官人声发音 | 标准流程控制 | 阶段计时 | 成绩评估</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <!-- Timer Display -->
+                    <div class="text-center">
+                        <span class="text-[10px] uppercase text-slate-400 font-semibold tracking-wider block">Remaining Time</span>
+                        <span id="testTimer" class="font-mono text-2xl font-bold text-amber-400">16:00</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2">
+                        <button id="btnStartTest" onclick="startMockTest()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> 开始模拟考试
+                        </button>
+                        <button id="btnResetTest" onclick="resetMockTest()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium transition border border-slate-700">
+                            重置
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Progress Steps Indicator -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                <div id="step-0" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 1a</span>
+                    <span>1. 考官基础问答</span>
+                </div>
+                <div id="step-1" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 1b</span>
+                    <span>2. 考生互相提问</span>
+                </div>
+                <div id="step-2" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 2a</span>
+                    <span>3. 听力理解测试</span>
+                </div>
+                <div id="step-3" class="p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400">
+                    <span class="block text-[10px] text-slate-400">Phase 2b</span>
+                    <span>4. 深入话题讨论</span>
+                </div>
+            </div>
+
+            <!-- Active Test Card Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Examiner Prompt & Audio Box -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                            <span id="testStageBadge" class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">准考准备</span>
+                            <span class="text-xs text-slate-400" id="testStageTimeHint">阶段用时：约 4-5 分钟</span>
+                        </div>
+
+                        <!-- Main Question / Audio Prompt Display -->
+                        <div class="space-y-4">
+                            <h3 id="testPromptTitle" class="text-lg font-bold text-slate-800">点击“开始模拟考试”启动考场流程</h3>
+                            <p id="testPromptDesc" class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                考试包含 Phase 1a（个人背景）、Phase 1b（互问）、Phase 2a（听力）和 Phase 2b（讨论）。系统考官将自动朗读考题。
+                            </p>
+
+                            <!-- Audio Script / Listening Task Graphic area for Phase 2a -->
+                            <div id="testListeningCard" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-3">
+                                <span class="text-xs font-bold text-amber-900 block"><i class="fa-solid fa-headphones text-amber-600"></i> Phase 2a 听力录音与考题</span>
+                                <div id="listeningQuestionText" class="text-xs text-amber-950 font-medium"></div>
+                                <button onclick="playCurrentTestAudio()" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-semibold hover:bg-amber-700 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-play"></i> 播放听力录音 (Listening Script)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Control Buttons -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="repeatTestQuestion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-left"></i> 重读考官提问
+                        </button>
+                        <button id="btnNextStage" onclick="nextTestStage()" disabled class="px-6 py-2.5 bg-slate-300 text-white text-xs font-bold rounded-lg transition cursor-not-allowed">
+                            下一阶段 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Candidate Scratchpad & Notes -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 flex flex-col">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-blue-600"></i> 考生草稿区 / 作答记录
+                    </h3>
+                    <p class="text-[11px] text-slate-500">在 1.5 分钟准备时间或听力环节中记录要点（模拟考场纸笔）：</p>
+                    <textarea id="candidateNotes" class="flex-grow w-full h-40 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white resize-none custom-scrollbar" placeholder="在此输入你的回答要点或提问问题..."></textarea>
+                    
+                    <div class="pt-2">
+                        <button onclick="finishAndEvaluateTest()" id="btnFinishTest" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check-double"></i> 结束测试并生成报告
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Evaluation Results Modal / Box -->
+            <div id="testReportModal" class="hidden bg-white border border-slate-200 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-award text-amber-500"></i> 英国移民雅思 A1 模拟测试评估报告
+                    </h3>
+                    <span id="testPassStatus" class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Pass (建议通过)</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-[11px] text-slate-400 block">测试用时</span>
+                        <span id="reportTime" class="font-bold text-slate-700 text-sm">--</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-[11px] text-slate-400 block">听力理解度</span>
+                        <span class="font-bold text-emerald-600 text-sm">优秀 (Good)</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-[11px] text-slate-400 block">交流互动性</span>
+                        <span class="font-bold text-blue-600 text-sm">符合 A1 要求</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2 text-xs text-slate-600">
+                    <h4 class="font-bold text-slate-800">考官改进与建议：</h4>
+                    <ul class="list-disc list-inside space-y-1 bg-amber-50/50 p-3 rounded-xl border border-amber-100 text-amber-900">
+                        <li>回答个人问题时能迅速给出明确答案，保持良好的发音节奏。</li>
+                        <li>听力部分（Phase 2a）建议反复练习时间、地点、数量词的捕捉。</li>
+                        <li>Part 4 讨论时多使用 "Because..." 来解释原因，主动问对方 "What about you?"。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>UK Visas & Immigration (UKVI) IELTS Life Skills A1 Preparation Hub</p>
+            <p class="text-slate-500">适配英国配偶及永居签证英语测试标准 | WEW English 官方全量资料及真题还原</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        /* ================= DATA STORE ================= */
+        // Phase 1 Real Questions Data (Full WEW Collection)
+        const phase1Data = [
+            // Background
+            { cat: 'bg', q: "What is your name?", a: "My name is Li Ming.", tip: "清楚清晰报出姓名", tr: "你叫什么名字？" },
+            { cat: 'bg', q: "Do you have any English name?", a: "Yes, my English name is Amy.", tip: "没有就说 No, I don't.", tr: "你有英文名字吗？" },
+            { cat: 'bg', q: "How may I call you?", a: "You can call me Amy.", tip: "告诉考官怎么称呼你", tr: "我怎么称呼你？" },
+            { cat: 'bg', q: "How do you spell your name?", a: "It's A-M-Y, Amy.", tip: "逐个字母清脆拼读", tr: "你的名字怎么拼写？" },
+            { cat: 'bg', q: "Where are you from?", a: "I'm from CQ. / I come from CQ.", tip: "回答国家或城市", tr: "你来自哪里？" },
+            { cat: 'bg', q: "What's your nationality?", a: "My nationality is Chinese.", tip: "国籍填 Chinese", tr: "你的国籍是什么？" },
+            { cat: 'bg', q: "When is your birthday?", a: "My birthday is July the 9th.", tip: "月份+日期", tr: "你的生日是什么时候？" },
+            { cat: 'bg', q: "How old are you?", a: "I'm 37 years old. / My age is 37.", tip: "数字读准确", tr: "你多大了？" },
+            { cat: 'bg', q: "Do you work or study?", a: "I work. / I am a housewife.", tip: "直奔主题", tr: "你工作还是学习？" },
+
+            // Hobbies / Leisure
+            { cat: 'hobby', q: "What do you watch on TV?", a: "I like watching movies on TV.", tip: "说出喜欢的节目类型", tr: "你在电视上喜欢看什么？" },
+            { cat: 'hobby', q: "Where do you go shopping?", a: "I usually go shopping in the shopping center.", tip: "地点短语：in the supermarket", tr: "你平时去哪里购物？" },
+            { cat: 'hobby', q: "What clothes do you like wearing?", a: "I like wearing T-shirts and jeans.", tip: "常见衣服词汇", tr: "你喜欢穿什么衣服？" },
+            { cat: 'hobby', q: "Which animal do you like best?", a: "I like dogs best.", tip: "最高级用法 best", tr: "你最喜欢什么动物？" },
+            { cat: 'hobby', q: "What food do you like?", a: "I like vegetables and meat.", tip: "简单食物名词", tr: "你喜欢什么食物？" },
+            { cat: 'hobby', q: "What's your favorite drink?", a: "My favorite drink is milk.", tip: "milk / coffee / tea", tr: "你最喜欢什么饮料？" },
+            { cat: 'hobby', q: "What is your favorite month of the year?", a: "I like July best.", tip: "月份表达", tr: "一年中你最喜欢哪个月份？" },
+            { cat: 'hobby', q: "What's your favorite color?", a: "My favorite color is red.", tip: "颜色表达", tr: "你最喜欢什么颜色？" },
+            { cat: 'hobby', q: "When do you read newspapers?", a: "I read newspapers in the morning.", tip: "时间短语", tr: "你什么时候读报纸？" },
+            { cat: 'hobby', q: "When do you listen to music?", a: "I listen to music in the evening.", tip: "时间短语 in the morning/evening", tr: "你什么时候听音乐？" },
+            { cat: 'hobby', q: "I like music, what about you?", a: "Yes, me too.", tip: "黄金追问回应，回答 Me too", tr: "我喜欢音乐，你呢？" },
+            { cat: 'hobby', q: "Who's your favorite singer?", a: "My favorite singer is Jacky Cheung.", tip: "歌手名字", tr: "你最喜欢的歌手是谁？" },
+            { cat: 'hobby', q: "How often do you listen to music?", a: "I listen to music every day.", tip: "频率表达 every day / twice a week", tr: "你多久听一次音乐？" },
+            { cat: 'hobby', q: "Do you have any pets?", a: "No, I don't.", tip: "有或没有", tr: "你有宠物吗？" },
+            { cat: 'hobby', q: "I come here by car, and you?", a: "Me too.", tip: "回答 Me too", tr: "我开车来的，你呢？" },
+            { cat: 'hobby', q: "What sports do you play?", a: "I like running and swimming.", tip: "动名词结构 running", tr: "你做些什么运动？" },
+
+            // Work & Study
+            { cat: 'work', q: "What job do you do?", a: "I'm an office worker, I work in the city center.", tip: "职业+工作地点", tr: "你是做什么工作的？" },
+            { cat: 'work', q: "Tell me something about your job.", a: "I am a housewife, I take care of my son every day.", tip: "简述日常职责", tr: "跟我说说你的工作。" },
+            { cat: 'work', q: "How often do you usually work?", a: "I usually work every day / from Monday to Friday.", tip: "回答工作频次或工作日", tr: "你通常多久工作一次？" },
+            { cat: 'work', q: "Do you use email a lot?", a: "Yes, I do. / No, I don't.", tip: "简单肯定回答", tr: "你经常发电子邮件吗？" },
+            { cat: 'work', q: "Do you have a job?", a: "Yes, I do, I'm a housewife.", tip: "回答职业", tr: "你有工作吗？" },
+
+            // Accommodation
+            { cat: 'home', q: "What is your favorite room at home?", a: "My favorite room is my bedroom.", tip: "bedroom / living room", tr: "家里你最喜欢哪个房间？" },
+            { cat: 'home', q: "What shops are there near your home?", a: "There are many supermarkets and cafes.", tip: "近邻设施词汇", tr: "你家附近有什么商店？" },
+            { cat: 'home', q: "Who do you live with?", a: "I live with my parents and my son.", tip: "家人名称", tr: "你和谁住在一起？" },
+            { cat: 'home', q: "Where do you live?", a: "I live in Shenyang, it's a big city.", tip: "居住城市", tr: "你住在哪里？" },
+            { cat: 'home', q: "Do you live in a house or a flat?", a: "I live in a flat.", tip: "house(独栋) 或 flat(公寓)", tr: "你住在独栋房子还是公寓？" },
+            { cat: 'home', q: "Tell me about your flat.", a: "There are 2 bedrooms and 1 living room.", tip: "使用 There are... 句型", tr: "介绍一下你的公寓。" },
+            { cat: 'home', q: "How many rooms are there in your flat?", a: "There are 2 bedrooms and 1 living room.", tip: "数量+房间", tr: "你的公寓有几个房间？" },
+
+            // Family & Friends
+            { cat: 'family', q: "How many people are there in your family?", a: "There are 4 people in my family, my parents, my son and me.", tip: "数字+people", tr: "你家有几口人？" },
+            { cat: 'family', q: "How many brothers and sisters have you got?", a: "I have a younger brother and a younger sister.", tip: "brother / sister", tr: "你有几个兄弟姐妹？" },
+            { cat: 'family', q: "Have you got any brothers or sisters?", a: "Yes, I have a younger brother.", tip: "简单回答", tr: "你有兄弟姐妹吗？" },
+            { cat: 'family', q: "Can you tell me something about your best friend?", a: "Yes, of course. She is a teacher, and she is very kind.", tip: "性格+职业", tr: "能和我说说你最好的朋友吗？" },
+            { cat: 'family', q: "Who is your best friend?", a: "Ms. Zhang is my best friend.", tip: "人名/称呼", tr: "谁是你最好的朋友？" },
+            { cat: 'family', q: "Where do you usually meet Ms. Zhang?", a: "We usually meet in the supermarket.", tip: "地点名词", tr: "你通常在哪里和她见面？" }
+        ];
+
+        // Part 2 Topics Categorization Data
+        const part2TopicsData = [
+            {
+                category: '人物类 (People)',
+                items: ['your friends', 'your classmate', 'a good friend', 'people who live near him/her', 'About the people likes to be with', 'About the people he/she works or studies with', 'About the people he/she visits', 'Your teacher'],
+                tips: '可切入角度：年龄(How old)、长相(What does...look like)、工作(Job)、兴趣(Hobby)、籍贯(Where from)。'
+            },
+            {
+                category: '事件与活动类 (Events & Activities)',
+                items: ['watch TV/television', 'use the phone', 'things he/she does at the weekend', 'how he/she travels to college', 'about a sport he/she likes', 'Going for a walk in the morning', 'Try new things', 'What do you do in the morning', 'How to keep healthy'],
+                tips: '可切入角度：时间(When)、地点(Where)、同伴(Who with)、原因(Why)、方式(How)。'
+            },
+            {
+                category: '地点类 (Places)',
+                items: ['About where he/she goes shopping', 'Places you like going to', 'Countryside', 'Town / City', 'Park'],
+                tips: '可切入角度：距离(How far)、环境样貌(What look like)、喜爱原因(Why like)、活动内容(What do)。'
+            },
+            {
+                category: '物品与生活类 (Items & Life)',
+                items: ['clothes', 'food he/she likes to eat on special days', 'things you buy', 'Books / Reading', 'Music', 'Transportation'],
+                tips: '可切入角度：颜色/材质、购买地点、频率、喜好原因。'
+            },
+            {
+                category: '其它高频话题 (Other High-Frequency Topics)',
+                items: ['weather / What weather do you like', 'special times of the year / Holiday', 'Weekend', 'Travel', 'What would you like to do in summer?'],
+                tips: '配合季节、天气、交通工具等基础词汇拓展。'
+            }
+        ];
+
+        // Part 4 High-Frequency Topics Data (Complete WEW 27 Topics Collection)
+        const part4Topics = [
+            {
+                id: 'bedroom',
+                title: '1. Your bedroom (你的卧室)',
+                sample: "I have a lovely bedroom. It is not big but it is very cozy. I have a bed in the middle, a desk on the left and a wardrobe on the right. The bed is made of wood and the wardrobe is white. I often read books or listen to music before going to sleep. It makes me relaxed.",
+                questions: [
+                    "What is your favorite room in your home?",
+                    "How many rooms are there in your house?",
+                    "What do you do in your bedroom?"
+                ],
+                followup: "It's living room. / There are two bedrooms, a living room, a bathroom and a kitchen in my house. / I usually listen to music before going to bed."
+            },
+            {
+                id: 'living_room',
+                title: '2. Your living room (你的客厅)',
+                sample: "I have a big living room and it is very bright. The big TV is on the wall. The nice curtain is on the left of the living room. The sofa is brown and is very comfortable to lie on. My family often drinks coffee and has some snacks together in the living room. It is happy family time.",
+                questions: [
+                    "How many rooms are there in your home?",
+                    "What do you do in your living room?",
+                    "What color is your living room?"
+                ],
+                followup: "There are two bedrooms, a living room, a bathroom and a kitchen. / I often drink coffee and have snacks with my family. / It's painted white."
+            },
+            {
+                id: 'family',
+                title: '3. Your family (你的家庭)',
+                sample: "I have a small family, my parents and I. My father is 63 years old and my mother is 58 years old. Both of them are workers. We live in a small town in Hunan province. My father is very hard-working and he likes going fishing in his free time. My mother does most of the housework and she likes singing very much. I work in an international company.",
+                questions: [
+                    "When do you eat meals with your family?",
+                    "Who is your favorite person in your family?",
+                    "What do you do with your family?",
+                    "What do your parents do in their free time?"
+                ],
+                followup: "I often have dinner with my family at 7pm. / My father. / Sometimes we go fishing together. / They often watch TV."
+            },
+            {
+                id: 'best_friend',
+                title: '4. Your best friend (最好的朋友)',
+                sample: "My best friend is James. He is a nice guy and he is in his 30s. He works in a big company as an engineer and he is very hard-working. He likes travelling very much and we often travel together. We are going to Japan next year.",
+                questions: [
+                    "When do you meet your friend?",
+                    "Where does your friend live?",
+                    "How many good friends have you got?",
+                    "How old is your best friend?"
+                ],
+                followup: "We often meet at the weekend. / He lives in Guangzhou. / I have several good friends, but not many. / He is in his 30s."
+            },
+            {
+                id: 'food',
+                title: '5. Your favorite food (喜欢的食物)',
+                sample: "I like beef very much. I often buy beef in the supermarket and then cook it at home. I have several ways to cook the beef. And my family enjoys it very much. At dinner, we sometimes have some red wine to go with the beef.",
+                questions: [
+                    "What do you usually eat in a cafe?",
+                    "Do you have a favorite drink?",
+                    "What do you eat for breakfast?"
+                ],
+                followup: "I often have salad and drink coffee. / Yes, my favorite drink is coffee. / I usually have milk and bread."
+            },
+            {
+                id: 'music',
+                title: '6. Your favorite music (喜欢的音乐)',
+                sample: "My favorite music is pop music. And I know a lot of pop artists such as Adele, Coldplay and Taylor Swift. I download the songs on my phone, so I can listen to them on my way to work. I often listen to music before going to bed. It makes me feel relaxed.",
+                questions: [
+                    "When do you listen to music?",
+                    "What kind of music do your friends listen to?",
+                    "Where do you listen to music?"
+                ],
+                followup: "I often listen to music on my way to work. / We usually listen to pop music. / On my way to work."
+            },
+            {
+                id: 'sport',
+                title: '7. Your favorite sport (最喜欢的运动)',
+                sample: "My favorite sport is swimming. I often go swimming with my friends. It is great fun especially in summer when it is very hot. It helps me to keep healthy.",
+                questions: [
+                    "What sports do you watch on television?",
+                    "Who do you play sport with?",
+                    "What sports don't you like?"
+                ],
+                followup: "Swimming. / Usually my friends. / I don't like basketball."
+            },
+            {
+                id: 'city',
+                title: '8. Your town/city (你的城镇/城市)',
+                sample: "I live in Guangzhou. It is a big and modern city. It is famous for its food. There are restaurants everywhere. And it has rich history. I often take my friends to have a look at the Canton Tower and Pearl River cruise. It is great fun.",
+                questions: [
+                    "What don't you like about your town?",
+                    "Where do you learn English?",
+                    "Which shops do you like?",
+                    "What shops are near your home?"
+                ],
+                followup: "The traffic jam. / I learn English from online apps. / I like clothing stores. / Supermarkets, clothing stores and restaurants."
+            },
+            {
+                id: 'mornings',
+                title: '9. What you do in the mornings (早晨的活动)',
+                sample: "I am not busy in the morning. I often get up at 7 o'clock and then brush my teeth and wash my face. After that, I dress myself and have a simple breakfast, usually milk and bread. Then I go out to take the subway to go to work. It takes about one hour to get to my office.",
+                questions: [
+                    "What do you have for breakfast?",
+                    "What is your favorite time of the day?",
+                    "What time do you get up at the weekend?",
+                    "How do you travel to work/college?"
+                ],
+                followup: "Usually milk and bread. / I think it's evening because I can watch TV to relax. / After 8 o'clock. / I take the subway."
+            },
+            {
+                id: 'saturdays',
+                title: '10. What you do on Saturdays (周六活动)',
+                sample: "I don't need to go to work on Saturdays, so I usually get up late. After finishing breakfast, I will clean the house. In the afternoon, I often enjoy some leisure activities such as going swimming, watching movies and listening to music. I like Saturday because it's relaxing.",
+                questions: [
+                    "What do you eat for lunch on Saturdays?",
+                    "When do you have English lessons?",
+                    "What time do you go to bed every day?",
+                    "I love weekends. What about you?"
+                ],
+                followup: "Sometimes chicken and sometimes beef. / In the evening. / Around 11pm. / Me too."
+            },
+            {
+                id: 'everyday',
+                title: '11. What you do every day (日常工作日)',
+                sample: "On weekdays, I get up early and go to work. I spend my day in the office, answering emails and attending meetings. In the evening, I come back home, have dinner with my family, and watch some TV to relax before sleeping.",
+                questions: [
+                    "Who do you live with?",
+                    "When do you use your phone?",
+                    "What is your favorite day?"
+                ],
+                followup: "I live with my parents. / When I need to make a phone call or send a message. / Saturday."
+            },
+            {
+                id: 'weekend',
+                title: '12. What you do at the weekend (周末活动)',
+                sample: "At the weekend, I like to rest and spend time with my family. Sometimes we go out for lunch or go shopping in the supermarket. In the afternoon, I often go to the cinema or do some sports.",
+                questions: [
+                    "When do you go to the cinema?",
+                    "Which meals do you eat with your family?",
+                    "What's your favorite thing to do at the weekend?"
+                ],
+                followup: "I often go on Saturday afternoon. / I have dinner with my family. / Watching movies."
+            },
+            {
+                id: 'english_class',
+                title: '13. What you do in your English class (英语课)',
+                sample: "I practice listening, reading, speaking and writing in my English class. I follow the teacher to read the words and sentences. Sometimes the teacher plays recordings for us to listen to. I enjoy talking to my classmates very much. After class, I often finish my writing task.",
+                questions: [
+                    "How many students are there in the class?",
+                    "Where is the classroom?",
+                    "When do you have lessons?"
+                ],
+                followup: "There are about ten students in my class. / In a school in my hometown. / In the morning."
+            },
+            {
+                id: 'nice_places',
+                title: '14. Nice places in your town (镇上的好去处)',
+                sample: "I like the library and the park in my town. The library is very big and there are many books there. I often borrow books from the library to read on the weekend. I also enjoy going to the park because the air is very fresh.",
+                questions: [
+                    "Tell me about an interesting shop.",
+                    "I like sports. What can I do in your town?"
+                ],
+                followup: "I really like the clothes shop near my home. / You can play tennis, basketball, volleyball and many other sports."
+            },
+            {
+                id: 'tv_program',
+                title: '15. A good TV program (好看的电视节目)',
+                sample: "I really like the news on TV at 7pm. After I finish dinner, I will sit on the sofa to watch. It has international news and local news. It helps me to know what's going on around the world and in my neighborhood. Sometimes I talk to my family about the news. It is fun.",
+                questions: [
+                    "Who do you watch TV with?",
+                    "When do you watch TV?",
+                    "I like to watch films on TV. And you?"
+                ],
+                followup: "I watch TV with my family. / Often after dinner. / Me too."
+            },
+            {
+                id: 'home',
+                title: '16. Your home (你的家/住所)',
+                sample: "There are five rooms in my home: two bedrooms, one bathroom, one living room and a kitchen. I often watch TV with my parents in the living room. My bedroom is not very big, but it is cozy. My mother always cooks in the kitchen for us.",
+                questions: [
+                    "Which is your favorite room?",
+                    "Who cleans your home?",
+                    "Who are your neighbors?"
+                ],
+                followup: "The living room. / My mother. / I don't know much about them."
+            },
+            {
+                id: 'free_time',
+                title: '17. What you do in your free time (业余闲暇)',
+                sample: "On sunny days, I often do some outdoor sports, such as tennis, running and cycling. It is great fun. If the weather is not good, I will stay at home to do some cleaning and listen to music. Sometimes I go to the cinema to watch movies.",
+                questions: [
+                    "What do you do in bad weather?",
+                    "Who do you spend your free time with?",
+                    "How much free time do you have?"
+                ],
+                followup: "I stay at home and do some cleaning. / Often with my friends. / Usually on weekends."
+            },
+            {
+                id: 'favorite_film',
+                title: '18. Your favorite film (最喜欢的电影)',
+                sample: "My favorite movie is Titanic. It is a love story and it is very famous. I have watched it several times. I have recommended it to many of my friends.",
+                questions: [
+                    "What's your favorite TV programme?",
+                    "Where do you watch films?",
+                    "When do you go to the cinema?"
+                ],
+                followup: "My favorite program is news. / In the cinema. / On the weekend."
+            },
+            {
+                id: 'breakfast',
+                title: '19. Your breakfast (你的早餐)',
+                sample: "I have breakfast at home after I get up. I often have some bread and drink milk because it is convenient. Then I go to work. On the weekend, when I have time, I cook some noodles.",
+                questions: [
+                    "When do you eat lunch?",
+                    "Where do you eat your dinner?",
+                    "Who cooks your food?"
+                ],
+                followup: "Around 12:30pm. / At home. / My mother."
+            },
+            {
+                id: 'evening',
+                title: '20. What you do in the evening (傍晚/晚上)',
+                sample: "I often have dinner with my parents. After that, we watch TV for a while. Then I usually go running downstairs. I listen to music or read a book before going to sleep.",
+                questions: [
+                    "Do you always eat a hot meal in the evening?",
+                    "What do you watch on television?",
+                    "When do you go to bed?"
+                ],
+                followup: "Yes, I do. / News and sports. / Around 11pm."
+            },
+            {
+                id: 'school',
+                title: '21. Your school / college (你的学校)',
+                sample: "I would like to talk about my high school. It is called Xiangtan First High School and it is the best one in my city. It has several teaching buildings, a library and five canteens. Also there is a big playground where we can go running and play basketball. I love my high school.",
+                questions: [
+                    "What's your favorite subject?",
+                    "How many students are there in your class?",
+                    "How do you travel to school?"
+                ],
+                followup: "It's Chinese. / Around 50. / On foot."
+            },
+            {
+                id: 'weather',
+                title: '22. The weather in your country (国家的天气)',
+                sample: "China is a very big country and the weather in different parts is different. For example, it's very cold in winter in the north of China, but in the south it's still warm. In the west, it is quite dry, and in the east, it rains a lot.",
+                questions: [
+                    "What's your favorite weather?",
+                    "What do you do when it rains?",
+                    "What's the weather like today?"
+                ],
+                followup: "I like sunny days best. / I often stay at home to watch TV. / It's sunny."
+            },
+            {
+                id: 'clothes',
+                title: '23. The clothes you like (喜欢的衣服)',
+                sample: "I like casual clothes because they are comfortable to wear. When I don't have to go to work, I usually like to wear T-shirts, jeans and shorts. Most of my clothes are made of cotton. I like them in bright colors.",
+                questions: [
+                    "Where do you buy your clothes?",
+                    "What's your favorite color? Why?",
+                    "Do you spend much time on clothes?"
+                ],
+                followup: "I usually buy clothes at the shopping mall. / Green, because it is the color of nature. / No, I just spend a little."
+            },
+            {
+                id: 'favorite_day',
+                title: '24. Your favorite day of the week (一周中最喜欢的一天)',
+                sample: "My favorite day of the week is Saturday. On that day, I often get up late. Then I will have breakfast and clean the house. After that, I usually go to the cinema to watch a movie or hang out with friends. I like Saturday because it's the most relaxing day of the week.",
+                questions: [
+                    "What do you do on this day?",
+                    "Which day of the week don't you like?"
+                ],
+                followup: "I watch movies and hang out with friends. / I don't like Monday."
+            },
+            {
+                id: 'friends_out',
+                title: '25. Where you go with your friends (与朋友去的地方)',
+                sample: "We go to a lot of places together. Sometimes we go to the cinema to watch movies. Sometimes we go to restaurants to eat out together. And we play sports in the open air as well. It is great fun.",
+                questions: [
+                    "How often do you go out with friends?",
+                    "What time do you come home?"
+                ],
+                followup: "Every week. / I usually go home around 8pm."
+            },
+            {
+                id: 'study_room',
+                title: '26. The room where you study (学习的房间)',
+                sample: "I don't have a separate study room, so I usually study in my bedroom. I have a desk, a computer and a chair in the bedroom. Sometimes I read books and sometimes I watch learning videos on the computer. It helps me to improve my English.",
+                questions: [
+                    "What is your favorite thing in the room?",
+                    "When do you study?",
+                    "Do you study with friends?"
+                ],
+                followup: "My books. / Before going to sleep. / No, I study alone."
+            },
+            {
+                id: 'shopping',
+                title: '27. Where you go shopping (购物地点与习惯)',
+                sample: "Sometimes I go shopping in department stores. There are many floors selling all kinds of goods and I really like the delightful environment there. Sometimes I also buy goods at online stores because there are a lot of sales and it's more convenient with direct delivery.",
+                questions: [
+                    "What do you like to buy?",
+                    "Who buys food in your family?"
+                ],
+                followup: "I like to buy clothes and food. / My mother."
+            }
+        ];
+
+        // High Frequency Vocabulary Array (Full WEW A-Z & Categorized Collection)
+        const vocabData = [
+            // A
+            { word: "age", pos: "n.", zh: "年龄", sy: "1", sentence: "I’m 37 years old." },
+            { word: "animal", pos: "n.", zh: "动物", sy: "3", sentence: "Which animal do you like best?" },
+            // B
+            { word: "bathroom", pos: "n.", zh: "浴室", sy: "2", sentence: "There is one bathroom in my house." },
+            { word: "bedroom", pos: "n.", zh: "卧室", sy: "2", sentence: "My favorite room is my bedroom." },
+            { word: "best", pos: "adj.", zh: "最好的", sy: "1", sentence: "Who is your best friend?" },
+            { word: "birthday", pos: "n.", zh: "生日", sy: "2", sentence: "My birthday is July the 9th." },
+            { word: "bright", pos: "adj.", zh: "明亮的", sy: "1", sentence: "I have a big living room and it is very bright." },
+            { word: "brother", pos: "n.", zh: "兄弟", sy: "2", sentence: "I have a younger brother." },
+            // C
+            { word: "call", pos: "v.", zh: "称呼；叫", sy: "1", sentence: "You can call me Amy." },
+            { word: "class", pos: "n.", zh: "班级；课堂", sy: "1", sentence: "There are about ten students in my class." },
+            { word: "clothes", pos: "n.(pl.)", zh: "衣服", sy: "1", sentence: "I like wearing t-shirts." },
+            { word: "college", pos: "n.", zh: "大学；学院", sy: "2", sentence: "How do you travel to college?" },
+            { word: "colour", pos: "n.", zh: "颜色", sy: "2", sentence: "My favorite color is red." },
+            { word: "come", pos: "v.", zh: "来", sy: "1", sentence: "I come from Shenyang." },
+            { word: "comfortable", pos: "adj.", zh: "舒服的", sy: "4", sentence: "The sofa is very comfortable to lie on." },
+            { word: "company", pos: "n.", zh: "公司", sy: "2", sentence: "He works in a big company as an engineer." },
+            { word: "cozy", pos: "adj.", zh: "舒适的", sy: "2", sentence: "It is not big but it is very cozy." },
+            // D
+            { word: "drink", pos: "n.", zh: "饮品", sy: "1", sentence: "My favorite drink is milk." },
+            // E
+            { word: "email", pos: "n.", zh: "电子邮件", sy: "2", sentence: "Do you use email a lot?" },
+            { word: "engineer", pos: "n.", zh: "工程师", sy: "3", sentence: "He works in a big company as an engineer." },
+            { word: "evening", pos: "n.", zh: "晚上", sy: "3", sentence: "I listen to music in the evening." },
+            // F
+            { word: "family", pos: "n.", zh: "家庭", sy: "2", sentence: "There are 4 people in my family." },
+            { word: "flat", pos: "n.", zh: "公寓", sy: "1", sentence: "I live in a flat." },
+            { word: "food", pos: "n.", zh: "食物", sy: "1", sentence: "I like vegetables and meat." },
+            { word: "friend", pos: "n.", zh: "朋友", sy: "1", sentence: "Ms. Zhang is my best friend." },
+            { word: "from", pos: "prep.", zh: "来自", sy: "1", sentence: "I’m from CQ." },
+            // H
+            { word: "hard-working", pos: "adj.", zh: "勤奋的", sy: "3", sentence: "He is very hard working." },
+            { word: "healthy", pos: "adj.", zh: "健康的", sy: "2", sentence: "Swimming helps me to keep healthy." },
+            { word: "holiday", pos: "n.", zh: "假期", sy: "3", sentence: "I like travelling on holiday." },
+            { word: "housewife", pos: "n.", zh: "家庭主妇", sy: "2", sentence: "I am a housewife, I take care of my son everyday." },
+            // J
+            { word: "job", pos: "n.", zh: "职业；工作", sy: "1", sentence: "What’s your job?" },
+            // K
+            { word: "kind", pos: "adj.", zh: "友善的", sy: "1", sentence: "She is a teacher, and she is very kind." },
+            { word: "kitchen", pos: "n.", zh: "厨房", sy: "2", sentence: "My mother always cooks in the kitchen." },
+            // L
+            { word: "lesson", pos: "n.", zh: "课程", sy: "2", sentence: "When do you have English lessons?" },
+            { word: "live", pos: "v.", zh: "居住", sy: "1", sentence: "I live with my parents and my son." },
+            { word: "living room", pos: "n.", zh: "客厅", sy: "3", sentence: "My family often drinks coffee in the living room." },
+            // M
+            { word: "meet", pos: "v.", zh: "见面", sy: "1", sentence: "We usually meet in the supermarket." },
+            { word: "month", pos: "n.", zh: "月份", sy: "1", sentence: "What’s your favorite month of the year?" },
+            { word: "morning", pos: "n.", zh: "早上", sy: "2", sentence: "I read newspapers in the morning." },
+            { word: "music", pos: "n.", zh: "音乐", sy: "2", sentence: "I listen to music in the evening." },
+            // N
+            { word: "name", pos: "n.", zh: "名字", sy: "1", sentence: "My name is Li Ming." },
+            { word: "nationality", pos: "n.", zh: "国籍", sy: "4", sentence: "My nationality is Chinese." },
+            { word: "newspaper", pos: "n.", zh: "报纸", sy: "3", sentence: "I read newspapers in the morning." },
+            { word: "neighbour", pos: "n.", zh: "邻居", sy: "2", sentence: "I don't know much about my neighbours." },
+            // P
+            { word: "parent", pos: "n.", zh: "父母（一方）", sy: "2", sentence: "I live with my parents and my son." },
+            { word: "park", pos: "n.", zh: "公园", sy: "1", sentence: "Many people are doing exercises in the park." },
+            { word: "pet", pos: "n.", zh: "宠物", sy: "1", sentence: "Do you have any pets?" },
+            { word: "practise", pos: "v.", zh: "练习", sy: "2", sentence: "I practice listening, reading, speaking and writing." },
+            { word: "province", pos: "n.", zh: "省份", sy: "2", sentence: "It’s a big province." },
+            // R
+            { word: "read", pos: "v.", zh: "阅读", sy: "1", sentence: "I read newspapers in the morning." },
+            { word: "relax", pos: "v.", zh: "放松", sy: "2", sentence: "It makes me relaxed." },
+            { word: "room", pos: "n.", zh: "房间", sy: "1", sentence: "How many rooms are there in your flat?" },
+            { word: "running", pos: "n.", zh: "跑步", sy: "2", sentence: "I like running." },
+            // S
+            { word: "shop", pos: "n.", zh: "商店", sy: "1", sentence: "What shops are there near your home?" },
+            { word: "shopping", pos: "n.", zh: "购物", sy: "2", sentence: "I usually go shopping in the shopping center." },
+            { word: "singer", pos: "n.", zh: "歌手", sy: "2", sentence: "My favorite singer is Jacky Cheung." },
+            { word: "sister", pos: "n.", zh: "姐妹", sy: "2", sentence: "I have a younger sister." },
+            { word: "son", pos: "n.", zh: "儿子", sy: "1", sentence: "I take care of my son everyday." },
+            { word: "spell", pos: "v.", zh: "拼写", sy: "1", sentence: "Can you spell it for me?" },
+            { word: "sport", pos: "n.", zh: "运动", sy: "1", sentence: "What sports do you like/play?" },
+            { word: "student", pos: "n.", zh: "学生", sy: "2", sentence: "There are about ten students in my class." },
+            { word: "study", pos: "v./n.", zh: "学习", sy: "2", sentence: "Do you work or study?" },
+            { word: "sunny", pos: "adj.", zh: "晴朗的", sy: "2", sentence: "I like sunny days best." },
+            { word: "supermarket", pos: "n.", zh: "超市", sy: "4", sentence: "There are many supermarkets near my home." },
+            { word: "swimming", pos: "n.", zh: "游泳", sy: "2", sentence: "My favorite sport is swimming." },
+            // T
+            { word: "teacher", pos: "n.", zh: "老师", sy: "2", sentence: "She is a teacher, and she is very kind." },
+            { word: "television", pos: "n.", zh: "电视", sy: "4", sentence: "What do you watch on television?" },
+            { word: "town", pos: "n.", zh: "城镇", sy: "1", sentence: "We live in a small town." },
+            { word: "traffic jam", pos: "n.", zh: "交通拥堵", sy: "2", sentence: "I don’t like the traffic jam in the city." },
+            { word: "transportation", pos: "n.", zh: "交通", sy: "4", sentence: "Transportation is a common exam topic." },
+            { word: "travel", pos: "v./n.", zh: "旅行", sy: "2", sentence: "Do you like travelling?" },
+            // W
+            { word: "watch", pos: "v.", zh: "观看", sy: "1", sentence: "I like watching movies on TV." },
+            { word: "weather", pos: "n.", zh: "天气", sy: "2", sentence: "What weather do you like?" },
+            { word: "weekend", pos: "n.", zh: "周末", sy: "2", sentence: "What do you do at the weekend?" },
+            { word: "work", pos: "v./n.", zh: "工作", sy: "1", sentence: "I work in the city center." },
+            { word: "worker", pos: "n.", zh: "职员", sy: "2", sentence: "I'm an office worker." },
+            // Short phrases
+            { word: "Excuse me, repeat...", pos: "phrase", zh: "求重复句子", sy: "--", sentence: "Excuse me, could you please repeat the question again?" },
+            { word: "Me too.", pos: "phrase", zh: "我也是 (回应And you?)", sy: "2", sentence: "I like music, what about you? -> Me too." }
+        ];
+
+        // Official Cambridge Listening Papers Collection (Sample Test A & Past Papers 2-8)
+        const listeningPapers = [
+            {
+                id: 'sample_a',
+                title: 'Sample Test A (官方样卷A)',
+                phase1b: 'Candidate A asks Candidate B about neighbours; Candidate B asks Candidate A about favourite time of year.',
+                topic: 'Where do they want to go at the weekend?',
+                options: ['to a town', 'to the mountains', 'to the park'],
+                script1: "I want to go to Littlegate this weekend. My cousin lives there and there are shops, a cinema and great restaurants. It's easy to get there. A return ticket by train only costs £7. There's a brilliant market too and we want to go there to buy some jeans.",
+                script2: "I want to spend the weekend there with my friends. We usually go there in winter to ski, but this time we want to climb to the top it takes about 4 hours, but then you can look down on the sea. I just hope my new boots are comfortable!",
+                q1_main: "Candidate A: In the 1st recording, where does the woman want to go?",
+                q1_ans: "to a town",
+                q2_main: "Candidate B: In the 2nd recording, where does the man want to go?",
+                q2_ans: "to the mountains",
+                q_detail_B: "Candidate B (Script 1): Who can the woman see in Littlegate? / How much is a return ticket?",
+                ans_detail_B: "(her) cousin / £7",
+                q_detail_A: "Candidate A (Script 2): How many hours does it take to climb the mountain? / What is the man worried about?",
+                ans_detail_A: "(about) 4 (hours) / (his) (new) boots / hopes boots are comfortable",
+                phase2b: "Talk together about places you like to go to at the weekend. (Prompt questions: Who do you go out with? Do you like new places? Which places are good for children?)"
+            },
+            {
+                id: 'paper2',
+                title: 'Past Paper 2 (听力套卷2)',
+                phase1b: 'Candidate A asks Candidate B about watching television; Candidate B asks Candidate A about students in your class.',
+                topic: 'Where are they? In a café, in an office, or in a library?',
+                options: ['in a café', 'in an office', 'in a library'],
+                script1: "The story books are on the first floor, and the dictionaries are on the second floor. That's where the books on learning English are too. You can borrow two books and you can keep them for three weeks. When you find the books you want, take them to the desk over there. Give the lady your student card and she will check them out for you.",
+                script2: "Mr Khan isn't in today but he'll be here on Tuesday. He'll be able to see you then but you must make an appointment. I'm sure he'll be able to help you then. Let me get my book and I'll see what time he's free. Ah yes, he can see you at 10.30. Is that OK for you? Or would another time be better?",
+                q1_main: "Candidate A: In the 1st recording, where is the speaker?",
+                q1_ans: "in a library",
+                q2_main: "Candidate B: In the 2nd recording, where is the speaker?",
+                q2_ans: "in an office",
+                q_detail_B: "Candidate B (Script 1): Where are the dictionaries? / How many books can you borrow?",
+                ans_detail_B: "(on the) second floor / two (books)",
+                q_detail_A: "Candidate A (Script 2): What day can you see Mr Khan? / What time can you meet him?",
+                ans_detail_A: "(on) Tuesday / (at) 10.30 (half past ten)",
+                phase2b: "Talk together about studying in your college library / study centre. (Prompt questions: Do you use the library a lot? Is it a good place to study? Can computers help you? Do you study on your own or with a teacher?)"
+            },
+            {
+                id: 'paper3',
+                title: 'Past Paper 3 (听力套卷3)',
+                phase1b: 'Candidate A asks Candidate B about a good friend; Candidate B asks Candidate A about people who live near you.',
+                topic: 'What do they do? A teacher, a farmer, or a nurse?',
+                options: ['a teacher', 'a farmer', 'a nurse'],
+                script1: "I like my job, because I really like children. They want to learn about everything, and always ask lots of questions. Sometimes we go on school trips - we went to a farm last week and saw lots of animals. It's a hard job though I have to do lots of work at home. I don't like working in the evenings! My husband works in the evening at the hospital, so we don't see each other during the week very much.",
+                script2: "I've done this job for fourteen years now. I love working with animals! I have to get up at 4.30 in the morning to feed them. It's a problem - I don't like getting up very early. There's lots to do, and we often have children from the local school coming for a visit in the summer. When I was young I wanted to become a nurse, but now I'm glad I do this.",
+                q1_main: "Candidate A: What job does the first person do?",
+                q1_ans: "a teacher",
+                q2_main: "Candidate B: What job does the second person do?",
+                q2_ans: "a farmer",
+                q_detail_B: "Candidate B (Script 1): What does the first person like about her job? / What doesn't she like?",
+                ans_detail_B: "Children / Working in the evenings (at home)",
+                q_detail_A: "Candidate A (Script 2): What does the second person like about his job? / What doesn't he like?",
+                ans_detail_A: "(working with) animals / Getting up early (at 4.30 in the morning)",
+                phase2b: "Talk together about work. Tell each other about work you do now, or work you would like to do in the future."
+            },
+            {
+                id: 'paper4',
+                title: 'Past Paper 4 (听力套卷4)',
+                phase1b: 'Candidate A asks Candidate B about using the telephone; Candidate B asks Candidate A about special times of the year.',
+                topic: 'What sort of programmes are they talking about? Sport, the news or travel?',
+                options: ['sport', 'the news', 'travel'],
+                script1: "I like watching the international matches best of all they're really exciting! Last week I watched England play Germany with a group of friends. We often watch TV at college, which is good. Most weeks I don't have time, so I just see the football results on the news in the evenings. I don't like watching swimming - I think it's quite boring.",
+                script2: "I love finding out about different places to go to. I don't have enough money to go on holiday, but I like to imagine where I could go. I'd like to go to America! I like the holidays in warm countries where you can do something with a group of people there's a holiday where you can learn how to play tennis in the mornings. I really want to do this.",
+                q1_main: "Candidate A: What sort of programme is the 1st person talking about?",
+                q1_ans: "sport",
+                q2_main: "Candidate B: What sort of programme is the 2nd person talking about?",
+                q2_ans: "travel",
+                q_detail_B: "Candidate B (Script 1): Where does the first person watch TV with his friends? / What sport doesn't he like watching?",
+                ans_detail_B: "At college / Swimming",
+                q_detail_A: "Candidate A (Script 2): Where does she want to go? / What sport does she want to learn on holiday?",
+                ans_detail_A: "America / Tennis",
+                phase2b: "Talk together about watching television. Tell each other about the programmes you like to watch, and the programmes you don't like."
+            },
+            {
+                id: 'paper5',
+                title: 'Past Paper 5 (听力套卷5)',
+                phase1b: 'Candidate A asks Candidate B about clothes; Candidate B asks Candidate A about the things he/she does at the weekend.',
+                topic: 'What are they studying? Art, computer skills or mathematics?',
+                options: ['art', 'computer skills', 'mathematics'],
+                script1: "I love my evening course but I do a part-time job in the afternoons so I really hurry to get to class on time - it begins at 6.30 so I'm afraid I'm sometimes late. We practise on our keyboard and screen but what I really enjoy is that the teacher explains things very well. That's so important don't you think?",
+                script2: "There's one subject I find really difficult so I have lessons after school. I'm just no good with numbers, or adding up. I go to college on Thursday evenings for extra help. The class goes on for three hours and that's after a full day at school which is very hard! But the teachers are friendly and that's what's great about going...",
+                q1_main: "Candidate A: In the 1st recording, what is the woman studying?",
+                q1_ans: "computer skills",
+                q2_main: "Candidate B: In the 2nd recording, what is the man studying?",
+                q2_ans: "mathematics",
+                q_detail_B: "Candidate B (Script 1): What time does the woman's class start? / What does she like about it?",
+                ans_detail_B: "6.30 (half past six pm) / (the) teacher explains things very well",
+                q_detail_A: "Candidate A (Script 2): How many hours is the class? / What does the man like about it?",
+                ans_detail_A: "three (hours) / (the) teachers are friendly",
+                phase2b: "Talk together about your course at college. Tell each other what you like about your lessons at college."
+            },
+            {
+                id: 'paper6',
+                title: 'Past Paper 6 (听力套卷6)',
+                phase1b: 'Candidate A asks Candidate B about how he/she travels to college; Candidate B asks Candidate A about a sport he/she likes.',
+                topic: 'What are the students talking about? A room, a school or a local park?',
+                options: ['a room', 'a school', 'a local park'],
+                script1: "Do you like where you live? - Yes, I like it. The family that I live with are very kind. The house is near to the shops. I have a large room. It's on the third floor. I have a computer and a desk and so I study there every evening from 6.30 until 9. There are two big windows and I can see the trees in the garden. What about you?",
+                script2: "Where do you like to go in your free time? - I go to the park near my house and walk by the lake. I go there each Sunday when I'm not at school. I like to go out because I don't like sitting in my room. I like to see the flowers and it's very beautiful. I meet my sister and we talk together and sometimes we stay until it's dark.",
+                q1_main: "Candidate A: In the 1st recording, what is the student talking about?",
+                q1_ans: "his room",
+                q2_main: "Candidate B: In the 2nd recording, what is the student talking about?",
+                q2_ans: "her (local) park",
+                q_detail_B: "Candidate B (Script 1): What is the house near? / What does the student see in the garden?",
+                ans_detail_B: "(to) (the) shops / (the) trees",
+                q_detail_A: "Candidate A (Script 2): What day does the student go to the park? / Who does she meet there?",
+                ans_detail_A: "(each/every/on) Sunday(s) / (her) sister",
+                phase2b: "Talk together about houses and flats. Tell each other about the house that you live in, and what you like about it."
+            },
+            {
+                id: 'paper7',
+                title: 'Past Paper 7 (听力套卷7)',
+                phase1b: 'Candidate A asks Candidate B about how he/she travels in this area; Candidate B asks Candidate A about where he/she goes shopping.',
+                topic: 'What time of year are they talking about? Spring, autumn or winter?',
+                options: ['spring', 'autumn', 'winter'],
+                script1: "I really like the cold and I love it when it snows. It's very exciting and a lot of fun. It's my birthday in January so it's my favourite month. I love walking in the park and seeing the trees with no leaves. They look beautiful. My husband likes that time of year too.",
+                script2: "I don't like the cold. It's good when it starts to get warm and nice to see the leaves on the trees start to grow again. I love to see the flowers in the park. They're beautiful too. My birthday is in April, so that's my favourite month. My children love this time of year too.",
+                q1_main: "Candidate A: In the 1st recording, what time of year is the speaker talking about?",
+                q1_ans: "winter",
+                q2_main: "Candidate B: In the 2nd recording, what time of year is the speaker talking about?",
+                q2_ans: "spring",
+                q_detail_B: "Candidate B (Script 1): What month is the speaker's birthday? / What does she like to see in the park?",
+                ans_detail_B: "(in) January / trees (with no leaves)",
+                q_detail_A: "Candidate A (Script 2): What does the speaker like to see in the park? / What month is his birthday?",
+                ans_detail_A: "(the) flowers / (the) leaves (on the trees) / (in) April",
+                phase2b: "Talk together about the weather at different times of the year. Tell each other about what you like and what you don't like about the weather in this country."
+            },
+            {
+                id: 'paper8',
+                title: 'Past Paper 8 (听力套卷8)',
+                phase1b: 'Candidate A asks Candidate B about the things he/she does at college; Candidate B asks Candidate A about the people he/she likes to be with.',
+                topic: 'Do they travel to work by car, bus or train?',
+                options: ['car', 'bus', 'train'],
+                script1: "How do you travel to work? - Well, the roads are very busy so I get the train with my friend. It's expensive, but that's because it's very fast. I leave home at 8 o'clock and we meet at the railway station. Only the boss drives to work because there's one parking place for him!",
+                script2: "Do you go to work by train? - No. It's much too expensive £9. So I go in my car with a neighbour. He gives me money to pay for the petrol so it's quite cheap. It's about 35 minutes to drive to work, but over an hour by public transport.",
+                q1_main: "Candidate A: In the 1st recording, does the woman travel to work by car, bus or train?",
+                q1_ans: "train",
+                q2_main: "Candidate B: In the 2nd recording, does the man travel to work by car, bus or train?",
+                q2_ans: "car",
+                q_detail_B: "Candidate B (Script 1): Who does the woman travel to work with? / What time does she leave her house?",
+                ans_detail_B: "(her/a) friend / (at) 8 o'clock (am/in the morning)",
+                q_detail_A: "Candidate A (Script 2): Who does the man travel to work with? / How many minutes is the journey by car?",
+                ans_detail_A: "(his/a) neighbour / 35 (minutes)",
+                phase2b: "Talk together about travel. Tell each other about what transport you use and what you like and what you don't like about it."
+            },
+            {
+                id: 'paper9',
+                title: 'Past Paper 9 (听力套卷9)',
+                phase1b: 'Candidate A asks Candidate B about the people he/she works or studies with; Candidate B asks Candidate A about the food he/she likes to eat on special days.',
+                topic: 'Where are the people talking? In a café, in a bookshop, or in a clothes shop?',
+                options: ['in a café', 'in a bookshop', 'in a clothes shop'],
+                script1: "F: Can I help you? - M: Yes. I can't find the jackets. Where are they, please? - F: They're in the corner, over there. - M: Oh yes. - F: What size do you want? - M: Medium. - F: That's fine. We have some on sale actually. - M: Oh good. What time do you shut today? - F: It's 8 o'clock tonight. - M: Great. Thank you.",
+                script2: "M: Hello, can I help you? - F: Yes, I'd like a glass of orange juice. - M: OK. Anything else? - F: No thanks. - M: Is it to drink here or take away? - F: I'd like to have it here please. - M: That's £1.25, then. - F: Here you are. - M: Thanks. Take a seat.",
+                q1_main: "Candidate A: In the 1st recording, where are the people talking?",
+                q1_ans: "in a clothes shop",
+                q2_main: "Candidate B: In the 2nd recording, where are the people talking?",
+                q2_ans: "in a café",
+                q_detail_B: "Candidate B (Script 1): What is the man looking for? / What time does the shop close?",
+                ans_detail_B: "(a) jacket(s) / (at) 8 o'clock (pm)",
+                q_detail_A: "Candidate A (Script 2): What is the woman buying? / How much does she pay?",
+                ans_detail_A: "(a) (glass of) (orange) juice / £1.25 (one pound 25)",
+                phase2b: "Talk together about clothes and shopping. Talk to each other about the clothes you like and where you go shopping."
+            },
+            {
+                id: 'paper10',
+                title: 'Past Paper 10 (听力套卷10)',
+                phase1b: 'Candidate A asks Candidate B about the people he/she visits; Candidate B asks Candidate A about the things he/she likes cooking.',
+                topic: 'What rooms are the people talking about? The kitchen, the living room, or the bedroom?',
+                options: ['the kitchen', 'the living room', 'the bedroom'],
+                script1: "This is my favourite room. It's sunny in here in the afternoon and it's very big. At the weekend all the family come and we sit here. We talk and have a drink together. I've got a big red sofa. It's very comfortable. In the evenings I like to watch TV and relax in here.",
+                script2: "I spend a lot of time cooking and washing up in here. I've got 4 children. I love this room. I like to sit here in the morning and have breakfast. I have some toast and read the newspaper. It's so quiet. The children are sleeping upstairs. It's lovely!",
+                q1_main: "Candidate A: In the 1st recording, what room is the man talking about?",
+                q1_ans: "the living room",
+                q2_main: "Candidate B: In the 2nd recording, what room is the woman talking about?",
+                q2_ans: "the kitchen",
+                q_detail_B: "Candidate B (Script 1): What time of day is it sunny in the room? / What colour is the sofa?",
+                ans_detail_B: "(in the) afternoon / red",
+                q_detail_A: "Candidate A (Script 2): How many children does the woman have? / What does she eat for breakfast?",
+                ans_detail_A: "4 (children) / (some) toast",
+                phase2b: "Talk together about homes and rooms. Talk to each other about your home and your favourite room in your home."
+            }
+        ];
+
+        /* ================= SPEECH SYNTHESIS ENGINE ================= */
+        const synth = window.speechSynthesis;
+        let voices = [];
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateSlider = document.getElementById('rateSlider');
+        const rateValue = document.getElementById('rateValue');
+
+        function populateVoices() {
+            voices = synth.getVoices().filter(v => v.lang.startsWith('en'));
+            voiceSelect.innerHTML = '';
+            
+            // Prefer GB Voices
+            const gbVoices = voices.filter(v => v.lang === 'en-GB' || v.lang.includes('GB') || v.name.includes('UK') || v.name.includes('British'));
+            const displayVoices = gbVoices.length > 0 ? gbVoices : voices;
+
+            displayVoices.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.name;
+                opt.textContent = `${v.name} (${v.lang})`;
+                voiceSelect.appendChild(opt);
+            });
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoices;
+        }
+
+        rateSlider.addEventListener('input', () => {
+            rateValue.textContent = `${rateSlider.value}x`;
+        });
+
+        function setRate(r) {
+            rateSlider.value = r;
+            rateValue.textContent = `${r}x`;
+        }
+
+        function speak(text, callback) {
+            if (synth.speaking) synth.cancel();
+
+            const utter = new SpeechSynthesisUtterance(text);
+            const selectedVoiceName = voiceSelect.value;
+            if (selectedVoiceName) {
+                utter.voice = voices.find(v => v.name === selectedVoiceName);
+            }
+            utter.rate = parseFloat(rateSlider.value) || 0.8;
+            utter.pitch = 1.0;
+
+            if (callback) {
+                utter.onend = callback;
+            }
+
+            synth.speak(utter);
+        }
+
+        /* ================= NAVIGATION & TAB LOGIC ================= */
+        function switchMode(mode) {
+            const pSec = document.getElementById('practiceSection');
+            const lSec = document.getElementById('listeningSection');
+            const tSec = document.getElementById('testSection');
+            
+            const btnP = document.getElementById('tabPractice');
+            const btnL = document.getElementById('tabListening');
+            const btnT = document.getElementById('tabTest');
+
+            [pSec, lSec, tSec].forEach(s => s.classList.add('hidden'));
+            [btnP, btnL, btnT].forEach(b => b.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 text-slate-600 hover:bg-slate-100");
+
+            if (mode === 'practice') {
+                pSec.classList.remove('hidden');
+                btnP.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow";
+            } else if (mode === 'listening') {
+                lSec.classList.remove('hidden');
+                btnL.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow";
+            } else {
+                tSec.classList.remove('hidden');
+                btnT.className = "flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition flex items-center justify-center space-x-2 bg-slate-900 text-white shadow";
+            }
+        }
+
+        function switchPracticeCategory(cat) {
+            ['p1', 'p2_topics', 'p4', 'vocab'].forEach(c => {
+                const el = document.getElementById(`practice-${c}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`pSubTab-${c}`);
+                if (btn) btn.className = "px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition";
+            });
+
+            const activeEl = document.getElementById(`practice-${cat}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+            const activeBtn = document.getElementById(`pSubTab-${cat}`);
+            if (activeBtn) activeBtn.className = "px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold transition";
+        }
+
+        /* ================= RENDERING FUNCTIONS ================= */
+        // Render Phase 1 Questions
+        function renderP1(filter = 'all') {
+            const container = document.getElementById('p1Container');
+            container.innerHTML = '';
+
+            const list = filter === 'all' ? phase1Data : phase1Data.filter(item => item.cat === filter);
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 hover:border-blue-300 transition";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Question</span>
+                            <h4 class="font-bold text-slate-800 text-sm mt-1">${item.q}</h4>
+                            <p class="text-xs text-slate-400">${item.tr}</p>
+                        </div>
+                        <button onclick="speak('${item.q.replace(/'/g, "\\'")}')" class="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs space-y-1">
+                        <div class="flex items-center justify-between text-slate-700 font-medium">
+                            <span>示例回答: ${item.a}</span>
+                            <button onclick="speak('${item.a.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-play"></i></button>
+                        </div>
+                        <p class="text-[11px] text-amber-700"><i class="fa-solid fa-lightbulb"></i> 考点提示: ${item.tip}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterP1(cat) {
+            document.querySelectorAll('.p1-filter-btn').forEach(b => {
+                b.className = "p1-filter-btn px-2.5 py-1 rounded bg-slate-100 text-slate-600";
+            });
+            event.target.className = "p1-filter-btn px-2.5 py-1 rounded bg-slate-800 text-white";
+            renderP1(cat);
+        }
+
+        // Render Part 2 Topic Categories
+        function renderPart2Topics() {
+            const container = document.getElementById('p2TopicContainer');
+            container.innerHTML = '';
+
+            part2TopicsData.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3";
+                card.innerHTML = `
+                    <h3 class="font-bold text-slate-800 text-sm border-b border-slate-100 pb-2 text-indigo-700 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open"></i> ${cat.category}
+                    </h3>
+                    <p class="text-[11px] text-amber-700 bg-amber-50 p-2 rounded border border-amber-100">${cat.tips}</p>
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                        ${cat.items.map(item => `
+                            <span class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] px-2.5 py-1 rounded-md font-medium border border-slate-200 transition">
+                                ${item}
+                            </span>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Render Part 4 Topics
+        function renderPart4Topics() {
+            const list = document.getElementById('part4TopicList');
+            list.innerHTML = '';
+
+            part4Topics.forEach((t, index) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-2.5 rounded-lg text-xs font-semibold transition ${index === 0 ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'text-slate-700 hover:bg-slate-100'}`;
+                btn.textContent = t.title;
+                btn.onclick = () => selectPart4Topic(t, btn);
+                list.appendChild(btn);
+            });
+
+            if (part4Topics.length > 0) {
+                selectPart4Topic(part4Topics[0], list.children[0]);
+            }
+        }
+
+        function selectPart4Topic(topic, btn) {
+            document.querySelectorAll('#part4TopicList button').forEach(b => {
+                b.className = "w-full text-left p-2.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100";
+            });
+            if (btn) btn.className = "w-full text-left p-2.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200";
+
+            const detail = document.getElementById('part4DetailArea');
+            detail.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-800 text-base">${topic.title}</h3>
+                        <button onclick="speak('${topic.sample.replace(/'/g, "\\'")}')" class="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-volume-high"></i> 朗读范文
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">WEW 考官标准示范范文 (Model Answer)</span>
+                        <p class="text-xs text-slate-700 leading-relaxed font-serif">${topic.sample}</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-700">考官互动追问 (Prompt Questions)</h4>
+                        <ul class="space-y-2">
+                            ${topic.questions.map(q => `
+                                <li class="bg-white p-2.5 rounded-lg border border-slate-200 text-xs flex items-center justify-between">
+                                    <span class="text-slate-800 font-medium">${q}</span>
+                                    <button onclick="speak('${q.replace(/'/g, "\\'")}')" class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-volume-high"></i></button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    ${topic.followup ? `
+                        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-xs text-emerald-900 space-y-1">
+                            <span class="font-bold block text-emerald-800"><i class="fa-solid fa-circle-check"></i> 考官追问参考简答：</span>
+                            <p class="font-medium">${topic.followup}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Render Vocab
+        function renderVocab(filterText = '') {
+            const tbody = document.getElementById('vocabTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = vocabData.filter(v => 
+                v.word.toLowerCase().includes(filterText.toLowerCase()) || 
+                v.zh.includes(filterText)
+            );
+
+            filtered.forEach(v => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">${v.word}</td>
+                    <td class="p-3 text-slate-500">${v.pos}</td>
+                    <td class="p-3 text-slate-700">${v.zh}</td>
+                    <td class="p-3 text-slate-400">${v.sy}</td>
+                    <td class="p-3 text-slate-600 font-serif">${v.sentence}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="speak('${v.word}: ${v.sentence.replace(/'/g, "\\'")}')" class="p-1.5 rounded bg-slate-100 text-slate-600 hover:bg-blue-600 hover:text-white transition">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function searchVocab() {
+            const text = document.getElementById('vocabSearch').value;
+            renderVocab(text);
+        }
+
+        // Render Official Listening Papers
+        function renderListeningPapers() {
+            const tabsContainer = document.getElementById('listeningPaperTabs');
+            tabsContainer.innerHTML = '';
+
+            listeningPapers.forEach((paper, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold transition ${idx === 0 ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`;
+                btn.textContent = paper.title.split(' ')[0];
+                btn.onclick = () => selectListeningPaper(paper, btn);
+                tabsContainer.appendChild(btn);
+            });
+
+            if (listeningPapers.length > 0) {
+                selectListeningPaper(listeningPapers[0], tabsContainer.children[0]);
+            }
+        }
+
+        function selectListeningPaper(paper, btn) {
+            document.querySelectorAll('#listeningPaperTabs button').forEach(b => {
+                b.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200";
+            });
+            if (btn) btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-600 text-white";
+
+            const container = document.getElementById('listeningPaperDetail');
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">${paper.title}</h3>
+                            <p class="text-xs text-blue-600 mt-0.5">Phase 1b 提问主题：${paper.phase1b}</p>
+                        </div>
+                        <span class="bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded-full font-bold">Official Exam Paper</span>
+                    </div>
+
+                    <!-- Topic Question -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Phase 2a 主问题 (Main Task)</span>
+                        <h4 class="font-bold text-slate-800 text-sm">${paper.topic}</h4>
+                        <div class="flex gap-3 text-xs pt-1">
+                            ${paper.options.map(opt => `<span class="bg-white px-3 py-1 rounded border border-slate-200 font-medium text-slate-700">${opt}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Listening Scripts Play Box -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-amber-50/50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-amber-900 text-xs"><i class="fa-solid fa-volume-high text-amber-600"></i> Listening Script 1</span>
+                                <button onclick="speak('${paper.script1.replace(/'/g, "\\'")}')" class="px-2.5 py-1 bg-amber-600 text-white rounded text-xs font-semibold hover:bg-amber-700 transition">播放录音 1</button>
+                            </div>
+                            <p class="text-xs text-amber-950 leading-relaxed font-serif">${paper.script1}</p>
+                        </div>
+
+                        <div class="bg-amber-50/50 border border-amber-200 p-4 rounded-xl space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-amber-900 text-xs"><i class="fa-solid fa-volume-high text-amber-600"></i> Listening Script 2</span>
+                                <button onclick="speak('${paper.script2.replace(/'/g, "\\'")}')" class="px-2.5 py-1 bg-amber-600 text-white rounded text-xs font-semibold hover:bg-amber-700 transition">播放录音 2</button>
+                            </div>
+                            <p class="text-xs text-amber-950 leading-relaxed font-serif">${paper.script2}</p>
+                        </div>
+                    </div>
+
+                    <!-- Main & Detailed Questions and Official Answers -->
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Phase 2a 详细追问与官方标准 Key 答案</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                                <div class="font-semibold text-slate-700">${paper.q1_main} &rarr; <span class="text-emerald-600 font-bold">${paper.q1_ans}</span></div>
+                                <div class="text-slate-600 pt-1 border-t border-slate-100">
+                                    <p class="font-medium text-slate-800">${paper.q_detail_A}</p>
+                                    <p class="text-emerald-700 font-bold mt-1">Key: ${paper.ans_detail_A}</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                                <div class="font-semibold text-slate-700">${paper.q2_main} &rarr; <span class="text-emerald-600 font-bold">${paper.q2_ans}</span></div>
+                                <div class="text-slate-600 pt-1 border-t border-slate-100">
+                                    <p class="font-medium text-slate-800">${paper.q_detail_B}</p>
+                                    <p class="text-emerald-700 font-bold mt-1">Key: ${paper.ans_detail_B}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2b Discussion Prompt -->
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs space-y-1">
+                        <span class="font-bold text-blue-900 block"><i class="fa-solid fa-comments text-blue-600"></i> Phase 2b 扩展讨论话题 (Discussion Topic)</span>
+                        <p class="text-blue-800 leading-relaxed">${paper.phase2b}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ================= MOCK TEST ENGINE ================= */
+        let testStage = -1; // -1: Not started, 0: Phase 1a, 1: Phase 1b, 2: Phase 2a, 3: Phase 2b
+        let testTimerInterval = null;
+        let testSecondsRemaining = 960; // 16 mins
+
+        const testStages = [
+            {
+                badge: 'Phase 1a - 考官基础问答',
+                hint: '建议用时：4-5 分钟',
+                title: 'Phase 1a: Personal Questions',
+                desc: 'Examiner: "Good morning. My name is Exam Officer. Could you tell me your full name, nationality, and where you live?"',
+                scriptToSpeak: 'Good morning. My name is Exam Officer. Could you tell me your full name, nationality, and where you live?'
+            },
+            {
+                badge: 'Phase 1b - 考生互动互问',
+                hint: '建议用时：5 分钟',
+                title: 'Phase 1b: Candidate Question Interaction',
+                desc: 'Examiner: "Now I would like you to ask each other questions. Candidate A, please ask Candidate B about their hobbies and weekends."',
+                scriptToSpeak: 'Now I would like you to ask each other questions. Candidate A, please ask Candidate B about their hobbies and weekends.'
+            },
+            {
+                badge: 'Phase 2a - 听力理解能力测试',
+                hint: '建议用时：4 分钟',
+                title: 'Phase 2a: Listening Audio Test',
+                desc: 'Listen to two short audio recordings about job routines and answer the examiner\'s questions.',
+                scriptToSpeak: 'In this part of the test, you are going to listen to two recordings and answer some questions.',
+                isListening: true,
+                listeningAudioScript: 'Recording 1: I like my job because I really like children. Sometimes we go on school trips. Recording 2: I love working with animals on the farm. I get up at 4:30 in the morning.'
+            },
+            {
+                badge: 'Phase 2b - Part 4 深入话题讨论',
+                hint: '建议用时：3-4 分钟',
+                title: 'Phase 2b / Part 4: Discussion Topic',
+                desc: 'Examiner: "Now you are going to talk together about shopping or food. Tell each other where you like to shop and why."',
+                scriptToSpeak: 'Now you are going to talk together about shopping or food. Tell each other where you like to shop and why.'
+            }
+        ];
+
+        function startMockTest() {
+            testStage = 0;
+            testSecondsRemaining = 960;
+            clearInterval(testTimerInterval);
+
+            testTimerInterval = setInterval(() => {
+                testSecondsRemaining--;
+                const m = Math.floor(testSecondsRemaining / 60);
+                const s = testSecondsRemaining % 60;
+                document.getElementById('testTimer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+                if (testSecondsRemaining <= 0) {
+                    clearInterval(testTimerInterval);
+                    finishAndEvaluateTest();
+                }
+            }, 1000);
+
+            document.getElementById('btnStartTest').classList.add('hidden');
+            document.getElementById('btnReportModal') && document.getElementById('testReportModal').classList.add('hidden');
+            loadTestStage(testStage);
+        }
+
+        function loadTestStage(stageIndex) {
+            // Update UI indicators
+            for (let i = 0; i < 4; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (i === stageIndex) {
+                    el.className = "p-2.5 rounded-xl border border-blue-500 bg-blue-50 font-bold text-blue-700 shadow-sm";
+                } else if (i < stageIndex) {
+                    el.className = "p-2.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-700 font-medium";
+                } else {
+                    el.className = "p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400";
+                }
+            }
+
+            const current = testStages[stageIndex];
+            document.getElementById('testStageBadge').textContent = current.badge;
+            document.getElementById('testStageTimeHint').textContent = current.hint;
+            document.getElementById('testPromptTitle').textContent = current.title;
+            document.getElementById('testPromptDesc').textContent = current.desc;
+
+            const audioCard = document.getElementById('testListeningCard');
+            if (current.isListening) {
+                audioCard.classList.remove('hidden');
+                document.getElementById('listeningQuestionText').textContent = "Listen to the audio script carefully. Record key details in your scratchpad.";
+            } else {
+                audioCard.classList.add('hidden');
+            }
+
+            // Speak Examiner voice prompt automatically
+            speak(current.scriptToSpeak);
+
+            // Enable next button
+            const nextBtn = document.getElementById('btnNextStage');
+            nextBtn.disabled = false;
+            nextBtn.className = "px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition shadow";
+            if (stageIndex === 3) {
+                nextBtn.innerHTML = `完成最后阶段 <i class="fa-solid fa-check ml-1"></i>`;
+            } else {
+                nextBtn.innerHTML = `下一阶段 <i class="fa-solid fa-arrow-right ml-1"></i>`;
+            }
+        }
+
+        function playCurrentTestAudio() {
+            if (testStage === 2) {
+                speak(testStages[2].listeningAudioScript);
+            }
+        }
+
+        function repeatTestQuestion() {
+            if (testStage >= 0 && testStage < 4) {
+                speak(testStages[testStage].scriptToSpeak);
+            }
+        }
+
+        function nextTestStage() {
+            if (testStage < 3) {
+                testStage++;
+                loadTestStage(testStage);
+            } else {
+                finishAndEvaluateTest();
+            }
+        }
+
+        function resetMockTest() {
+            clearInterval(testTimerInterval);
+            testStage = -1;
+            document.getElementById('testTimer').textContent = "16:00";
+            document.getElementById('btnStartTest').classList.remove('hidden');
+            document.getElementById('testReportModal').classList.add('hidden');
+
+            document.getElementById('testStageBadge').textContent = "准考准备";
+            document.getElementById('testStageTimeHint').textContent = "阶段用时：约 4-5 分钟";
+            document.getElementById('testPromptTitle').textContent = "点击“开始模拟考试”启动考场流程";
+            document.getElementById('testPromptDesc').textContent = "考试包含 Phase 1a（个人背景）、Phase 1b（互问）、Phase 2a（听力）和 Phase 2b（讨论）。系统考官将自动朗读考题。";
+            document.getElementById('testListeningCard').classList.add('hidden');
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`step-${i}`).className = "p-2.5 rounded-xl border border-slate-200 bg-white font-medium text-slate-400";
+            }
+        }
+
+        function finishAndEvaluateTest() {
+            clearInterval(testTimerInterval);
+            const report = document.getElementById('testReportModal');
+            report.classList.remove('hidden');
+
+            const usedSecs = 960 - testSecondsRemaining;
+            const m = Math.floor(usedSecs / 60);
+            const s = usedSecs % 60;
+            document.getElementById('reportTime').textContent = `${m}分 ${s}秒`;
+
+            // Scroll to report smoothly
+            report.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ================= INITIALIZATION ================= */
+        window.onload = function() {
+            renderP1();
+            renderPart2Topics();
+            renderPart4Topics();
+            renderVocab();
+            renderListeningPapers();
+            populateVoices();
+        };
+    </script>
+</body>
+</html>
